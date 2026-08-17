@@ -5,6 +5,7 @@ import { Placeholder } from "@/components/ui/Placeholder";
 /** 首页占位 */
 export default function HomePage() {
   const t = useTranslations("metadata");
+  const th = useTranslations("home");
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4 py-24">
@@ -12,10 +13,10 @@ export default function HomePage() {
       <p className="mt-4 text-lg text-muted">{t("description")}</p>
       <div className="mt-12 w-full max-w-md">
         <Placeholder
-          label="Hero Image"
-          format="JPG / WebP"
-          size="1920x1080"
-          description="Homepage hero visual placeholder"
+          label={th("hero.placeholder.label")}
+          format={th("hero.placeholder.format")}
+          size={th("hero.placeholder.size")}
+          description={th("hero.placeholder.description")}
         />
       </div>
     </div>

@@ -1,12 +1,13 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/navigation";
 import { APP_NAME, PRODUCT_CATEGORY_LABELS, ProductCategory } from "@hiwhale/shared/constants";
 
 /** 页脚：深蓝背景，公司/产品/方案/联系方式 */
 export function Footer() {
   const t = useTranslations("footer");
+  const locale = useLocale();
   const currentYear = new Date().getFullYear();
 
   const productCategories = Object.values(ProductCategory);
@@ -17,9 +18,7 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <h3 className="font-heading text-lg font-bold">{APP_NAME}</h3>
-            <p className="mt-4 text-sm text-white/70">
-              Intelligent warehousing and material handling solutions for global customers.
-            </p>
+            <p className="mt-4 text-sm text-white/70">{t("tagline")}</p>
           </div>
 
           <div>
@@ -31,7 +30,7 @@ export function Footer() {
                     href={`/products?category=${category}`}
                     className="text-sm text-white/70 transition-colors hover:text-white"
                   >
-                    {PRODUCT_CATEGORY_LABELS[category].en}
+                    {PRODUCT_CATEGORY_LABELS[category][locale as "en" | "zh"]}
                   </Link>
                 </li>
               ))}
@@ -43,22 +42,22 @@ export function Footer() {
             <ul className="mt-4 space-y-2">
               <li>
                 <Link href="/solutions" className="text-sm text-white/70 hover:text-white">
-                  E-commerce
+                  {t("solutionsEcommerce")}
                 </Link>
               </li>
               <li>
                 <Link href="/solutions" className="text-sm text-white/70 hover:text-white">
-                  Automotive
+                  {t("solutionsAutomotive")}
                 </Link>
               </li>
               <li>
                 <Link href="/solutions" className="text-sm text-white/70 hover:text-white">
-                  3PL
+                  {t("solutions3pl")}
                 </Link>
               </li>
               <li>
                 <Link href="/solutions" className="text-sm text-white/70 hover:text-white">
-                  Cold Chain
+                  {t("solutionsColdChain")}
                 </Link>
               </li>
             </ul>
@@ -67,9 +66,9 @@ export function Footer() {
           <div>
             <h4 className="font-heading text-sm font-bold uppercase tracking-wider">{t("contact")}</h4>
             <ul className="mt-4 space-y-2 text-sm text-white/70">
-              <li>info@hiwhale.com</li>
-              <li>+86 400-000-0000</li>
-              <li>Shanghai, China</li>
+              <li>{t("contactEmail")}</li>
+              <li>{t("contactPhone")}</li>
+              <li>{t("contactAddress")}</li>
             </ul>
           </div>
         </div>

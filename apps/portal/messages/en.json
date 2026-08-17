@@ -16,7 +16,8 @@
     "signup": "Sign Up",
     "language": "Language",
     "english": "English",
-    "chinese": "中文"
+    "chinese": "中文",
+    "toggleMenu": "Toggle menu"
   },
   "footer": {
     "company": "Company",
@@ -24,6 +25,24 @@
     "solutions": "Solutions",
     "contact": "Contact",
     "privacyPolicy": "Privacy Policy",
-    "copyright": "© {year} Hiwhale Robotics. All rights reserved."
+    "copyright": "© {year} Hiwhale Robotics. All rights reserved.",
+    "tagline": "Intelligent warehousing and material handling solutions for global customers.",
+    "solutionsEcommerce": "E-commerce",
+    "solutionsAutomotive": "Automotive",
+    "solutions3pl": "3PL",
+    "solutionsColdChain": "Cold Chain",
+    "contactEmail": "info@hiwhale.com",
+    "contactPhone": "+86 400-000-0000",
+    "contactAddress": "Shanghai, China"
+  },
+  "home": {
+    "hero": {
+      "placeholder": {
+        "label": "Hero Image",
+        "format": "JPG / WebP",
+        "size": "1920x1080",
+        "description": "Homepage hero visual placeholder"
+      }
+    }
   }
 }

@@ -16,7 +16,8 @@
     "signup": "注册",
     "language": "语言",
     "english": "English",
-    "chinese": "中文"
+    "chinese": "中文",
+    "toggleMenu": "切换菜单"
   },
   "footer": {
     "company": "公司",
@@ -24,6 +25,24 @@
     "solutions": "方案",
     "contact": "联系方式",
     "privacyPolicy": "隐私政策",
-    "copyright": "© {year} 浩鲸机器人。保留所有权利。"
+    "copyright": "© {year} 浩鲸机器人。保留所有权利。",
+    "tagline": "为全球客户提供智能仓储与货物转运解决方案。",
+    "solutionsEcommerce": "电商",
+    "solutionsAutomotive": "汽车",
+    "solutions3pl": "第三方物流",
+    "solutionsColdChain": "冷链",
+    "contactEmail": "info@hiwhale.com",
+    "contactPhone": "+86 400-000-0000",
+    "contactAddress": "中国上海"
+  },
+  "home": {
+    "hero": {
+      "placeholder": {
+        "label": "主视觉图",
+        "format": "JPG / WebP",
+        "size": "1920x1080",
+        "description": "首页主视觉占位图"
+      }
+    }
   }
 }

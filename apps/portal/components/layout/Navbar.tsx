@@ -82,7 +82,7 @@ export function Navbar() {
         <button
           className="md:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
+          aria-label={tc("toggleMenu")}
         >
           {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
@@ -107,6 +107,7 @@ export function Navbar() {
                 aria-label={tc("language")}
                 className="bg-transparent text-sm"
                 onChange={(e) => switchLocale(e.target.value)}
+                defaultValue={pathname.startsWith("/zh") ? "zh" : "en"}
               >
                 <option value="en">{tc("english")}</option>
                 <option value="zh">{tc("chinese")}</option>
