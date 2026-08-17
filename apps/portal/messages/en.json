@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "title": "Hiwhale Robotics",
+    "description": "Intelligent warehousing and material handling solutions"
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "solutions": "Solutions",
+    "cases": "Cases",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "common": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "language": "Language",
+    "english": "English",
+    "chinese": "中文"
+  },
+  "footer": {
+    "company": "Company",
+    "products": "Products",
+    "solutions": "Solutions",
+    "contact": "Contact",
+    "privacyPolicy": "Privacy Policy",
+    "copyright": "© {year} Hiwhale Robotics. All rights reserved."
+  }
+}

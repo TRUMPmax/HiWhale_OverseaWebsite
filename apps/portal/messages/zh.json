@@ -1,0 +1,29 @@
+{
+  "metadata": {
+    "title": "浩鲸机器人",
+    "description": "智能仓储与货物转运解决方案"
+  },
+  "nav": {
+    "home": "首页",
+    "products": "产品",
+    "solutions": "方案",
+    "cases": "案例",
+    "about": "关于我们",
+    "contact": "联系我们"
+  },
+  "common": {
+    "login": "登录",
+    "signup": "注册",
+    "language": "语言",
+    "english": "English",
+    "chinese": "中文"
+  },
+  "footer": {
+    "company": "公司",
+    "products": "产品",
+    "solutions": "方案",
+    "contact": "联系方式",
+    "privacyPolicy": "隐私政策",
+    "copyright": "© {year} 浩鲸机器人。保留所有权利。"
+  }
+}

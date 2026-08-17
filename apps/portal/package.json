@@ -10,10 +10,12 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "react": "^18",
-    "react-dom": "^18",
+    "@hiwhale/shared": "workspace:*",
+    "lucide-react": "^1.31.0",
     "next": "14.2.35",
-    "@hiwhale/shared": "workspace:*"
+    "next-intl": "^4.13.6",
+    "react": "^18",
+    "react-dom": "^18"
   },
   "devDependencies": {
     "typescript": "^5",
