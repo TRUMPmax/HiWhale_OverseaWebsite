@@ -49,3 +49,7 @@ coverage/
 *.pem
 *.key
 *.crt
+
+# Worktrees
+.worktrees/
+worktrees/
