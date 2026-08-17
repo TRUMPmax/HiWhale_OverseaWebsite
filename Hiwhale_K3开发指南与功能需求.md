@@ -33,19 +33,20 @@ K3 单次上下文有限，**绝不能一次性要求它写完整个项目**。�
 
 ### 1.3 上下文管理技巧
 
-| 技巧 | 说明 |
-|---|---|
-| **每阶段开新对话** | 避免上下文过长导致 K3 遗忘早期规范 |
-| **新对话先贴规范** | 每个新对话开头，把"第二部分设计规范"和"第三部分代码规范"贴给 K3 |
-| **提供文件树** | 每次任务附上当前项目文件结构，让 K3 知道在哪写 |
-| **提供已有代码** | 如果要修改已有文件，把该文件完整内容贴给 K3 |
-| **一次只改 3-5 个文件** | 单次任务涉及的文件不要超过 5 个，多了拆成子任务 |
-| **让 K3 先输出计划** | 复杂任务先让 K3 说实现思路，确认后再让它写代码 |
-| **及时修正** | K3 写错了立刻指出，不要攒到最后 |
+| 技巧                    | 说明                                                            |
+| ----------------------- | --------------------------------------------------------------- |
+| **每阶段开新对话**      | 避免上下文过长导致 K3 遗忘早期规范                              |
+| **新对话先贴规范**      | 每个新对话开头，把"第二部分设计规范"和"第三部分代码规范"贴给 K3 |
+| **提供文件树**          | 每次任务附上当前项目文件结构，让 K3 知道在哪写                  |
+| **提供已有代码**        | 如果要修改已有文件，把该文件完整内容贴给 K3                     |
+| **一次只改 3-5 个文件** | 单次任务涉及的文件不要超过 5 个，多了拆成子任务                 |
+| **让 K3 先输出计划**    | 复杂任务先让 K3 说实现思路，确认后再让它写代码                  |
+| **及时修正**            | K3 写错了立刻指出，不要攒到最后                                 |
 
 ### 1.4 代码规范（每次对话都要提醒 K3）
 
 #### 必须遵守
+
 - ✅ TypeScript 严格模式，所有变量/函数有类型，禁止 `any`（实在不行用 `unknown`）
 - ✅ 组件使用函数式组件 + hooks，不写 class 组件
 - ✅ 样式用 Tailwind CSS，禁止内联 style（动态值除外）
@@ -58,6 +59,7 @@ K3 单次上下文有限，**绝不能一次性要求它写完整个项目**。�
 - ✅ 每个组件文件顶部加简短注释说明用途
 
 #### 绝对禁止
+
 - ❌ 紫色、靛蓝、青色作为主色（主色只能是深蓝 `#0A2540` + 品牌蓝 `#1A56DB`）
 - ❌ 全篇渐变底色（渐变只能用于按钮或极小装饰）
 - ❌ emoji 作为图标或装饰
@@ -69,18 +71,18 @@ K3 单次上下文有限，**绝不能一次性要求它写完整个项目**。�
 
 ### 1.5 K3 常见问题与应对
 
-| K3 可能犯的错 | 你的应对 |
-|---|---|
-| 忘记用 next-intl，直接写英文 | 检查代码，发现硬编码文案就让它改成 `t('key')` |
-| 用了 emoji | 直接说"把所有 emoji 替换成 Lucide 图标" |
-| 写死 px 宽高 | 说"用 flex/grid/rem 替代固定 px" |
-| 颜色用了紫色/渐变 | 说"严格按设计规范的色值，用 #0A2540 和 #1A56DB" |
-| 组件太大（>300行） | 说"把这个组件拆成 X 和 Y 两个子组件" |
-| 一次改太多文件导致出错 | 拆成更小的任务，一次只做一个模块 |
-| 忘记类型定义 | 说"给所有 props 和函数参数加上 TypeScript 类型" |
-| 动效卡顿 | 说"动画只用 transform 和 opacity，加 will-change" |
-| 3D 模型报错 | 先用 Three.js 内置 BoxGeometry 占位，确保功能跑通 |
-| 双语排版错位 | 说"检查中文状态下的字号和行高，用 [lang=zh] 选择器调整" |
+| K3 可能犯的错                | 你的应对                                                |
+| ---------------------------- | ------------------------------------------------------- |
+| 忘记用 next-intl，直接写英文 | 检查代码，发现硬编码文案就让它改成 `t('key')`           |
+| 用了 emoji                   | 直接说"把所有 emoji 替换成 Lucide 图标"                 |
+| 写死 px 宽高                 | 说"用 flex/grid/rem 替代固定 px"                        |
+| 颜色用了紫色/渐变            | 说"严格按设计规范的色值，用 #0A2540 和 #1A56DB"         |
+| 组件太大（>300行）           | 说"把这个组件拆成 X 和 Y 两个子组件"                    |
+| 一次改太多文件导致出错       | 拆成更小的任务，一次只做一个模块                        |
+| 忘记类型定义                 | 说"给所有 props 和函数参数加上 TypeScript 类型"         |
+| 动效卡顿                     | 说"动画只用 transform 和 opacity，加 will-change"       |
+| 3D 模型报错                  | 先用 Three.js 内置 BoxGeometry 占位，确保功能跑通       |
+| 双语排版错位                 | 说"检查中文状态下的字号和行高，用 [lang=zh] 选择器调整" |
 
 ### 1.6 项目结构（最终目标，供 K3 参考）
 
@@ -153,26 +155,28 @@ hiwhale-platform/
 
 ### 2.1 色彩
 
-| 角色 | 色值 | 用途 |
-|---|---|---|
+| 角色     | 色值      | 用途                   |
+| -------- | --------- | ---------------------- |
 | 品牌深蓝 | `#0A2540` | 标题、深色区块、导航栏 |
-| 品牌蓝 | `#1A56DB` | 主按钮、链接、强调 |
-| 品牌浅蓝 | `#E8F0FE` | 标签背景、hover |
-| 纯白 | `#FFFFFF` | 主背景 |
-| 近白灰 | `#F8FAFC` | 交替区块背景 |
-| 深灰文字 | `#1E293B` | 正文标题 |
-| 中灰文字 | `#475569` | 正文 |
-| 浅灰文字 | `#94A3B8` | 辅助说明 |
-| 边框灰 | `#E2E8F0` | 卡片边框 |
+| 品牌蓝   | `#1A56DB` | 主按钮、链接、强调     |
+| 品牌浅蓝 | `#E8F0FE` | 标签背景、hover        |
+| 纯白     | `#FFFFFF` | 主背景                 |
+| 近白灰   | `#F8FAFC` | 交替区块背景           |
+| 深灰文字 | `#1E293B` | 正文标题               |
+| 中灰文字 | `#475569` | 正文                   |
+| 浅灰文字 | `#94A3B8` | 辅助说明               |
+| 边框灰   | `#E2E8F0` | 卡片边框               |
 
 **规则**：白色为主背景，蓝色为强调；深色区块不超过页面30%；禁止渐变底色、禁止紫色/靛蓝、禁止高饱和撞色。
 
 ### 2.2 字体
+
 - 英文标题：Space Grotesk；英文正文：Inter
 - 中文：Noto Sans SC
 - 使用 `next/font` 加载
 
 ### 2.3 布局
+
 - 根字号 16px，全部用 rem/%/flex/grid
 - 容器 `max-w-7xl`（80rem），居中，`px-4 md:px-8 lg:px-12`
 - 区块间距 `py-16 md:py-24`
@@ -180,12 +184,14 @@ hiwhale-platform/
 - 禁止写死固定 px 宽高
 
 ### 2.4 组件风格
+
 - 按钮：主按钮蓝底白字 `rounded-lg`，次按钮白底蓝边蓝字
 - 卡片：白底 + `border border-slate-200` + `rounded-xl`，hover 时 `border-blue-300 shadow-lg -translate-y-1`
 - 标签：`bg-blue-50 text-blue-700 rounded-md px-2 py-1 text-xs`
 - 图标：Lucide React 线性图标，`w-5 h-5`
 
 ### 2.5 双语排版
+
 - next-intl，默认 en，URL 前缀 `/en/`、`/zh/`
 - 中文标题字号比英文小一号（英文 `text-5xl` → 中文 `text-4xl`）
 - 中文行高略大（`leading-relaxed`）
@@ -198,22 +204,23 @@ hiwhale-platform/
 
 ### 3.1 海外独立站（apps/portal）
 
-| 页面 | 路由 | 核心功能 |
-|---|---|---|
-| 首页 | `/` | 滚轮叙事动效（产品家族→场景上浮→数据→幕布Logo）+ 8个常规模块 |
-| 产品列表 | `/products` | 6大品类筛选 + 产品卡片网格 |
-| 产品详情 | `/products/[slug]` | 产品图、360°3D模型、参数表、Ask AI按钮（需登录）、相关推荐 |
-| 方案列表 | `/solutions` | 6个行业方案卡片 |
-| 方案详情 | `/solutions/[slug]` | 痛点、方案、流程、成果数据、相关产品 |
-| 案例列表 | `/cases` | 行业筛选 + 案例卡片 |
-| 案例详情 | `/cases/[slug]` | 客户背景、挑战、方案、成果、评价 |
-| 关于我们 | `/about` | 公司介绍、定位、历程、全球布局、认证 |
-| 联系我们 | `/contact` | 联系信息 + 询盘表单（含Turnstile人机验证） |
-| 登录 | `/auth/login` | 邮箱密码登录 |
-| 注册 | `/auth/register` | 姓名、公司、邮箱、密码 |
-| 用户中心 | `/dashboard` | 咨询记录、AI对话历史、收藏、个人信息 |
+| 页面     | 路由                | 核心功能                                                     |
+| -------- | ------------------- | ------------------------------------------------------------ |
+| 首页     | `/`                 | 滚轮叙事动效（产品家族→场景上浮→数据→幕布Logo）+ 8个常规模块 |
+| 产品列表 | `/products`         | 6大品类筛选 + 产品卡片网格                                   |
+| 产品详情 | `/products/[slug]`  | 产品图、360°3D模型、参数表、Ask AI按钮（需登录）、相关推荐   |
+| 方案列表 | `/solutions`        | 6个行业方案卡片                                              |
+| 方案详情 | `/solutions/[slug]` | 痛点、方案、流程、成果数据、相关产品                         |
+| 案例列表 | `/cases`            | 行业筛选 + 案例卡片                                          |
+| 案例详情 | `/cases/[slug]`     | 客户背景、挑战、方案、成果、评价                             |
+| 关于我们 | `/about`            | 公司介绍、定位、历程、全球布局、认证                         |
+| 联系我们 | `/contact`          | 联系信息 + 询盘表单（含Turnstile人机验证）                   |
+| 登录     | `/auth/login`       | 邮箱密码登录                                                 |
+| 注册     | `/auth/register`    | 姓名、公司、邮箱、密码                                       |
+| 用户中心 | `/dashboard`        | 咨询记录、AI对话历史、收藏、个人信息                         |
 
 **全局组件**：
+
 - Navbar（滚动变白+模糊）
 - Footer（深蓝背景）
 - AI客服（仅登录后显示右下角按钮，聊天窗口，API预留）
@@ -221,6 +228,7 @@ hiwhale-platform/
 - Placeholder占位组件（统一素材占位）
 
 **首页动效分镜**（400vh ScrollTrigger pin）：
+
 - 0-15%：全品类产品家族（AGV/AMR/叉车/机械臂/龙门吊/软件）从底部上浮
 - 15-45%：6个行业场景卡片逐个上浮（电商/汽车/3PL/冷链/医药/港口）
 - 45-75%：方案集成理念文字 + 4个数据指标CountUp
@@ -230,39 +238,39 @@ hiwhale-platform/
 
 ### 3.2 管理后台（apps/admin）
 
-| 页面 | 核心功能 |
-|---|---|
-| 登录 | 账号密码 + 双因素（可选） |
-| Dashboard | 数据卡片 + 趋势图 + 最近询盘 |
-| 产品管理 | CRUD + 图片/规格书/3D模型上传 + 分类 + 上下架 |
-| 方案管理 | 解决方案 CRUD |
-| 案例管理 | 客户案例 CRUD |
-| 询盘管理 | 列表 + 详情 + 状态流转 + 导出Excel + 分配负责人 |
-| 用户管理 | 前台用户列表 + AI使用量 + 禁用 |
-| AI对话记录 | 全部对话日志 + 搜索 + 标注 + 导出 |
-| AI知识库 | 文档上传 + 向量化 + FAQ管理 + 测试问答 |
-| AI设置 | 模型选择 + API Key + Prompt + 限频 + 月度预算 |
-| 内容管理 | Banner + 多语言文案 + 隐私政策编辑 |
-| 员工管理 | 账号CRUD + 角色分配 + 权限矩阵 |
-| 系统设置 | SMTP + 通知 + 操作日志 + 备份 |
+| 页面       | 核心功能                                        |
+| ---------- | ----------------------------------------------- |
+| 登录       | 账号密码 + 双因素（可选）                       |
+| Dashboard  | 数据卡片 + 趋势图 + 最近询盘                    |
+| 产品管理   | CRUD + 图片/规格书/3D模型上传 + 分类 + 上下架   |
+| 方案管理   | 解决方案 CRUD                                   |
+| 案例管理   | 客户案例 CRUD                                   |
+| 询盘管理   | 列表 + 详情 + 状态流转 + 导出Excel + 分配负责人 |
+| 用户管理   | 前台用户列表 + AI使用量 + 禁用                  |
+| AI对话记录 | 全部对话日志 + 搜索 + 标注 + 导出               |
+| AI知识库   | 文档上传 + 向量化 + FAQ管理 + 测试问答          |
+| AI设置     | 模型选择 + API Key + Prompt + 限频 + 月度预算   |
+| 内容管理   | Banner + 多语言文案 + 隐私政策编辑              |
+| 员工管理   | 账号CRUD + 角色分配 + 权限矩阵                  |
+| 系统设置   | SMTP + 通知 + 操作日志 + 备份                   |
 
 **后台布局**：固定左侧边栏（240px）+ 顶栏 + 内容区，UI用 shadcn/ui。
 **权限角色**：超级管理员、销售、产品/技术、运营。
 
 ### 3.3 后端 API（api/）
 
-| 模块 | 核心接口 |
-|---|---|
-| 认证 | 注册、登录、JWT、密码加密 |
-| 产品 | CRUD、分类、搜索、分页 |
-| 方案 | CRUD |
-| 案例 | CRUD |
-| 询盘 | 创建、列表、详情、状态更新、导出 |
-| 用户 | 列表、详情、AI使用量、禁用 |
-| AI客服 | 发送消息（RAG检索+大模型）、历史记录、限频 |
-| 知识库 | 文档上传、向量化、FAQ CRUD |
-| 文件上传 | 图片/PDF/3D模型上传到MinIO |
-| 管理后台 | 员工CRUD、角色权限、操作日志、数据统计 |
+| 模块     | 核心接口                                   |
+| -------- | ------------------------------------------ |
+| 认证     | 注册、登录、JWT、密码加密                  |
+| 产品     | CRUD、分类、搜索、分页                     |
+| 方案     | CRUD                                       |
+| 案例     | CRUD                                       |
+| 询盘     | 创建、列表、详情、状态更新、导出           |
+| 用户     | 列表、详情、AI使用量、禁用                 |
+| AI客服   | 发送消息（RAG检索+大模型）、历史记录、限频 |
+| 知识库   | 文档上传、向量化、FAQ CRUD                 |
+| 文件上传 | 图片/PDF/3D模型上传到MinIO                 |
+| 管理后台 | 员工CRUD、角色权限、操作日志、数据统计     |
 
 **技术**：NestJS + Prisma + PostgreSQL + Redis + pgvector + MinIO + BullMQ。
 
@@ -795,20 +803,21 @@ admin 只需要中文界面（不需要双语）。
 
 ### 后端开发顺序
 
-| 顺序 | 模块 | 说明 |
-|---|---|---|
-| 1 | NestJS 初始化 + Prisma + Docker | 项目骨架、数据库连接、健康检查 |
-| 2 | 认证模块 | 注册/登录/JWT/bcrypt |
-| 3 | 产品模块 | CRUD + 分类 + 分页 + 搜索 |
-| 4 | 方案/案例模块 | CRUD |
-| 5 | 询盘模块 | 创建 + 列表 + 状态 + 导出 |
-| 6 | 用户模块 | 列表 + AI使用量 + 禁用 |
-| 7 | 文件上传 | Multer + MinIO |
-| 8 | AI客服 + RAG | pgvector向量检索 + 大模型API + 限频 |
-| 9 | 知识库 | 文档上传 + 分块向量化 + FAQ |
-| 10 | 后台管理 | 员工CRUD + 角色权限 + 操作日志 + 统计 |
+| 顺序 | 模块                            | 说明                                  |
+| ---- | ------------------------------- | ------------------------------------- |
+| 1    | NestJS 初始化 + Prisma + Docker | 项目骨架、数据库连接、健康检查        |
+| 2    | 认证模块                        | 注册/登录/JWT/bcrypt                  |
+| 3    | 产品模块                        | CRUD + 分类 + 分页 + 搜索             |
+| 4    | 方案/案例模块                   | CRUD                                  |
+| 5    | 询盘模块                        | 创建 + 列表 + 状态 + 导出             |
+| 6    | 用户模块                        | 列表 + AI使用量 + 禁用                |
+| 7    | 文件上传                        | Multer + MinIO                        |
+| 8    | AI客服 + RAG                    | pgvector向量检索 + 大模型API + 限频   |
+| 9    | 知识库                          | 文档上传 + 分块向量化 + FAQ           |
+| 10   | 后台管理                        | 员工CRUD + 角色权限 + 操作日志 + 统计 |
 
 ### 后端 Prompt 要点
+
 - 每个模块开新对话
 - 先定义 Prisma schema，再生成 CRUD
 - AI客服RAG部分单独一个对话，重点实现：文档分块→embedding→pgvector存储→检索→拼接prompt→调用大模型
@@ -954,15 +963,17 @@ model ChatMessage {
 ### 6.3 文档分块规范（决定检索质量的关键）
 
 #### 分块策略
-| 文档类型 | 分块方式 | 小块大小 | 父块大小 |
-|---|---|---|---|
-| 规格书 PDF | 按章节/参数表切分，每个参数表一个小块 | 200-400字 | 整个章节 800-1200字 |
-| 认证文档 | 按条款切分 | 300-500字 | 整个条款章节 |
-| 案例研究 | 按"背景/挑战/方案/成果"分段 | 300-500字 | 整篇案例 |
-| FAQ | 一问一答一个块 | 不超过300字 | 不需要父块 |
-| 方案文档 | 按标题层级切分 | 300-500字 | 整个章节 |
+
+| 文档类型   | 分块方式                              | 小块大小    | 父块大小            |
+| ---------- | ------------------------------------- | ----------- | ------------------- |
+| 规格书 PDF | 按章节/参数表切分，每个参数表一个小块 | 200-400字   | 整个章节 800-1200字 |
+| 认证文档   | 按条款切分                            | 300-500字   | 整个条款章节        |
+| 案例研究   | 按"背景/挑战/方案/成果"分段           | 300-500字   | 整篇案例            |
+| FAQ        | 一问一答一个块                        | 不超过300字 | 不需要父块          |
+| 方案文档   | 按标题层级切分                        | 300-500字   | 整个章节            |
 
 #### 分块规则
+
 1. **按文档结构切分，不按固定字数切**：用 PDF 解析工具（PyMuPDF / Unstructured）识别标题、表格、段落，按语义边界切
 2. **保留表格结构**：参数表转成 Markdown 表格格式，不要拍平成纯文本
 3. **每个小块必须携带元数据**：product_model、category、doc_type、section、language
@@ -971,6 +982,7 @@ model ChatMessage {
 6. **型号别名扩展**：分块入库时，把型号别名（如 "15R" → "MBV15R"）追加到块内容末尾，提升关键词召回
 
 #### 文档解析流程
+
 ```
 上传 PDF/Word
   ↓
@@ -1025,23 +1037,24 @@ const QUERY_REWRITE_PROMPT = `
 ```
 
 #### 查询类型路由逻辑
+
 ```typescript
 switch (queryType) {
-  case 'product_spec':
+  case "product_spec":
     // 先查产品数据库结构化字段（精确参数）
     // 再查规格书向量库（补充说明）
     break;
-  case 'certification':
+  case "certification":
     // 只查认证文档库（doc_type = 'certification'）
     break;
-  case 'solution':
+  case "solution":
     // 查案例库 + 方案文档
     break;
-  case 'pricing':
+  case "pricing":
     // 不查文档，直接返回转人工话术
-    return { transferToHuman: true, reason: 'pricing' };
-  case 'general':
-    // FAQ 优先，再查全部文档
+    return { transferToHuman: true, reason: "pricing" };
+  case "general":
+  // FAQ 优先，再查全部文档
 }
 ```
 
@@ -1073,7 +1086,7 @@ async function hybridSearch(params: {
            ts_rank(search_vector, plainto_tsquery('english', ${params.queryText})) AS rank
     FROM document_chunks
     WHERE search_vector @@ plainto_tsquery('english', ${params.queryText})
-      OR product_model ILIKE ${'%' + params.queryText + '%'}
+      OR product_model ILIKE ${"%" + params.queryText + "%"}
       AND language = 'en'
     ORDER BY rank DESC
     LIMIT 20
@@ -1097,9 +1110,7 @@ async function hybridSearch(params: {
   });
 
   // 按融合分数排序，取 Top 20 给 Rerank
-  return [...scores.values()]
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 20);
+  return [...scores.values()].sort((a, b) => b.score - a.score).slice(0, 20);
 }
 ```
 
@@ -1110,7 +1121,7 @@ async function hybridSearch(params: {
 ```typescript
 // 当 query_type = 'product_spec' 且 entities 包含参数时
 // 用 LLM 生成 Prisma 查询条件（白名单字段，防注入）
-const allowedFields = ['loadCapacity', 'liftHeight', 'maxSpeed', 'category', 'batteryType'];
+const allowedFields = ["loadCapacity", "liftHeight", "maxSpeed", "category", "batteryType"];
 // LLM 输出：{ loadCapacity: { gte: 2000 }, category: 'AGV_FORKLIFT' }
 const products = await prisma.product.findMany({ where: structuredFilter });
 ```
@@ -1126,18 +1137,18 @@ const products = await prisma.product.findMany({ where: structuredFilter });
 ```typescript
 async function rerank(query: string, chunks: any[], topN = 5) {
   const response = await fetch(`${process.env.RERANK_API_URL}/rerank`, {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify({
       query,
-      texts: chunks.map(c => c.content),
-      truncate: true
-    })
+      texts: chunks.map((c) => c.content),
+      truncate: true,
+    }),
   });
   const data = await response.json();
   // data: [{index: 0, score: 0.95}, ...]
   return data.slice(0, topN).map((r: any) => ({
     ...chunks[r.index],
-    rerankScore: r.score
+    rerankScore: r.score,
   }));
 }
 ```
@@ -1145,6 +1156,7 @@ async function rerank(query: string, chunks: any[], topN = 5) {
 ### 6.7 对话上下文管理
 
 #### 短期记忆（Redis）
+
 ```typescript
 // Redis 存储最近 10 轮对话，TTL 24小时
 // key: `chat:${conversationId}:history`
@@ -1156,6 +1168,7 @@ async function getChatHistory(conversationId: string) {
 ```
 
 #### 长期记忆（对话摘要）
+
 ```typescript
 // 当对话超过 10 轮时，把最早的 5 轮压缩成摘要
 const SUMMARIZE_PROMPT = `
@@ -1174,6 +1187,7 @@ const SUMMARIZE_PROMPT = `
 ```
 
 #### 用户需求状态（Redis Hash）
+
 ```typescript
 // key: `chat:${conversationId}:state`
 {
@@ -1189,6 +1203,7 @@ const SUMMARIZE_PROMPT = `
   stage: "comparing_models"
 }
 ```
+
 每轮对话结束后用 LLM 更新此状态，检索时作为额外过滤条件。
 
 ### 6.8 System Prompt（回答规则，非回答模板）
@@ -1220,63 +1235,66 @@ const SYSTEM_PROMPT = `
 
 ### 6.9 兜底机制（三道防线）
 
-| 防线 | 触发条件 | 处理 |
-|---|---|---|
-| 检索阈值 | Rerank 后 Top1 分数 < 0.6 | 不回答，回复"这个问题我需要让技术同事确认，已为您转接"，创建转人工记录 |
-| LLM 自检 | LLM 输出中包含"资料不足""无法确认"等标记 | 同上，转人工 |
-| 业务硬规则 | 查询类型为 pricing/delivery/contract | 直接转人工，不走检索 |
+| 防线       | 触发条件                                 | 处理                                                                   |
+| ---------- | ---------------------------------------- | ---------------------------------------------------------------------- |
+| 检索阈值   | Rerank 后 Top1 分数 < 0.6                | 不回答，回复"这个问题我需要让技术同事确认，已为您转接"，创建转人工记录 |
+| LLM 自检   | LLM 输出中包含"资料不足""无法确认"等标记 | 同上，转人工                                                           |
+| 业务硬规则 | 查询类型为 pricing/delivery/contract     | 直接转人工，不走检索                                                   |
 
 转人工时：
+
 1. 在 ChatConversation 表标记 status = 'transferred_to_human'
 2. 通知销售（邮件/后台通知）
 3. 前端显示"Our team will contact you within 24 hours" + 引导留资表单
 
 ### 6.10 技术选型
 
-| 组件 | 选型 | 部署方式 |
-|---|---|---|
-| Embedding 模型 | bge-m3（1024维，多语言） | TEI Docker 容器，本地部署 |
-| Rerank 模型 | bge-reranker-v2-m3 | TEI Docker 容器，本地部署 |
-| 向量数据库 | pgvector（PostgreSQL 扩展） | 随 PostgreSQL 容器 |
-| 全文检索 | PostgreSQL tsvector | 随 PostgreSQL 容器 |
-| 对话缓存 | Redis | Docker 容器 |
-| LLM | DeepSeek 国际版（deepseek-chat） | API 调用，兼容 OpenAI SDK |
-| 文档解析 | PyMuPDF + Unstructured | API 服务容器（Python） |
-| 开发期 Embedding | Mac Studio 本地 Ollama 跑 bge-m3 | 本地开发 |
+| 组件             | 选型                             | 部署方式                  |
+| ---------------- | -------------------------------- | ------------------------- |
+| Embedding 模型   | bge-m3（1024维，多语言）         | TEI Docker 容器，本地部署 |
+| Rerank 模型      | bge-reranker-v2-m3               | TEI Docker 容器，本地部署 |
+| 向量数据库       | pgvector（PostgreSQL 扩展）      | 随 PostgreSQL 容器        |
+| 全文检索         | PostgreSQL tsvector              | 随 PostgreSQL 容器        |
+| 对话缓存         | Redis                            | Docker 容器               |
+| LLM              | DeepSeek 国际版（deepseek-chat） | API 调用，兼容 OpenAI SDK |
+| 文档解析         | PyMuPDF + Unstructured           | API 服务容器（Python）    |
+| 开发期 Embedding | Mac Studio 本地 Ollama 跑 bge-m3 | 本地开发                  |
 
 **docker-compose.yml 需增加的服务**：
-```yaml
-  # Embedding + Rerank 服务
-  tei:
-    image: ghcr.io/huggingface/text-embeddings-inference:latest
-    container_name: hiwhale-tei
-    command: --model-id BAAI/bge-m3 --port 8080
-    environment:
-      - HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}
-    volumes:
-      - tei_data:/data
-    expose:
-      - "8080"
-    restart: unless-stopped
-    networks:
-      - hiwhale-network
 
-  # 文档解析服务（Python FastAPI）
-  doc-parser:
-    build:
-      context: ./api
-      dockerfile: Dockerfile.parser
-    container_name: hiwhale-doc-parser
-    expose:
-      - "8001"
-    restart: unless-stopped
-    networks:
-      - hiwhale-network
+```yaml
+# Embedding + Rerank 服务
+tei:
+  image: ghcr.io/huggingface/text-embeddings-inference:latest
+  container_name: hiwhale-tei
+  command: --model-id BAAI/bge-m3 --port 8080
+  environment:
+    - HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}
+  volumes:
+    - tei_data:/data
+  expose:
+    - "8080"
+  restart: unless-stopped
+  networks:
+    - hiwhale-network
+
+# 文档解析服务（Python FastAPI）
+doc-parser:
+  build:
+    context: ./api
+    dockerfile: Dockerfile.parser
+  container_name: hiwhale-doc-parser
+  expose:
+    - "8001"
+  restart: unless-stopped
+  networks:
+    - hiwhale-network
 ```
 
 ### 6.11 实现优先级（分 4 个子阶段给 K3）
 
 #### RAG 阶段 A：基础 RAG（P0）
+
 - Prisma schema（文档表、分块表、对话表）
 - pgvector 启用 + 向量检索
 - bge-m3 embedding 接入
@@ -1285,6 +1303,7 @@ const SYSTEM_PROMPT = `
 - 对话历史存 PostgreSQL
 
 #### RAG 阶段 B：检索增强（P0）
+
 - 查询改写（指代消解 + 实体提取）
 - 混合检索（向量 + 关键词 + RRF 融合）
 - 元数据过滤（按产品型号）
@@ -1292,6 +1311,7 @@ const SYSTEM_PROMPT = `
 - 兜底机制（相似度阈值 + 转人工）
 
 #### RAG 阶段 C：精排与上下文（P1）
+
 - bge-reranker 接入 + 精排
 - 父子文档分块
 - 对话摘要（长期记忆）
@@ -1299,6 +1319,7 @@ const SYSTEM_PROMPT = `
 - 来源引用标注
 
 #### RAG 阶段 D：进阶（P2）
+
 - Text-to-SQL 产品参数查询
 - 多子查询
 - 查询路由（按问题类型分库）
@@ -1358,6 +1379,7 @@ System Prompt 按文档6.8节编写。
 ## 第七部分：验收 Checklist
 
 ### 前端 portal
+
 - [ ] 首页滚轮动效四阶段丝滑，景深明显
 - [ ] 中英文切换所有文案变化，排版不错位
 - [ ] 3D模型查看器可旋转/缩放/自动旋转/切换型号
@@ -1371,6 +1393,7 @@ System Prompt 按文档6.8节编写。
 - [ ] Lighthouse 性能 LCP<2.5s
 
 ### 后台 admin
+
 - [ ] 未登录访问任何页面跳转登录
 - [ ] 侧边栏导航全部可跳转
 - [ ] 产品CRUD完整
@@ -1379,6 +1402,7 @@ System Prompt 按文档6.8节编写。
 - [ ] 表格分页/排序正常
 
 ### Docker
+
 - [ ] `docker compose up -d` 一键启动全部服务
 - [ ] 停掉 portal 不影响 admin
 - [ ] 数据库数据持久化（重启不丢）
@@ -1388,28 +1412,28 @@ System Prompt 按文档6.8节编写。
 
 ## 第八部分：常见问题速查
 
-| 问题 | 解决方案 |
-|---|---|
-| K3 上下文满了 | 开新对话，贴通用前缀+当前任务相关文件内容 |
-| GSAP ScrollTrigger 不生效 | 检查是否注册了插件 `gsap.registerPlugin(ScrollTrigger)`，用 useGSAP hook |
-| Lenis 和 ScrollTrigger 冲突 | 用 Lenis 的 `raf` 事件调用 `ScrollTrigger.update()` |
-| next-intl 路由报错 | 检查 `[locale]` 动态段配置和 `middleware.ts` |
-| 3D 模型加载失败 | 先用 BoxGeometry 确保功能通，真实模型后补 |
-| Tailwind 样式不生效 | 检查 `tailwind.config.js` 的 content 路径 |
-| shadcn/ui 安装失败 | 确认 admin 是 Next.js App Router + Tailwind，用 `npx shadcn@latest init` |
-| Docker 构建慢 | 先复制 package.json 再 pnpm install，利用层缓存 |
-| 中文排版错位 | 用 `[lang="zh"] .title { font-size: ... }` 覆盖 |
-| Prisma 迁移失败 | 检查 DATABASE_URL 连接串，docker 内用服务名 postgres 而非 localhost |
-| pnpm workspace 包引用失败 | 检查 shared 的 package.json name 字段和 main/exports 配置 |
-| 端口冲突 | 修改对应 app 的 package.json dev 脚本 `next dev -p 3002` |
-| pgvector 类型报错 | Prisma 中用 `Unsupported("vector(1024)")`，migration 里手动执行 `CREATE EXTENSION vector` |
-| bge-m3 embedding 维度不匹配 | bge-m3 输出 1024 维，确认 pgvector 字段是 vector(1024)，不是 1536 |
-| TEI 容器启动失败 | 需要设置 HF_TOKEN 环境变量，或用 `--model-id BAAI/bge-m3` 预下载模型 |
-| Rerank 服务慢 | Rerank 只对 Top20 做，不要对全库做；设置超时 5s，超时降级跳过 rerank |
-| 混合检索 SQL 报错 | 确认 PostgreSQL 启用了 pg_trgm 扩展，tsvector 字段用生成列自动维护 |
-| AI 回答编造参数 | 检查 System Prompt 是否强调"只基于资料回答"，加兜底相似度阈值 |
-| 对话历史超长 | 最近3轮原文 + 早期摘要，不要把全部历史塞进 prompt |
-| 文档分块把表格切断 | 用 PyMuPDF 识别表格，按参数表整体作为一个 chunk，转 Markdown 表格 |
+| 问题                        | 解决方案                                                                                  |
+| --------------------------- | ----------------------------------------------------------------------------------------- |
+| K3 上下文满了               | 开新对话，贴通用前缀+当前任务相关文件内容                                                 |
+| GSAP ScrollTrigger 不生效   | 检查是否注册了插件 `gsap.registerPlugin(ScrollTrigger)`，用 useGSAP hook                  |
+| Lenis 和 ScrollTrigger 冲突 | 用 Lenis 的 `raf` 事件调用 `ScrollTrigger.update()`                                       |
+| next-intl 路由报错          | 检查 `[locale]` 动态段配置和 `middleware.ts`                                              |
+| 3D 模型加载失败             | 先用 BoxGeometry 确保功能通，真实模型后补                                                 |
+| Tailwind 样式不生效         | 检查 `tailwind.config.js` 的 content 路径                                                 |
+| shadcn/ui 安装失败          | 确认 admin 是 Next.js App Router + Tailwind，用 `npx shadcn@latest init`                  |
+| Docker 构建慢               | 先复制 package.json 再 pnpm install，利用层缓存                                           |
+| 中文排版错位                | 用 `[lang="zh"] .title { font-size: ... }` 覆盖                                           |
+| Prisma 迁移失败             | 检查 DATABASE_URL 连接串，docker 内用服务名 postgres 而非 localhost                       |
+| pnpm workspace 包引用失败   | 检查 shared 的 package.json name 字段和 main/exports 配置                                 |
+| 端口冲突                    | 修改对应 app 的 package.json dev 脚本 `next dev -p 3002`                                  |
+| pgvector 类型报错           | Prisma 中用 `Unsupported("vector(1024)")`，migration 里手动执行 `CREATE EXTENSION vector` |
+| bge-m3 embedding 维度不匹配 | bge-m3 输出 1024 维，确认 pgvector 字段是 vector(1024)，不是 1536                         |
+| TEI 容器启动失败            | 需要设置 HF_TOKEN 环境变量，或用 `--model-id BAAI/bge-m3` 预下载模型                      |
+| Rerank 服务慢               | Rerank 只对 Top20 做，不要对全库做；设置超时 5s，超时降级跳过 rerank                      |
+| 混合检索 SQL 报错           | 确认 PostgreSQL 启用了 pg_trgm 扩展，tsvector 字段用生成列自动维护                        |
+| AI 回答编造参数             | 检查 System Prompt 是否强调"只基于资料回答"，加兜底相似度阈值                             |
+| 对话历史超长                | 最近3轮原文 + 早期摘要，不要把全部历史塞进 prompt                                         |
+| 文档分块把表格切断          | 用 PyMuPDF 识别表格，按参数表整体作为一个 chunk，转 Markdown 表格                         |
 
 ---
 

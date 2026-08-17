@@ -22,28 +22,30 @@
 
 ## File Map
 
-| 文件/目录 | 职责 |
-|---|---|
-| `apps/portal/` | 海外独立站 Next.js 应用，端口 3000 |
-| `apps/admin/` | 管理后台 Next.js 应用，端口 3001 |
-| `packages/shared/src/types/index.ts` | 共享 TypeScript 类型 |
-| `packages/shared/src/api/index.ts` | 共享 API client 骨架 |
-| `packages/shared/src/constants/index.ts` | 共享常量与枚举 |
-| `packages/shared/src/utils/index.ts` | 共享工具函数 |
-| `packages/shared/package.json` | 共享包配置与 exports |
-| `.eslintrc.js` | 根 ESLint 配置 |
-| `prettier.config.js` | 根 Prettier 配置 |
-| `package.json` | 根脚本与 workspace 依赖 |
+| 文件/目录                                | 职责                               |
+| ---------------------------------------- | ---------------------------------- |
+| `apps/portal/`                           | 海外独立站 Next.js 应用，端口 3000 |
+| `apps/admin/`                            | 管理后台 Next.js 应用，端口 3001   |
+| `packages/shared/src/types/index.ts`     | 共享 TypeScript 类型               |
+| `packages/shared/src/api/index.ts`       | 共享 API client 骨架               |
+| `packages/shared/src/constants/index.ts` | 共享常量与枚举                     |
+| `packages/shared/src/utils/index.ts`     | 共享工具函数                       |
+| `packages/shared/package.json`           | 共享包配置与 exports               |
+| `.eslintrc.js`                           | 根 ESLint 配置                     |
+| `prettier.config.js`                     | 根 Prettier 配置                   |
+| `package.json`                           | 根脚本与 workspace 依赖            |
 
 ---
 
 ### Task 1: 初始化 apps/portal
 
 **Files:**
+
 - Create: `apps/portal/` (via `create-next-app@14`)
 - Modify: `apps/portal/package.json` dev script
 
 **Interfaces:**
+
 - Produces: Next.js app named `portal` on port 3000
 
 - [ ] **Step 1: Run create-next-app for portal**
@@ -87,10 +89,12 @@ Press `Ctrl+C`.
 ### Task 2: 初始化 apps/admin
 
 **Files:**
+
 - Create: `apps/admin/` (via `create-next-app@14`)
 - Modify: `apps/admin/package.json` dev script
 
 **Interfaces:**
+
 - Produces: Next.js app named `admin` on port 3001
 
 - [ ] **Step 1: Run create-next-app for admin**
@@ -132,6 +136,7 @@ Press `Ctrl+C`.
 ### Task 3: 创建 packages/shared 共享包
 
 **Files:**
+
 - Create: `packages/shared/package.json`
 - Create: `packages/shared/tsconfig.json`
 - Create: `packages/shared/src/types/index.ts`
@@ -140,6 +145,7 @@ Press `Ctrl+C`.
 - Create: `packages/shared/src/utils/index.ts`
 
 **Interfaces:**
+
 - Produces: `@hiwhale/shared` importable as `@hiwhale/shared/types`, `@hiwhale/shared/api`, `@hiwhale/shared/constants`, `@hiwhale/shared/utils`
 
 - [ ] **Step 1: Create shared package.json**
@@ -239,11 +245,13 @@ export * from "./utils";
 ### Task 4: 配置根目录 ESLint + Prettier
 
 **Files:**
+
 - Create: `.eslintrc.js`
 - Create: `prettier.config.js`
 - Modify: `package.json` lint/type-check scripts
 
 **Interfaces:**
+
 - Produces: 统一的代码格式与 lint 规则，两个 app 继承
 
 - [ ] **Step 1: Create root .eslintrc.js**
@@ -297,6 +305,7 @@ Update root `package.json` scripts (保留现有并补充):
 ### Task 5: 联通 workspace 并全局验证
 
 **Files:**
+
 - Modify: `apps/portal/app/page.tsx` (import shared package)
 - Modify: `apps/admin/app/page.tsx` (import shared package)
 - Modify: `apps/portal/package.json` (add dependency)
@@ -304,6 +313,7 @@ Update root `package.json` scripts (保留现有并补充):
 - Modify: `turbo.json` (add type-check task)
 
 **Interfaces:**
+
 - Consumes: `@hiwhale/shared` exports
 - Produces: verified monorepo where both apps can import shared package
 
@@ -411,6 +421,7 @@ Press `Ctrl+C` in both terminals.
 ## Self-Review
 
 **Spec coverage:**
+
 - ✅ pnpm workspace + Turborepo：已有根配置
 - ✅ create-next-app 初始化 portal/admin：Task 1/2
 - ✅ @hiwhale/shared 共享包：Task 3
@@ -418,10 +429,12 @@ Press `Ctrl+C` in both terminals.
 - ✅ 根脚本 dev:portal / dev:admin / dev:all / build / lint / type-check：Task 5
 
 **Placeholder scan:**
+
 - ✅ 无 TBD/TODO
 - ✅ 每个步骤含具体命令或代码
 - ✅ 文件路径完整
 
 **Type consistency:**
+
 - ✅ `@hiwhale/shared/*` 路径与 `tsconfig.base.json` 映射一致
 - ✅ `workspace:*` 版本协议正确

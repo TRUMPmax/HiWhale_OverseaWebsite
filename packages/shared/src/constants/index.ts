@@ -1,6 +1,19 @@
 /** 共享常量与枚举 */
 export const APP_NAME = "Hiwhale Robotics";
 
+export type Locale = "en" | "zh";
+
+export function getLocalizedLabel<T>(
+  map: Record<string, Record<Locale, T>>,
+  key: string,
+  locale: string,
+  fallback: Locale = "en",
+): T {
+  const labels = map[key];
+  if (!labels) return map[Object.keys(map)[0]]?.[fallback];
+  return labels[locale as Locale] ?? labels[fallback];
+}
+
 export enum ProductCategory {
   AGV_FORKLIFT = "AGV_FORKLIFT",
   AMR = "AMR",

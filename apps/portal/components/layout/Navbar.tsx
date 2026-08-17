@@ -30,6 +30,8 @@ export function Navbar() {
     { href: "/contact" as const, label: t("contact") },
   ];
 
+  const currentLocale = pathname.startsWith("/zh") ? "zh" : "en";
+
   const switchLocale = (locale: string) => {
     router.replace(pathname, { locale });
   };
@@ -41,7 +43,7 @@ export function Navbar() {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 md:px-8 lg:px-12">
-        <Link href="/" className="font-heading text-xl font-bold text-brand-navy">
+        <Link href="/" className="font-heading text-brand-navy text-xl font-bold">
           {APP_NAME}
         </Link>
 
@@ -50,7 +52,7 @@ export function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-foreground transition-colors hover:text-brand-blue"
+              className="text-foreground hover:text-brand-blue text-sm font-medium transition-colors"
             >
               {item.label}
             </Link>
@@ -59,12 +61,12 @@ export function Navbar() {
 
         <div className="hidden items-center gap-4 md:flex">
           <div className="relative flex items-center gap-1">
-            <Globe className="h-4 w-4 text-muted" />
+            <Globe className="text-muted h-4 w-4" />
             <select
               aria-label={tc("language")}
-              className="bg-transparent text-sm text-foreground outline-none"
+              className="text-foreground bg-transparent text-sm outline-none"
+              value={currentLocale}
               onChange={(e) => switchLocale(e.target.value)}
-              defaultValue={pathname.startsWith("/zh") ? "zh" : "en"}
             >
               <option value="en">{tc("english")}</option>
               <option value="zh">{tc("chinese")}</option>
@@ -72,7 +74,7 @@ export function Navbar() {
           </div>
           <Link
             href="/auth/login"
-            className="flex items-center gap-1 rounded-lg bg-brand-blue px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+            className="bg-brand-blue flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
           >
             <User className="h-4 w-4" />
             {tc("login")}
@@ -89,25 +91,25 @@ export function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div className="border-t border-border bg-white px-4 py-4 md:hidden">
+        <div className="border-border border-t bg-white px-4 py-4 md:hidden">
           <nav className="flex flex-col gap-4">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-base font-medium text-foreground"
+                className="text-foreground text-base font-medium"
                 onClick={() => setMobileOpen(false)}
               >
                 {item.label}
               </Link>
             ))}
             <div className="flex items-center gap-2 pt-2">
-              <Globe className="h-4 w-4 text-muted" />
+              <Globe className="text-muted h-4 w-4" />
               <select
                 aria-label={tc("language")}
                 className="bg-transparent text-sm"
+                value={currentLocale}
                 onChange={(e) => switchLocale(e.target.value)}
-                defaultValue={pathname.startsWith("/zh") ? "zh" : "en"}
               >
                 <option value="en">{tc("english")}</option>
                 <option value="zh">{tc("chinese")}</option>
@@ -115,7 +117,7 @@ export function Navbar() {
             </div>
             <Link
               href="/auth/login"
-              className="rounded-lg bg-brand-blue px-4 py-2 text-center text-sm font-medium text-white"
+              className="bg-brand-blue rounded-lg px-4 py-2 text-center text-sm font-medium text-white"
             >
               {tc("login")}
             </Link>

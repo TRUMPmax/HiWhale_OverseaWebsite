@@ -28,34 +28,35 @@
 
 ## File Map
 
-| 文件/目录 | 职责 |
-|---|---|
-| `packages/shared/src/constants/index.ts` | 业务枚举与中英文标签 |
-| `packages/shared/src/types/index.ts` | Product/Solution/CaseStudy/Inquiry/User/ChatMessage 类型 |
-| `packages/shared/src/api/client.ts` | axios 实例（baseURL + token 拦截器） |
-| `packages/shared/package.json` | 新增 axios 依赖 |
-| `apps/portal/messages/en.json` | 英文文案 |
-| `apps/portal/messages/zh.json` | 中文文案 |
-| `apps/portal/middleware.ts` | next-intl 路由中间件 |
-| `apps/portal/next.config.mjs` | next-intl 插件配置 |
-| `apps/portal/i18n.ts` / `apps/portal/navigation.ts` | next-intl 辅助文件 |
-| `apps/portal/app/[locale]/layout.tsx` | locale 根布局 |
-| `apps/portal/app/[locale]/page.tsx` | 首页占位 |
-| `apps/portal/app/layout.tsx` | 根布局（可被替换或保留） |
-| `apps/portal/components/layout/Navbar.tsx` | 顶部导航 |
-| `apps/portal/components/layout/Footer.tsx` | 页脚 |
-| `apps/portal/components/ui/Placeholder.tsx` | 素材占位组件 |
-| `apps/portal/components/providers.tsx` | NextIntlClientProvider 包装 |
-| `apps/portal/lib/utils.ts` | cn 工具函数（如需要） |
-| `apps/portal/tailwind.config.ts` | 品牌色扩展 |
-| `apps/portal/globals.css` | CSS 变量 + 中文排版覆盖 |
-| `apps/portal/package.json` | 新增 next-intl、lucide-react、axios 等依赖 |
+| 文件/目录                                           | 职责                                                     |
+| --------------------------------------------------- | -------------------------------------------------------- |
+| `packages/shared/src/constants/index.ts`            | 业务枚举与中英文标签                                     |
+| `packages/shared/src/types/index.ts`                | Product/Solution/CaseStudy/Inquiry/User/ChatMessage 类型 |
+| `packages/shared/src/api/client.ts`                 | axios 实例（baseURL + token 拦截器）                     |
+| `packages/shared/package.json`                      | 新增 axios 依赖                                          |
+| `apps/portal/messages/en.json`                      | 英文文案                                                 |
+| `apps/portal/messages/zh.json`                      | 中文文案                                                 |
+| `apps/portal/middleware.ts`                         | next-intl 路由中间件                                     |
+| `apps/portal/next.config.mjs`                       | next-intl 插件配置                                       |
+| `apps/portal/i18n.ts` / `apps/portal/navigation.ts` | next-intl 辅助文件                                       |
+| `apps/portal/app/[locale]/layout.tsx`               | locale 根布局                                            |
+| `apps/portal/app/[locale]/page.tsx`                 | 首页占位                                                 |
+| `apps/portal/app/layout.tsx`                        | 根布局（可被替换或保留）                                 |
+| `apps/portal/components/layout/Navbar.tsx`          | 顶部导航                                                 |
+| `apps/portal/components/layout/Footer.tsx`          | 页脚                                                     |
+| `apps/portal/components/ui/Placeholder.tsx`         | 素材占位组件                                             |
+| `apps/portal/components/providers.tsx`              | NextIntlClientProvider 包装                              |
+| `apps/portal/lib/utils.ts`                          | cn 工具函数（如需要）                                    |
+| `apps/portal/tailwind.config.ts`                    | 品牌色扩展                                               |
+| `apps/portal/globals.css`                           | CSS 变量 + 中文排版覆盖                                  |
+| `apps/portal/package.json`                          | 新增 next-intl、lucide-react、axios 等依赖               |
 
 ---
 
 ### Task 1: 完善 Shared 包常量与类型
 
 **Files:**
+
 - Modify: `packages/shared/src/constants/index.ts`
 - Modify: `packages/shared/src/types/index.ts`
 - Modify: `packages/shared/src/api/index.ts`
@@ -64,6 +65,7 @@
 - Modify: `packages/shared/package.json`
 
 **Interfaces:**
+
 - Produces: `ProductCategory`, `Industry`, `UserRole`, `InquiryStatus` enums + 标签映射
 - Produces: `Product`, `Solution`, `CaseStudy`, `Inquiry`, `User`, `ChatMessage` types
 - Produces: `client` axios instance exported from `@hiwhale/shared/api`
@@ -310,6 +312,7 @@ git commit -m "feat(shared): add business constants, types, and axios client"
 ### Task 2: Portal 国际化（next-intl）配置
 
 **Files:**
+
 - Modify: `apps/portal/package.json`
 - Modify: `apps/portal/next.config.mjs`
 - Create: `apps/portal/middleware.ts`
@@ -321,6 +324,7 @@ git commit -m "feat(shared): add business constants, types, and axios client"
 - Modify: `apps/portal/tsconfig.json` (if needed)
 
 **Interfaces:**
+
 - Consumes: existing Next.js 14 App Router structure
 - Produces: `/en/*` and `/zh/*` routes, default redirect to `/en`, messages available via `useTranslations`
 
@@ -511,6 +515,7 @@ git commit -m "feat(portal): configure next-intl with en/zh messages"
 ### Task 3: Portal 字体与设计 Token
 
 **Files:**
+
 - Modify: `apps/portal/app/layout.tsx`
 - Modify: `apps/portal/app/[locale]/layout.tsx` (create/replace)
 - Modify: `apps/portal/tailwind.config.ts`
@@ -519,6 +524,7 @@ git commit -m "feat(portal): configure next-intl with en/zh messages"
 - Delete: `apps/portal/app/page.tsx` (after creating locale version)
 
 **Interfaces:**
+
 - Consumes: next-intl setup from Task 2
 - Produces: design tokens via CSS variables and Tailwind, fonts loaded via next/font
 
@@ -613,7 +619,12 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "var(--font-noto-sans-sc)", "system-ui", "sans-serif"],
-        heading: ["var(--font-space-grotesk)", "var(--font-noto-sans-sc)", "system-ui", "sans-serif"],
+        heading: [
+          "var(--font-space-grotesk)",
+          "var(--font-noto-sans-sc)",
+          "system-ui",
+          "sans-serif",
+        ],
       },
       maxWidth: {
         "7xl": "80rem",
@@ -720,8 +731,8 @@ export default function HomePage() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-4 py-24">
-      <h1 className="font-heading text-4xl font-bold text-foreground md:text-5xl">{APP_NAME}</h1>
-      <p className="mt-4 text-lg text-muted">{t("description")}</p>
+      <h1 className="font-heading text-foreground text-4xl font-bold md:text-5xl">{APP_NAME}</h1>
+      <p className="text-muted mt-4 text-lg">{t("description")}</p>
     </main>
   );
 }
@@ -754,6 +765,7 @@ git commit -m "feat(portal): add design tokens, fonts, and locale layout"
 ### Task 4: 创建布局组件（Navbar / Footer / Placeholder）
 
 **Files:**
+
 - Create: `apps/portal/components/layout/Navbar.tsx`
 - Create: `apps/portal/components/layout/Footer.tsx`
 - Create: `apps/portal/components/ui/Placeholder.tsx`
@@ -761,6 +773,7 @@ git commit -m "feat(portal): add design tokens, fonts, and locale layout"
 - Modify: `apps/portal/app/[locale]/page.tsx`
 
 **Interfaces:**
+
 - Consumes: next-intl translations, navigation helpers, design tokens
 - Produces: reusable layout components used by locale layout
 
@@ -781,12 +794,12 @@ type PlaceholderProps = {
 /** 通用素材占位组件 */
 export function Placeholder({ label, format, size, description }: PlaceholderProps) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-brand-light p-8 text-center">
-      <ImageIcon className="h-10 w-10 text-subtle" />
-      <span className="mt-3 font-medium text-foreground">{label}</span>
-      {format && <span className="mt-1 text-sm text-muted">{format}</span>}
-      {size && <span className="text-sm text-muted">{size}</span>}
-      {description && <p className="mt-2 max-w-xs text-sm text-subtle">{description}</p>}
+    <div className="border-border bg-brand-light flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 text-center">
+      <ImageIcon className="text-subtle h-10 w-10" />
+      <span className="text-foreground mt-3 font-medium">{label}</span>
+      {format && <span className="text-muted mt-1 text-sm">{format}</span>}
+      {size && <span className="text-muted text-sm">{size}</span>}
+      {description && <p className="text-subtle mt-2 max-w-xs text-sm">{description}</p>}
     </div>
   );
 }
@@ -840,7 +853,7 @@ export function Navbar() {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 md:px-8 lg:px-12">
-        <Link href="/" className="font-heading text-xl font-bold text-brand-navy">
+        <Link href="/" className="font-heading text-brand-navy text-xl font-bold">
           {APP_NAME}
         </Link>
 
@@ -849,7 +862,7 @@ export function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-foreground transition-colors hover:text-brand-blue"
+              className="text-foreground hover:text-brand-blue text-sm font-medium transition-colors"
             >
               {item.label}
             </Link>
@@ -858,10 +871,10 @@ export function Navbar() {
 
         <div className="hidden items-center gap-4 md:flex">
           <div className="relative flex items-center gap-1">
-            <Globe className="h-4 w-4 text-muted" />
+            <Globe className="text-muted h-4 w-4" />
             <select
               aria-label={tc("language")}
-              className="bg-transparent text-sm text-foreground outline-none"
+              className="text-foreground bg-transparent text-sm outline-none"
               onChange={(e) => switchLocale(e.target.value)}
               defaultValue={pathname.startsWith("/zh") ? "zh" : "en"}
             >
@@ -871,7 +884,7 @@ export function Navbar() {
           </div>
           <Link
             href="/auth/login"
-            className="flex items-center gap-1 rounded-lg bg-brand-blue px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+            className="bg-brand-blue flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
           >
             <User className="h-4 w-4" />
             {tc("login")}
@@ -888,20 +901,20 @@ export function Navbar() {
       </div>
 
       {mobileOpen && (
-        <div className="border-t border-border bg-white px-4 py-4 md:hidden">
+        <div className="border-border border-t bg-white px-4 py-4 md:hidden">
           <nav className="flex flex-col gap-4">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-base font-medium text-foreground"
+                className="text-foreground text-base font-medium"
                 onClick={() => setMobileOpen(false)}
               >
                 {item.label}
               </Link>
             ))}
             <div className="flex items-center gap-2 pt-2">
-              <Globe className="h-4 w-4 text-muted" />
+              <Globe className="text-muted h-4 w-4" />
               <select
                 aria-label={tc("language")}
                 className="bg-transparent text-sm"
@@ -913,7 +926,7 @@ export function Navbar() {
             </div>
             <Link
               href="/auth/login"
-              className="rounded-lg bg-brand-blue px-4 py-2 text-center text-sm font-medium text-white"
+              className="bg-brand-blue rounded-lg px-4 py-2 text-center text-sm font-medium text-white"
             >
               {tc("login")}
             </Link>
@@ -953,7 +966,9 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-heading text-sm font-bold uppercase tracking-wider">{t("products")}</h4>
+            <h4 className="font-heading text-sm font-bold uppercase tracking-wider">
+              {t("products")}
+            </h4>
             <ul className="mt-4 space-y-2">
               {productCategories.map((category) => (
                 <li key={category}>
@@ -969,7 +984,9 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-heading text-sm font-bold uppercase tracking-wider">{t("solutions")}</h4>
+            <h4 className="font-heading text-sm font-bold uppercase tracking-wider">
+              {t("solutions")}
+            </h4>
             <ul className="mt-4 space-y-2">
               <li>
                 <Link href="/solutions" className="text-sm text-white/70 hover:text-white">
@@ -995,7 +1012,9 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-heading text-sm font-bold uppercase tracking-wider">{t("contact")}</h4>
+            <h4 className="font-heading text-sm font-bold uppercase tracking-wider">
+              {t("contact")}
+            </h4>
             <ul className="mt-4 space-y-2 text-sm text-white/70">
               <li>info@hiwhale.com</li>
               <li>+86 400-000-0000</li>
@@ -1070,8 +1089,8 @@ export default function HomePage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4 py-24">
-      <h1 className="font-heading text-4xl font-bold text-foreground md:text-5xl">{APP_NAME}</h1>
-      <p className="mt-4 text-lg text-muted">{t("description")}</p>
+      <h1 className="font-heading text-foreground text-4xl font-bold md:text-5xl">{APP_NAME}</h1>
+      <p className="text-muted mt-4 text-lg">{t("description")}</p>
       <div className="mt-12 w-full max-w-md">
         <Placeholder
           label="Hero Image"
@@ -1107,9 +1126,11 @@ git commit -m "feat(portal): add Navbar, Footer, Placeholder components"
 ### Task 5: 最终验证与验收
 
 **Files:**
+
 - None (verification task)
 
 **Interfaces:**
+
 - Consumes: all previous tasks
 - Produces: verified Stage 1 deliverables
 
@@ -1138,6 +1159,7 @@ pnpm dev:portal
 ```
 
 Verify:
+
 - `http://localhost:3000/en` redirects or loads with English navigation
 - `http://localhost:3000/zh` loads with Chinese navigation
 - Scroll down: Navbar background turns white with blur effect
@@ -1167,6 +1189,7 @@ git commit -m "chore(portal): stage 1 verification and polish"
 ## Self-Review
 
 **Spec coverage:**
+
 - ✅ Shared constants: Task 1
 - ✅ Shared types: Task 1
 - ✅ Shared API client: Task 1
@@ -1177,11 +1200,13 @@ git commit -m "chore(portal): stage 1 verification and polish"
 - ✅ Verification: Task 5
 
 **Placeholder scan:**
+
 - ✅ 无 TBD/TODO
 - ✅ 每个步骤含具体命令或代码
 - ✅ 文件路径完整
 
 **Type consistency:**
+
 - ✅ `ProductCategory` / `Industry` / `UserRole` / `InquiryStatus` 枚举与标签映射一致
 - ✅ `client` axios 实例从 `@hiwhale/shared/api` 导出
 - ✅ `locales` 和 `defaultLocale` 在 `navigation.ts` 和 `middleware.ts` 中一致

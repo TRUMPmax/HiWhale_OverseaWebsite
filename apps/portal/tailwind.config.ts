@@ -22,7 +22,12 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "var(--font-noto-sans-sc)", "system-ui", "sans-serif"],
-        heading: ["var(--font-space-grotesk)", "var(--font-noto-sans-sc)", "system-ui", "sans-serif"],
+        heading: [
+          "var(--font-space-grotesk)",
+          "var(--font-noto-sans-sc)",
+          "system-ui",
+          "sans-serif",
+        ],
       },
       maxWidth: {
         "7xl": "80rem",

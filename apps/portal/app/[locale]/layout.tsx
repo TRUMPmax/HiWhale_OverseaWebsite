@@ -46,7 +46,10 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${inter.variable} ${spaceGrotesk.variable} ${notoSansSC.variable}`}>
+    <html
+      lang={locale}
+      className={`${inter.variable} ${spaceGrotesk.variable} ${notoSansSC.variable}`}
+    >
       <body className="antialiased">
         <Providers locale={locale} messages={messages} timeZone="Asia/Shanghai">
           <div className="flex min-h-screen flex-col">

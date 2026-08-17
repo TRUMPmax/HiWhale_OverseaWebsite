@@ -2,7 +2,12 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/navigation";
-import { APP_NAME, PRODUCT_CATEGORY_LABELS, ProductCategory } from "@hiwhale/shared/constants";
+import {
+  APP_NAME,
+  getLocalizedLabel,
+  PRODUCT_CATEGORY_LABELS,
+  ProductCategory,
+} from "@hiwhale/shared/constants";
 
 /** 页脚：深蓝背景，公司/产品/方案/联系方式 */
 export function Footer() {
@@ -22,7 +27,9 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-heading text-sm font-bold uppercase tracking-wider">{t("products")}</h4>
+            <h4 className="font-heading text-sm font-bold uppercase tracking-wider">
+              {t("products")}
+            </h4>
             <ul className="mt-4 space-y-2">
               {productCategories.map((category) => (
                 <li key={category}>
@@ -30,7 +37,7 @@ export function Footer() {
                     href={`/products?category=${category}`}
                     className="text-sm text-white/70 transition-colors hover:text-white"
                   >
-                    {PRODUCT_CATEGORY_LABELS[category][locale as "en" | "zh"]}
+                    {getLocalizedLabel(PRODUCT_CATEGORY_LABELS, category, locale)}
                   </Link>
                 </li>
               ))}
@@ -38,7 +45,9 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-heading text-sm font-bold uppercase tracking-wider">{t("solutions")}</h4>
+            <h4 className="font-heading text-sm font-bold uppercase tracking-wider">
+              {t("solutions")}
+            </h4>
             <ul className="mt-4 space-y-2">
               <li>
                 <Link href="/solutions" className="text-sm text-white/70 hover:text-white">
@@ -64,7 +73,9 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-heading text-sm font-bold uppercase tracking-wider">{t("contact")}</h4>
+            <h4 className="font-heading text-sm font-bold uppercase tracking-wider">
+              {t("contact")}
+            </h4>
             <ul className="mt-4 space-y-2 text-sm text-white/70">
               <li>{t("contactEmail")}</li>
               <li>{t("contactPhone")}</li>

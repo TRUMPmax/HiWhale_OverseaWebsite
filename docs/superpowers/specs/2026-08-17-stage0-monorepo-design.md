@@ -7,6 +7,7 @@
 ## 1. 上下文
 
 上一阶段已完成：
+
 - Node.js / pnpm / Docker 环境准备
 - 根目录 monorepo 配置骨架（`package.json`、`pnpm-workspace.yaml`、`turbo.json`、`tsconfig.base.json`、`.env.example`、`.gitignore`、`.dockerignore`）
 - Docker 基础服务启动并验证（PostgreSQL + pgvector、Redis、MinIO）
@@ -37,28 +38,31 @@ hiwhale-platform/
 
 ## 3. 技术选型
 
-| 项 | 选型 | 说明 |
-|---|---|---|
-| Monorepo 工具 | pnpm workspace + Turborepo | 已有配置，保持沿用 |
-| 前端框架 | Next.js 14 | App Router，React Server Components |
-| 语言 | TypeScript | strict 模式 |
-| 样式 | Tailwind CSS v3 | 后续按设计规范扩展品牌色 |
-| 共享包 | `@hiwhale/shared` | 通过 pnpm workspace + `exports` 暴露 |
-| 代码规范 | ESLint + Prettier | 根目录统一配置 |
+| 项            | 选型                       | 说明                                 |
+| ------------- | -------------------------- | ------------------------------------ |
+| Monorepo 工具 | pnpm workspace + Turborepo | 已有配置，保持沿用                   |
+| 前端框架      | Next.js 14                 | App Router，React Server Components  |
+| 语言          | TypeScript                 | strict 模式                          |
+| 样式          | Tailwind CSS v3            | 后续按设计规范扩展品牌色             |
+| 共享包        | `@hiwhale/shared`          | 通过 pnpm workspace + `exports` 暴露 |
+| 代码规范      | ESLint + Prettier          | 根目录统一配置                       |
 
 ## 4. 实现要点
 
 ### 4.1 初始化 apps/portal
+
 - 使用 `create-next-app@14`：TypeScript、Tailwind CSS、App Router、`@/` 别名，不使用 `src/` 目录
 - 端口：`package.json` 中 `dev` 脚本设为 `next dev -p 3000`
 - 保留默认首页作为占位，后续阶段替换
 
 ### 4.2 初始化 apps/admin
+
 - 同样使用 `create-next-app@14`
 - 端口：`next dev -p 3001`
 - 后续阶段再引入 shadcn/ui
 
 ### 4.3 创建 packages/shared
+
 - `package.json` name 为 `@hiwhale/shared`
 - 通过 `exports` 暴露子目录：
   - `@hiwhale/shared/types`
@@ -69,13 +73,16 @@ hiwhale-platform/
 - 根 `tsconfig.base.json` 已配置 `@hiwhale/shared/*` 路径映射
 
 ### 4.4 ESLint + Prettier
+
 - 根目录创建 `.eslintrc.js`（或 `.eslintrc.json`）统一规则
 - 根目录创建 `prettier.config.js`
 - 各 app 继承根配置
 - 规则：no-console（warn）、未使用 import 检测、TypeScript strict
 
 ### 4.5 根脚本
+
 已预置：
+
 - `dev:portal` / `dev:admin` / `dev:all`
 - `build:portal` / `build:admin` / `build`
 - `lint` / `type-check`
