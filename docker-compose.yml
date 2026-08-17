@@ -1,0 +1,86 @@
+services:
+  # PostgreSQL with pgvector extension
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: hiwhale-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hiwhale}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hiwhale_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-hiwhale}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hiwhale} -d ${POSTGRES_DB:-hiwhale}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hiwhale-network
+
+  # Redis for session/cache/job queue
+  redis:
+    image: redis:7-alpine
+    container_name: hiwhale-redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD:-hiwhale_dev}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "hiwhale_dev", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hiwhale-network
+
+  # MinIO object storage for images/PDFs/3D models
+  minio:
+    image: minio/minio:latest
+    container_name: hiwhale-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hiwhale}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-hiwhale_dev}
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9000/minio/health/live || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hiwhale-network
+
+  # Text Embeddings Inference for bge-m3 (optional, requires HF_TOKEN)
+  # tei:
+  #   image: ghcr.io/huggingface/text-embeddings-inference:latest
+  #   container_name: hiwhale-tei
+  #   restart: unless-stopped
+  #   command: --model-id BAAI/bge-m3 --port 8080
+  #   environment:
+  #     - HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}
+  #   volumes:
+  #     - tei_data:/data
+  #   ports:
+  #     - "${TEI_PORT:-8080}:8080"
+  #   networks:
+  #     - hiwhale-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  tei_data:
+
+networks:
+  hiwhale-network:
+    driver: bridge
