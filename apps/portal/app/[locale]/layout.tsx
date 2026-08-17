@@ -17,12 +17,8 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
-      <body>
-        <Providers locale={locale} messages={messages}>
-          {children}
-        </Providers>
-      </body>
-    </html>
+    <Providers locale={locale} messages={messages}>
+      {children}
+    </Providers>
   );
 }
