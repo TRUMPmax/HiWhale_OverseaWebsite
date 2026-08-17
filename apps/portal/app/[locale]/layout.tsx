@@ -1,8 +1,35 @@
+import type { Metadata } from "next";
+import { Inter, Noto_Sans_SC, Space_Grotesk } from "next/font/google";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { Providers } from "@/components/providers";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { locales } from "@/navigation";
+import "../globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
+
+const notoSansSC = Noto_Sans_SC({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-noto-sans-sc",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  title: "Hiwhale Robotics",
+  description: "Intelligent warehousing and material handling solutions",
+};
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -19,12 +46,16 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <Providers locale={locale} messages={messages}>
-      <div className="flex min-h-screen flex-col">
-        <Navbar />
-        <main className="flex-1 pt-20">{children}</main>
-        <Footer />
-      </div>
-    </Providers>
+    <html lang={locale} className={`${inter.variable} ${spaceGrotesk.variable} ${notoSansSC.variable}`}>
+      <body className="antialiased">
+        <Providers locale={locale} messages={messages} timeZone="Asia/Shanghai">
+          <div className="flex min-h-screen flex-col">
+            <Navbar />
+            <main className="flex-1 pt-20">{children}</main>
+            <Footer />
+          </div>
+        </Providers>
+      </body>
+    </html>
   );
 }
