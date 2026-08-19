@@ -17,10 +17,12 @@ type Star = {
   speed: number;
   /** 是否星辰黄 */
   yellow: boolean;
+  /** 是否带十字光芒的亮星 */
+  flare: boolean;
 };
 
 type StarfieldProps = {
-  /** 星星密度：每平方像素数量（如 0.0006 ≈ 屏幕上数百颗） */
+  /** 星星密度：每平方像素数量（如 0.0005 ≈ 全屏数百颗） */
   density?: number;
   /** 黄色星辰占比 0..1 */
   yellowRatio?: number;
@@ -28,8 +30,6 @@ type StarfieldProps = {
   progressRef?: MutableRefObject<number>;
   /** 进度为 1 时的最大外扩倍数 */
   maxZoom?: number;
-  /** 是否加光晕（终幕亮星效果） */
-  glow?: boolean;
   className?: string;
 };
 
@@ -45,16 +45,50 @@ function mulberry32(seed: number) {
   };
 }
 
+/** 预渲染星光贴图（径向渐变光点 + 可选十字光芒），drawImage 比 arc+shadowBlur 快几个数量级 */
+function makeStarSprite(inner: string, mid: string, withFlare: boolean): HTMLCanvasElement {
+  const size = 96;
+  const c = document.createElement("canvas");
+  c.width = size;
+  c.height = size;
+  const g = c.getContext("2d");
+  if (!g) return c;
+
+  const grad = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  grad.addColorStop(0, inner);
+  grad.addColorStop(0.22, mid);
+  grad.addColorStop(1, "rgba(0,0,0,0)");
+  g.fillStyle = grad;
+  g.fillRect(0, 0, size, size);
+
+  if (withFlare) {
+    g.globalCompositeOperation = "lighter";
+    const flare = (horizontal: boolean) => {
+      const lg = horizontal
+        ? g.createLinearGradient(0, size / 2, size, size / 2)
+        : g.createLinearGradient(size / 2, 0, size / 2, size);
+      lg.addColorStop(0, "rgba(0,0,0,0)");
+      lg.addColorStop(0.5, mid);
+      lg.addColorStop(1, "rgba(0,0,0,0)");
+      g.fillStyle = lg;
+      if (horizontal) g.fillRect(0, size / 2 - 1, size, 2);
+      else g.fillRect(size / 2 - 1, 0, 2, size);
+    };
+    flare(true);
+    flare(false);
+  }
+  return c;
+}
+
 /**
- * Canvas 程序化星野：按 devicePixelRatio 渲染（比 4K 照片更锐利），
+ * Canvas 程序化星野（贴图渲染 + 离屏暂停，性能优化版）：
  * 星星闪烁 + 随滚动进度"逼近"，支持品牌星辰黄。
  */
 export function Starfield({
-  density = 0.0006,
+  density = 0.0005,
   yellowRatio = 0.15,
   progressRef,
   maxZoom = 1.5,
-  glow = false,
   className = "",
 }: StarfieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -65,10 +99,18 @@ export function Starfield({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // 预渲染 4 种贴图：白/黄 × 柔光/十字光芒
+    const sprites = {
+      white: makeStarSprite("rgba(255,255,255,1)", "rgba(214,230,255,0.55)", false),
+      whiteFlare: makeStarSprite("rgba(255,255,255,1)", "rgba(190,215,255,0.6)", true),
+      yellow: makeStarSprite("rgba(255,240,200,1)", "rgba(255,210,90,0.6)", false),
+      yellowFlare: makeStarSprite("rgba(255,246,216,1)", "rgba(255,205,70,0.65)", true),
+    };
+
     let stars: Star[] = [];
     let w = 0;
     let h = 0;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const rand = mulberry32(20260819);
 
     const resize = () => {
@@ -83,78 +125,69 @@ export function Starfield({
         x: rand(),
         y: rand(),
         z: 0.3 + rand() * 0.7,
-        r: 0.4 + rand() * (glow ? 1.8 : 1.2),
+        r: 0.4 + rand() * 1.6,
         base: 0.35 + rand() * 0.65,
         phase: rand() * Math.PI * 2,
         speed: 0.4 + rand() * 1.6,
         yellow: rand() < yellowRatio,
+        flare: rand() < 0.08,
       }));
     };
 
     resize();
-    const observer = new ResizeObserver(resize);
-    observer.observe(canvas);
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(canvas);
+
+    // 离屏时暂停渲染，避免无效绘制
+    let visible = true;
+    const visibilityObserver = new IntersectionObserver((entries) => {
+      visible = entries[0]?.isIntersecting ?? true;
+    });
+    visibilityObserver.observe(canvas);
 
     let raf = 0;
     const draw = (time: number) => {
+      raf = requestAnimationFrame(draw);
+      if (!visible || w === 0) return;
+
       const progress = progressRef?.current ?? 0;
       ctx.clearRect(0, 0, w, h);
       const cx = w / 2;
       const cy = h / 2;
 
       for (const s of stars) {
-        // 随进度外扩（从中心逼近视角）+ 半径增大
+        // 随进度外扩（从中心逼近视角）+ 尺寸增大
         const zoom = 1 + progress * maxZoom * s.z;
         const px = cx + (s.x * w - cx) * zoom;
         const py = cy + (s.y * h - cy) * zoom;
-        if (px < -20 || px > w + 20 || py < -20 || py > h + 20) continue;
+        if (px < -40 || px > w + 40 || py < -40 || py > h + 40) continue;
 
         const twinkle = 0.55 + 0.45 * Math.sin(time * 0.001 * s.speed + s.phase);
         const alpha = Math.min(1, s.base * twinkle * (0.55 + progress * 0.6));
         const radius = s.r * (0.8 + progress * 2.4 * s.z);
-        const bright = glow || s.r > 1.4;
+        const size = radius * (s.flare ? 12 : 7);
 
-        ctx.beginPath();
-        if (s.yellow) {
-          ctx.fillStyle = `rgba(255, 210, 90, ${alpha})`;
-          if (bright) {
-            ctx.shadowColor = "rgba(255, 200, 60, 0.9)";
-            ctx.shadowBlur = radius * 5;
-          }
-        } else {
-          ctx.fillStyle = `rgba(214, 230, 255, ${alpha})`;
-          if (bright) {
-            ctx.shadowColor = "rgba(170, 205, 255, 0.8)";
-            ctx.shadowBlur = radius * 4;
-          }
-        }
-        ctx.arc(px, py, radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
+        const sprite = s.yellow
+          ? s.flare
+            ? sprites.yellowFlare
+            : sprites.yellow
+          : s.flare
+            ? sprites.whiteFlare
+            : sprites.white;
 
-        // 大亮星的十字光芒
-        if (bright && s.yellow && radius > 1.6) {
-          ctx.strokeStyle = `rgba(255, 220, 130, ${alpha * 0.5})`;
-          ctx.lineWidth = 0.6;
-          const len = radius * 3;
-          ctx.beginPath();
-          ctx.moveTo(px - len, py);
-          ctx.lineTo(px + len, py);
-          ctx.moveTo(px, py - len);
-          ctx.lineTo(px, py + len);
-          ctx.stroke();
-        }
+        ctx.globalAlpha = alpha;
+        ctx.drawImage(sprite, px - size / 2, py - size / 2, size, size);
       }
-
-      raf = requestAnimationFrame(draw);
+      ctx.globalAlpha = 1;
     };
     raf = requestAnimationFrame(draw);
 
     return () => {
       cancelAnimationFrame(raf);
-      observer.disconnect();
+      resizeObserver.disconnect();
+      visibilityObserver.disconnect();
     };
-  }, [density, yellowRatio, progressRef, maxZoom, glow]);
+  }, [density, yellowRatio, progressRef, maxZoom]);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" />;
 }

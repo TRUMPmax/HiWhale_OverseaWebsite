@@ -69,6 +69,7 @@ export function HeroNarrative() {
       gsap.set(q(".np-curtain"), { yPercent: 100 });
       gsap.set(q(".np-curtain-logo"), { scale: 1.2 });
       gsap.set(q(".np-curtain-text"), { opacity: 0, y: 20 });
+      gsap.set(q(".np-sun"), { scale: 0.1, opacity: 0 });
 
       const tl = gsap.timeline({
         defaults: { ease: "power2.out" },
@@ -76,7 +77,7 @@ export function HeroNarrative() {
           trigger: container,
           start: "top top",
           end: "bottom bottom",
-          scrub: 1,
+          scrub: 0.6,
           pin: stage,
           pinSpacing: false,
           anticipatePin: 1,
@@ -132,6 +133,7 @@ export function HeroNarrative() {
       // 第四幕 75-100%：深蓝幕布上升，Logo 收缩居中收尾
       tl.to(q(".np-data-inner"), { opacity: 0, scale: 0.95, duration: 0.06 }, 0.75);
       tl.to(q(".np-curtain"), { yPercent: 0, duration: 0.18, ease: "power2.inOut" }, 0.76);
+      tl.to(q(".np-sun"), { scale: 1, opacity: 1, duration: 0.16, ease: "power2.inOut" }, 0.78);
       tl.to(q(".np-curtain-logo"), { scale: 1, duration: 0.14 }, 0.84);
       tl.to(q(".np-curtain-text"), { opacity: 1, y: 0, duration: 0.08, stagger: 0.03 }, 0.9);
 
@@ -291,14 +293,23 @@ export function HeroNarrative() {
           </div>
         </div>
 
-        {/* 幕布层：亮黄色星辰覆盖整个终幕 + 蓝色品牌文字 */}
+        {/* 幕布层：亮黄色星辰覆盖整个终幕 + 中央恒星 + 蓝色品牌文字 */}
         <div className="np-curtain bg-night-deep absolute inset-0 flex flex-col items-center justify-center overflow-hidden">
           <Starfield
             className="absolute inset-0 h-full w-full"
-            density={0.0018}
+            density={0.001}
             yellowRatio={0.45}
-            glow
           />
+          {/* 中央黄色恒星（品牌 Logo 中的那抹黄） */}
+          <div className="np-sun pointer-events-none absolute inset-0 flex items-center justify-center">
+            <div
+              className="animate-sun-pulse h-[36vmin] w-[36vmin] rounded-full"
+              style={{
+                background:
+                  "radial-gradient(circle, rgba(255,248,220,1) 0%, rgba(255,210,90,0.95) 26%, rgba(255,178,44,0.4) 52%, rgba(255,178,44,0) 70%)",
+              }}
+            />
+          </div>
           <div className="np-curtain-logo font-heading relative text-5xl font-bold tracking-tight text-blue-400 drop-shadow-[0_0_30px_rgba(74,144,255,0.65)] md:text-7xl">
             HiWhale Robotics<sup className="text-2xl">™</sup>
           </div>
