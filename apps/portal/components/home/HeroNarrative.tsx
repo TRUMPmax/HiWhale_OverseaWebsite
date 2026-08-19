@@ -70,7 +70,6 @@ export function HeroNarrative() {
       gsap.set(q(".np-data-inner"), { opacity: 0, y: 40, scale: 0.9 });
       gsap.set(q(".np-finale"), { opacity: 0 });
       gsap.set(q(".np-earth"), { scale: 0.6, opacity: 0, yPercent: 15 });
-      gsap.set(q(".np-rays"), { opacity: 0, scale: 0.85 });
       gsap.set(q(".np-curtain-logo"), { opacity: 0, scale: 1.15 });
       gsap.set(q(".np-curtain-text"), { opacity: 0, y: 20 });
 
@@ -143,7 +142,6 @@ export function HeroNarrative() {
         0.72,
       );
       tl.to(q(".np-curtain-logo"), { opacity: 1, scale: 1, duration: 0.1 }, 0.84);
-      tl.to(q(".np-rays"), { opacity: 1, scale: 1.05, duration: 0.12 }, 0.86);
       tl.to(q(".np-curtain-text"), { opacity: 1, y: 0, duration: 0.08, stagger: 0.03 }, 0.9);
 
       // 鼠标视差：各层按深度 ±px 跟随
@@ -322,11 +320,6 @@ export function HeroNarrative() {
               }}
             />
           </div>
-        </div>
-
-        {/* 丁达尔放射光芒（自品牌名后向外发散，缓慢旋转） */}
-        <div className="np-rays pointer-events-none absolute left-1/2 top-[38%] h-[120vmin] w-[120vmin] -translate-x-1/2 -translate-y-1/2">
-          <div className="god-rays h-full w-full rounded-full" />
         </div>
 
         {/* 品牌名：Hi（星辰黄）+ Whale Robotics（蓝），浮于地球之上 */}

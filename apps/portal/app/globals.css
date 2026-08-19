@@ -58,32 +58,3 @@ h6 {
     text-wrap: balance;
   }
 }
-
-/* 终幕丁达尔放射光芒（缓慢旋转，仅 transform，GPU 友好） */
-@keyframes rays-rotate {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.god-rays {
-  background: repeating-conic-gradient(
-    from 0deg,
-    rgba(255, 228, 160, 0.16) 0deg 5deg,
-    transparent 5deg 13deg
-  );
-  -webkit-mask-image: radial-gradient(
-    circle,
-    rgba(0, 0, 0, 0.95) 0%,
-    rgba(0, 0, 0, 0.4) 40%,
-    transparent 68%
-  );
-  mask-image: radial-gradient(
-    circle,
-    rgba(0, 0, 0, 0.95) 0%,
-    rgba(0, 0, 0, 0.4) 40%,
-    transparent 68%
-  );
-  animation: rays-rotate 80s linear infinite;
-  will-change: transform;
-}
