@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ChevronDown } from "lucide-react";
+import Image from "next/image";
 import { Starfield } from "@/components/ui/Starfield";
 import {
   getLocalizedLabel,
@@ -34,8 +35,9 @@ const PARALLAX_LAYERS: Array<[string, number]> = [
 ];
 
 /**
- * 首页 Hero 滚轮叙事（桌面端，400vh pin）：
- * 0-15% 产品家族上浮 → 15-45% 行业场景上浮 → 45-75% 数据指标 → 75-100% 深蓝幕布收尾
+ * 首页 Hero 滚轮叙事（桌面端，400vh pin，一镜到底镜头推进）：
+ * 0-15% 产品家族上浮 → 15-45% 产品飞向镜头/行业场景上浮 → 45-75% 场景飞向镜头/数据指标
+ * → 75-100% 数据飞出/星空持续逼近 → 地球从画面下部升起 → 丁达尔光芒中的品牌名
  * 移动端不渲染（由静态 Hero 替代）
  */
 export function HeroNarrative() {
@@ -64,13 +66,13 @@ export function HeroNarrative() {
       // 初始状态
       gsap.set(q(".np-title, .np-subtitle"), { opacity: 0, y: 30 });
       gsap.set(q(".np-chip"), { opacity: 0, y: 80 });
-      gsap.set(q(".ns-card"), { opacity: 0, y: 120, scale: 0.9 });
-      gsap.set(q(".np-data-inner"), { opacity: 0, y: 40 });
-      gsap.set(q(".np-curtain"), { yPercent: 100 });
-      gsap.set(q(".np-curtain-logo"), { scale: 1.2 });
+      gsap.set(q(".ns-card"), { opacity: 0, y: 60, scale: 0.7 });
+      gsap.set(q(".np-data-inner"), { opacity: 0, y: 40, scale: 0.9 });
+      gsap.set(q(".np-finale"), { opacity: 0 });
+      gsap.set(q(".np-earth"), { scale: 0.6, opacity: 0, yPercent: 15 });
+      gsap.set(q(".np-rays"), { opacity: 0, scale: 0.85 });
+      gsap.set(q(".np-curtain-logo"), { opacity: 0, scale: 1.15 });
       gsap.set(q(".np-curtain-text"), { opacity: 0, y: 20 });
-      gsap.set(q(".np-earth"), { scale: 0.3, opacity: 0 });
-      gsap.set(q(".np-rays"), { opacity: 0 });
 
       const tl = gsap.timeline({
         defaults: { ease: "power2.out" },
@@ -93,26 +95,23 @@ export function HeroNarrative() {
       tl.to(q(".np-subtitle"), { opacity: 1, y: 0, duration: 0.05 }, 0.02);
       tl.to(q(".np-chip"), { opacity: 1, y: 0, duration: 0.08, stagger: 0.015 }, 0.03);
 
-      // 第二幕 15-45%：产品退居背景，6 个行业场景逐个上浮
-      tl.to(q(".np-head"), { opacity: 0, y: -30, duration: 0.05 }, 0.15);
+      // 第二幕 15-45%：产品家族放大飞向镜头（穿越视角），6 个行业场景由远及近上浮
+      tl.to(q(".np-head"), { opacity: 0, scale: 1.1, duration: 0.06 }, 0.15);
       tl.to(q(".np-hint"), { opacity: 0, duration: 0.04 }, 0.15);
-      tl.to(q(".np-products-inner"), { opacity: 0.25, scale: 0.85, y: -60, duration: 0.1 }, 0.15);
+      tl.to(
+        q(".np-products-inner"),
+        { scale: 1.4, opacity: 0, duration: 0.14, ease: "power1.in" },
+        0.16,
+      );
       tl.to(q(".ns-card"), { opacity: 1, y: 0, scale: 1, duration: 0.08, stagger: 0.05 }, 0.15);
 
-      // 第三幕 45-75%：场景向两侧散开，数据指标进入并 CountUp
+      // 第三幕 45-75%：场景放大飞向镜头，数据指标进入并 CountUp
       tl.to(
         q(".ns-card"),
-        {
-          opacity: 0,
-          x: (index: number) => ((index % 3) - 1) * 240,
-          y: (index: number) => (index < 3 ? -120 : 120),
-          duration: 0.1,
-          stagger: 0.01,
-        },
+        { scale: 1.6, opacity: 0, duration: 0.12, stagger: 0.012, ease: "power1.in" },
         0.45,
       );
-      tl.to(q(".np-products-inner"), { opacity: 0, duration: 0.08 }, 0.45);
-      tl.to(q(".np-data-inner"), { opacity: 1, y: 0, duration: 0.08 }, 0.5);
+      tl.to(q(".np-data-inner"), { opacity: 1, y: 0, scale: 1, duration: 0.08 }, 0.5);
 
       const counters = METRICS.map(() => ({ value: 0 }));
       METRICS.forEach((m, i) => {
@@ -131,12 +130,20 @@ export function HeroNarrative() {
         );
       });
 
-      // 第四幕 75-100%：深蓝幕布上升，Logo 收缩居中收尾
-      tl.to(q(".np-data-inner"), { opacity: 0, scale: 0.95, duration: 0.06 }, 0.75);
-      tl.to(q(".np-curtain"), { yPercent: 0, duration: 0.18, ease: "power2.inOut" }, 0.76);
-      tl.to(q(".np-earth"), { scale: 1, opacity: 1, duration: 0.18, ease: "power2.inOut" }, 0.76);
-      tl.to(q(".np-curtain-logo"), { scale: 1, duration: 0.14 }, 0.84);
-      tl.to(q(".np-rays"), { opacity: 1, duration: 0.12 }, 0.86);
+      // 第四幕 75-100%：数据飞出，星空持续逼近，地球从画面下部升起，光芒与品牌名浮现
+      tl.to(
+        q(".np-data-inner"),
+        { scale: 1.25, opacity: 0, duration: 0.08, ease: "power1.in" },
+        0.72,
+      );
+      tl.to(q(".np-finale"), { opacity: 1, duration: 0.14 }, 0.72);
+      tl.to(
+        q(".np-earth"),
+        { scale: 1, opacity: 1, yPercent: 0, duration: 0.24, ease: "power1.inOut" },
+        0.72,
+      );
+      tl.to(q(".np-curtain-logo"), { opacity: 1, scale: 1, duration: 0.1 }, 0.84);
+      tl.to(q(".np-rays"), { opacity: 1, scale: 1.05, duration: 0.12 }, 0.86);
       tl.to(q(".np-curtain-text"), { opacity: 1, y: 0, duration: 0.08, stagger: 0.03 }, 0.9);
 
       // 鼠标视差：各层按深度 ±px 跟随
@@ -295,30 +302,35 @@ export function HeroNarrative() {
           </div>
         </div>
 
-        {/* 幕布层：星空持续推进 → 地球升起 → 丁达尔光芒中的品牌名 */}
-        <div className="np-curtain bg-night-deep absolute inset-0 flex flex-col items-center justify-center overflow-hidden">
-          <Starfield
-            className="absolute inset-0 h-full w-full"
-            progressRef={scrollProgressRef}
-            density={0.0008}
-            yellowRatio={0.15}
-          />
-          {/* 丁达尔放射光芒（自中心向外发散，缓慢旋转） */}
-          <div className="np-rays pointer-events-none absolute left-1/2 top-1/2 h-[130vmin] w-[130vmin] -translate-x-1/2 -translate-y-1/2">
-            <div className="god-rays h-full w-full rounded-full" />
-          </div>
-          {/* 地球：视角推进的最终画面（后期可替换为素材 earth-night-4k.png，1:1 透明底） */}
-          <div className="np-earth pointer-events-none absolute inset-0 flex items-center justify-center">
-            <div
-              className="h-[42vmin] w-[42vmin] rounded-full"
+        {/* 终幕：一镜到底推进 —— 夜空加深 → 地球半球从下部升起 → 丁达尔光芒 → 品牌名 */}
+        <div className="np-finale bg-night-deep/70 pointer-events-none absolute inset-0" />
+
+        {/* 地球半球（NASA Black Marble 美洲夜景，黑色底与夜空自然融合） */}
+        <div className="np-earth pointer-events-none absolute inset-x-0 bottom-0 flex justify-center">
+          <div className="translate-y-[36%]">
+            <Image
+              src="/images/earth-night-americas.jpg"
+              alt=""
+              width={1920}
+              height={1920}
+              priority
+              className="h-auto w-[120vmin] max-w-none rounded-full"
               style={{
-                background:
-                  "radial-gradient(circle at 34% 28%, #4A90D9 0%, #1D4E89 34%, #0B2545 68%, #050D1F 100%)",
-                boxShadow:
-                  "0 0 8vmin rgba(96,150,255,0.45), 0 0 3vmin rgba(140,180,255,0.5), inset -3vmin -3vmin 8vmin rgba(0,0,0,0.55)",
+                boxShadow: "0 0 8vmin rgba(96,150,255,0.35), 0 0 2vmin rgba(140,180,255,0.4)",
+                maskImage: "radial-gradient(circle, black 60%, transparent 70%)",
+                WebkitMaskImage: "radial-gradient(circle, black 60%, transparent 70%)",
               }}
             />
           </div>
+        </div>
+
+        {/* 丁达尔放射光芒（自品牌名后向外发散，缓慢旋转） */}
+        <div className="np-rays pointer-events-none absolute left-1/2 top-[38%] h-[120vmin] w-[120vmin] -translate-x-1/2 -translate-y-1/2">
+          <div className="god-rays h-full w-full rounded-full" />
+        </div>
+
+        {/* 品牌名：Hi（星辰黄）+ Whale Robotics（蓝），浮于地球之上 */}
+        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           <div className="np-curtain-logo font-heading relative text-5xl font-bold tracking-tight drop-shadow-[0_0_28px_rgba(96,165,250,0.75)] md:text-7xl">
             <span className="text-brand-star drop-shadow-[0_0_20px_rgba(255,210,90,0.7)]">Hi</span>
             <span className="text-blue-400">Whale Robotics</span>
