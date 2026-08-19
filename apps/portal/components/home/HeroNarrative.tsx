@@ -315,8 +315,10 @@ export function HeroNarrative() {
               className="h-auto w-[120vmin] max-w-none rounded-full"
               style={{
                 boxShadow: "0 0 8vmin rgba(96,150,255,0.35), 0 0 2vmin rgba(140,180,255,0.4)",
-                maskImage: "radial-gradient(circle, black 60%, transparent 70%)",
-                WebkitMaskImage: "radial-gradient(circle, black 60%, transparent 70%)",
+                maskImage:
+                  "radial-gradient(circle, black 50%, rgba(0,0,0,0.35) 62%, transparent 70%)",
+                WebkitMaskImage:
+                  "radial-gradient(circle, black 50%, rgba(0,0,0,0.35) 62%, transparent 70%)",
               }}
             />
           </div>
