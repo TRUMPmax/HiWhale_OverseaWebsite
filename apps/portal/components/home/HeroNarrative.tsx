@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ChevronDown } from "lucide-react";
+import { Starfield } from "@/components/ui/Starfield";
 import {
   getLocalizedLabel,
   INDUSTRY_LABELS,
@@ -43,6 +44,8 @@ export function HeroNarrative() {
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const metricRefs = useRef<Array<HTMLSpanElement | null>>([]);
+  /** 滚轮叙事进度 0..1，驱动星空"逼近"效果 */
+  const scrollProgressRef = useRef(0);
 
   const categories = Object.values(ProductCategory);
   const industries = Object.values(Industry);
@@ -77,6 +80,9 @@ export function HeroNarrative() {
           pin: stage,
           pinSpacing: false,
           anticipatePin: 1,
+          onUpdate: (self) => {
+            scrollProgressRef.current = self.progress;
+          },
         },
       });
 
@@ -174,18 +180,21 @@ export function HeroNarrative() {
     <section ref={containerRef} className="relative hidden h-[400vh] md:block">
       <div
         ref={stageRef}
-        className="bg-brand-navy h-screen w-full overflow-hidden text-white"
-        style={{ perspective: "1200px" }}
+        className="h-screen w-full overflow-hidden text-white"
+        style={{
+          perspective: "1200px",
+          background: "linear-gradient(180deg, #0A2540 0%, #061529 60%, #050D1F 100%)",
+        }}
       >
-        {/* 背景层：细网格装饰线 */}
-        <div
-          className="np-bg absolute inset-0 opacity-[0.15]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)",
-            backgroundSize: "4rem 4rem",
-          }}
-        />
+        {/* 背景层：夜幕星空（远处星辰随滚动逐渐靠近） */}
+        <div className="np-bg absolute inset-0">
+          <Starfield
+            className="h-full w-full"
+            progressRef={scrollProgressRef}
+            yellowRatio={0.12}
+            density={0.0006}
+          />
+        </div>
 
         {/* 产品层：标题 + 全品类产品家族色块 */}
         <div
@@ -221,7 +230,7 @@ export function HeroNarrative() {
           </div>
           <div className="np-hint absolute bottom-8 flex flex-col items-center gap-2 text-sm text-white/60">
             <span>{t("narrative.scrollHint")}</span>
-            <ChevronDown className="np-hint-icon h-5 w-5" />
+            <ChevronDown className="np-hint-icon text-brand-star h-5 w-5" />
           </div>
         </div>
 
@@ -282,14 +291,21 @@ export function HeroNarrative() {
           </div>
         </div>
 
-        {/* 幕布层：深蓝收尾 + Logo */}
-        <div className="np-curtain absolute inset-0 flex flex-col items-center justify-center bg-[#061529]">
-          <div className="np-curtain-logo font-heading text-5xl font-bold tracking-tight md:text-7xl">
-            HiWhale <span className="text-brand-blue">Robotics</span>
-            <sup className="text-2xl">™</sup>
+        {/* 幕布层：亮黄色星辰覆盖整个终幕 + 蓝色品牌文字 */}
+        <div className="np-curtain bg-night-deep absolute inset-0 flex flex-col items-center justify-center overflow-hidden">
+          <Starfield
+            className="absolute inset-0 h-full w-full"
+            density={0.0018}
+            yellowRatio={0.45}
+            glow
+          />
+          <div className="np-curtain-logo font-heading relative text-5xl font-bold tracking-tight text-blue-400 drop-shadow-[0_0_30px_rgba(74,144,255,0.65)] md:text-7xl">
+            HiWhale Robotics<sup className="text-2xl">™</sup>
           </div>
-          <p className="np-curtain-text mt-6 text-white/60">{t("narrative.curtainTagline")}</p>
-          <div className="np-curtain-text mt-10 flex flex-col items-center gap-2">
+          <p className="np-curtain-text relative mt-6 text-white/60">
+            {t("narrative.curtainTagline")}
+          </p>
+          <div className="np-curtain-text text-brand-star relative mt-10 flex flex-col items-center gap-2">
             <span className="text-lg font-medium">{t("narrative.curtainCta")}</span>
             <ChevronDown className="h-6 w-6 animate-bounce" />
           </div>

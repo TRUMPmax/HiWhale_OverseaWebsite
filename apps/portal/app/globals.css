@@ -12,6 +12,11 @@
   --brand-blue: #1a56db;
   --brand-light-blue: #e8f0fe;
   --brand-light: #f8fafc;
+  /* 品牌辅助色：星辰亮黄（仅用于深色夜幕背景上的星光/点缀） */
+  --brand-star: #ffd25a;
+  /* 夜幕深色（比 brand-navy 更深的夜空色） */
+  --night-sky: #061529;
+  --night-deep: #050d1f;
 }
 
 html {

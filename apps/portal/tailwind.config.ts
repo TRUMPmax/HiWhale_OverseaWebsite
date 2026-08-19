@@ -18,6 +18,11 @@ const config: Config = {
           navy: "var(--brand-navy)",
           blue: "var(--brand-blue)",
           light: "var(--brand-light-blue)",
+          star: "var(--brand-star)",
+        },
+        night: {
+          sky: "var(--night-sky)",
+          deep: "var(--night-deep)",
         },
       },
       fontFamily: {

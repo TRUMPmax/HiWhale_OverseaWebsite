@@ -1,13 +1,19 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
+import { Starfield } from "@/components/ui/Starfield";
 
-/** 首页分区 9：底部 CTA（深蓝背景） */
+/** 首页分区 9：底部 CTA（深蓝夜幕 + 星光） */
 export function CTASection() {
   const t = useTranslations("home.cta");
 
   return (
-    <section className="bg-brand-navy text-white">
-      <div className="mx-auto max-w-7xl px-4 py-16 text-center md:px-8 md:py-24 lg:px-12">
+    <section className="bg-night-sky relative overflow-hidden text-white">
+      <Starfield
+        className="absolute inset-0 h-full w-full opacity-80"
+        density={0.0005}
+        yellowRatio={0.25}
+      />
+      <div className="relative mx-auto max-w-7xl px-4 py-16 text-center md:px-8 md:py-24 lg:px-12">
         <h2 className="font-heading mx-auto max-w-2xl text-3xl font-bold md:text-4xl">
           {t("title")}
         </h2>
