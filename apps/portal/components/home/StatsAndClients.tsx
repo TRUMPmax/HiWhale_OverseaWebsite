@@ -1,10 +1,18 @@
 import { useTranslations } from "next-intl";
 import { Placeholder } from "@/components/ui/Placeholder";
+import { CountUp } from "@/components/ui/CountUp";
+import { Reveal } from "@/components/ui/Reveal";
 
-const STAT_KEYS = ["projects", "countries", "uptime", "pallets"] as const;
+const STATS = [
+  { key: "projects", end: 500, suffix: "+", decimals: 0 },
+  { key: "countries", end: 30, suffix: "+", decimals: 0 },
+  { key: "uptime", end: 99.9, suffix: "%", decimals: 1 },
+  { key: "pallets", end: 50, suffix: "M+", decimals: 0 },
+] as const;
+
 const CLIENT_LOGO_COUNT = 8;
 
-/** 首页分区 7：成果数据 + 客户 Logo 墙（CountUp 动效后续叠加） */
+/** 首页分区 7：成果数据（CountUp 滚动计数）+ 客户 Logo 墙 */
 export function StatsAndClients() {
   const t = useTranslations("home.stats");
 
@@ -19,13 +27,18 @@ export function StatsAndClients() {
         </div>
 
         <div className="mt-12 grid grid-cols-2 gap-6 lg:grid-cols-4">
-          {STAT_KEYS.map((key) => (
-            <div key={key} className="rounded-xl border border-slate-200 bg-white p-6 text-center">
-              <div className="font-heading text-brand-blue text-4xl font-bold md:text-5xl">
-                {t(`items.${key}.value`)}
+          {STATS.map((stat, index) => (
+            <Reveal key={stat.key} delay={index * 100}>
+              <div className="rounded-xl border border-slate-200 bg-white p-6 text-center">
+                <CountUp
+                  end={stat.end}
+                  suffix={stat.suffix}
+                  decimals={stat.decimals}
+                  className="font-heading text-brand-blue text-4xl font-bold md:text-5xl"
+                />
+                <div className="text-muted mt-2 text-sm">{t(`items.${stat.key}.label`)}</div>
               </div>
-              <div className="text-muted mt-2 text-sm">{t(`items.${key}.label`)}</div>
-            </div>
+            </Reveal>
           ))}
         </div>
 
@@ -34,13 +47,14 @@ export function StatsAndClients() {
         </h3>
         <div className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-4">
           {Array.from({ length: CLIENT_LOGO_COUNT }, (_, i) => (
-            <Placeholder
-              key={i}
-              className="p-4 grayscale transition-all hover:grayscale-0"
-              label={t("clientLogo.label")}
-              size={t("clientLogo.size")}
-              name={`client-logo-${String(i + 1).padStart(2, "0")}.png`}
-            />
+            <Reveal key={i} delay={i * 60}>
+              <Placeholder
+                className="p-4 grayscale transition-all hover:grayscale-0"
+                label={t("clientLogo.label")}
+                size={t("clientLogo.size")}
+                name={`client-logo-${String(i + 1).padStart(2, "0")}.png`}
+              />
+            </Reveal>
           ))}
         </div>
       </div>

@@ -13,8 +13,8 @@ type PlaceholderProps = {
   name?: string;
   /** Tailwind 宽高比类，如 "aspect-video"、"aspect-[4/3]"、"aspect-square" */
   ratio?: string;
-  /** 配色变体：light 用于白/浅灰区块，dark 用于深蓝区块 */
-  variant?: "light" | "dark";
+  /** 配色变体：light 虚线（白/浅灰区块）、dark 虚线（深蓝区块）、block 实色块（无素材时的色块占位） */
+  variant?: "light" | "dark" | "block";
   className?: string;
 };
 
@@ -29,33 +29,39 @@ export function Placeholder({
   variant = "light",
   className = "",
 }: PlaceholderProps) {
-  const isDark = variant === "dark";
+  const containerClass =
+    variant === "dark"
+      ? "border-white/30 bg-white/5"
+      : variant === "block"
+        ? "border-brand-blue/40 bg-brand-blue/10 border-solid"
+        : "border-border bg-brand-light";
+  const iconClass =
+    variant === "dark"
+      ? "text-white/60"
+      : variant === "block"
+        ? "text-brand-blue/60"
+        : "text-subtle";
+  const labelClass = variant === "dark" ? "text-white" : "text-foreground";
+  const subClass = variant === "dark" ? "text-white/60" : "text-muted";
+  const descClass = variant === "dark" ? "text-white/50" : "text-subtle";
+  const nameClass =
+    variant === "dark"
+      ? "bg-white/10 text-white/80"
+      : variant === "block"
+        ? "bg-brand-blue/20 text-brand-blue"
+        : "border-border text-muted border bg-white";
 
   return (
     <div
-      className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 text-center ${
-        isDark ? "border-white/30 bg-white/5" : "border-border bg-brand-light"
-      } ${ratio ?? ""} ${className}`}
+      className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 text-center ${containerClass} ${ratio ?? ""} ${className}`}
     >
-      <ImageIcon className={`h-10 w-10 ${isDark ? "text-white/60" : "text-subtle"}`} />
-      <span className={`mt-3 font-medium ${isDark ? "text-white" : "text-foreground"}`}>
-        {label}
-      </span>
-      {format && (
-        <span className={`mt-1 text-sm ${isDark ? "text-white/60" : "text-muted"}`}>{format}</span>
-      )}
-      {size && <span className={`text-sm ${isDark ? "text-white/60" : "text-muted"}`}>{size}</span>}
-      {description && (
-        <p className={`mt-2 max-w-xs text-sm ${isDark ? "text-white/50" : "text-subtle"}`}>
-          {description}
-        </p>
-      )}
+      <ImageIcon className={`h-10 w-10 ${iconClass}`} />
+      <span className={`mt-3 font-medium ${labelClass}`}>{label}</span>
+      {format && <span className={`mt-1 text-sm ${subClass}`}>{format}</span>}
+      {size && <span className={`text-sm ${subClass}`}>{size}</span>}
+      {description && <p className={`mt-2 max-w-xs text-sm ${descClass}`}>{description}</p>}
       {name && (
-        <span
-          className={`mt-3 rounded-md px-2 py-1 font-mono text-xs ${
-            isDark ? "bg-white/10 text-white/80" : "border-border text-muted border bg-white"
-          }`}
-        >
+        <span className={`mt-3 rounded-md px-2 py-1 font-mono text-xs ${nameClass}`}>
           素材名：{name}
         </span>
       )}

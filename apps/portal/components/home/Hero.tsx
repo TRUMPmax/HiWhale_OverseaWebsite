@@ -2,12 +2,12 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
 import { Placeholder } from "@/components/ui/Placeholder";
 
-/** 首页分区 1：首屏 Hero（静态版，滚轮叙事动效后续叠加） */
+/** 首页分区 1：首屏 Hero（静态版；移动端展示，桌面端由 HeroNarrative 滚轮叙事替代） */
 export function Hero() {
   const t = useTranslations("home.hero");
 
   return (
-    <section className="bg-brand-navy text-white">
+    <section className="bg-brand-navy text-white md:hidden">
       <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 md:px-8 md:py-24 lg:grid-cols-2 lg:px-12">
         <div>
           <span className="inline-block rounded-full bg-white/10 px-4 py-1.5 text-sm text-blue-100">

@@ -218,6 +218,14 @@
       "subtitle": "Tell us about your project — our solution engineers will respond within 24 hours.",
       "primary": "Request a Consultation",
       "secondary": "Explore Products"
+    },
+    "narrative": {
+      "scrollHint": "Scroll to explore",
+      "dataTitle": "From Equipment to System",
+      "dataText": "We integrate every piece of equipment into one orchestrated system — so your warehouse runs as a single organism, not a collection of machines.",
+      "supportLabel": "Global Support",
+      "curtainTagline": "Intelligent Warehousing · Material Handling · Solution Integrator",
+      "curtainCta": "Discover Our Solutions"
     }
   }
 }

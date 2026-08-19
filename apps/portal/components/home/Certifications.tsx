@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Placeholder } from "@/components/ui/Placeholder";
+import { Reveal } from "@/components/ui/Reveal";
 
 const CERTS = [
   { key: "ce", imageName: "cert-ce.png" },
@@ -24,19 +25,21 @@ export function Certifications() {
         </div>
 
         <div className="mt-12 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-5">
-          {CERTS.map((cert) => (
-            <div key={cert.key} className="flex flex-col items-center gap-3">
-              <Placeholder
-                ratio="aspect-square"
-                className="w-full p-4"
-                label={t(`items.${cert.key}.image`)}
-                size={t("imageSize")}
-                name={cert.imageName}
-              />
-              <span className="text-foreground text-sm font-medium">
-                {t(`items.${cert.key}.name`)}
-              </span>
-            </div>
+          {CERTS.map((cert, index) => (
+            <Reveal key={cert.key} delay={index * 80}>
+              <div className="flex flex-col items-center gap-3">
+                <Placeholder
+                  ratio="aspect-square"
+                  className="w-full p-4"
+                  label={t(`items.${cert.key}.image`)}
+                  size={t("imageSize")}
+                  name={cert.imageName}
+                />
+                <span className="text-foreground text-sm font-medium">
+                  {t(`items.${cert.key}.name`)}
+                </span>
+              </div>
+            </Reveal>
           ))}
         </div>
       </div>

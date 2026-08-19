@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Boxes, Network, Package } from "lucide-react";
 import { Placeholder } from "@/components/ui/Placeholder";
+import { Reveal } from "@/components/ui/Reveal";
 
 const LAYERS = [
   { key: "equipment", icon: Package, imageName: "home-layer-equipment.png" },
@@ -27,43 +28,44 @@ export function SolutionIntegration() {
             const Icon = layer.icon;
             const reversed = index % 2 === 1;
             return (
-              <div
-                key={layer.key}
-                className={`flex flex-col items-center gap-8 md:flex-row ${
-                  reversed ? "md:flex-row-reverse" : ""
-                }`}
-              >
-                <div className="flex-1">
-                  <div className="flex items-center gap-3">
-                    <span className="bg-brand-light text-brand-blue font-heading flex h-10 w-10 items-center justify-center rounded-lg font-bold">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <Icon className="text-brand-blue h-6 w-6" />
-                    <h3 className="font-heading text-foreground text-2xl font-bold">
-                      {t(`layers.${layer.key}.title`)}
-                    </h3>
+              <Reveal key={layer.key} delay={index * 100}>
+                <div
+                  className={`flex flex-col items-center gap-8 md:flex-row ${
+                    reversed ? "md:flex-row-reverse" : ""
+                  }`}
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                      <span className="bg-brand-light text-brand-blue font-heading flex h-10 w-10 items-center justify-center rounded-lg font-bold">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <Icon className="text-brand-blue h-6 w-6" />
+                      <h3 className="font-heading text-foreground text-2xl font-bold">
+                        {t(`layers.${layer.key}.title`)}
+                      </h3>
+                    </div>
+                    <p className="text-muted mt-4 leading-relaxed">
+                      {t(`layers.${layer.key}.description`)}
+                    </p>
+                    <ul className="mt-4 space-y-2">
+                      {[0, 1, 2].map((i) => (
+                        <li key={i} className="text-muted flex items-center gap-2 text-sm">
+                          <span className="bg-brand-blue h-1.5 w-1.5 rounded-full" />
+                          {t(`layers.${layer.key}.points.${i}`)}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <p className="text-muted mt-4 leading-relaxed">
-                    {t(`layers.${layer.key}.description`)}
-                  </p>
-                  <ul className="mt-4 space-y-2">
-                    {[0, 1, 2].map((i) => (
-                      <li key={i} className="text-muted flex items-center gap-2 text-sm">
-                        <span className="bg-brand-blue h-1.5 w-1.5 rounded-full" />
-                        {t(`layers.${layer.key}.points.${i}`)}
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="w-full flex-1">
+                    <Placeholder
+                      ratio="aspect-[4/3]"
+                      label={t(`layers.${layer.key}.image`)}
+                      size={t("imageSize")}
+                      name={layer.imageName}
+                    />
+                  </div>
                 </div>
-                <div className="w-full flex-1">
-                  <Placeholder
-                    ratio="aspect-[4/3]"
-                    label={t(`layers.${layer.key}.image`)}
-                    size={t("imageSize")}
-                    name={layer.imageName}
-                  />
-                </div>
-              </div>
+              </Reveal>
             );
           })}
         </div>

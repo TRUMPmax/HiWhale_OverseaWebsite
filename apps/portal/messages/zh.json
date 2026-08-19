@@ -206,6 +206,14 @@
       "subtitle": "告诉我们你的项目需求——方案工程师将在 24 小时内回复。",
       "primary": "预约方案咨询",
       "secondary": "浏览产品"
+    },
+    "narrative": {
+      "scrollHint": "滚动探索",
+      "dataTitle": "从设备到系统",
+      "dataText": "我们把每一台设备集成为一个统一调度的系统——让你的仓库像一个有机整体一样运转，而不是一堆孤立的机器。",
+      "supportLabel": "全球支持",
+      "curtainTagline": "智能仓储 · 货物转运 · 方案集成商",
+      "curtainCta": "探索我们的方案"
     }
   }
 }
