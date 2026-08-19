@@ -316,9 +316,9 @@ export function HeroNarrative() {
               style={{
                 boxShadow: "0 0 8vmin rgba(96,150,255,0.35), 0 0 2vmin rgba(140,180,255,0.4)",
                 maskImage:
-                  "radial-gradient(circle, black 50%, rgba(0,0,0,0.35) 62%, transparent 70%)",
+                  "radial-gradient(circle, black 42%, rgba(0,0,0,0.45) 56%, rgba(0,0,0,0.12) 66%, transparent 76%)",
                 WebkitMaskImage:
-                  "radial-gradient(circle, black 50%, rgba(0,0,0,0.35) 62%, transparent 70%)",
+                  "radial-gradient(circle, black 42%, rgba(0,0,0,0.45) 56%, rgba(0,0,0,0.12) 66%, transparent 76%)",
               }}
             />
           </div>
