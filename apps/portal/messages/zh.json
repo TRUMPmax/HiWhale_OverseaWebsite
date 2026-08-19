@@ -25,6 +25,10 @@
     "solutions": "方案",
     "contact": "联系方式",
     "privacyPolicy": "隐私政策",
+    "terms": "服务条款",
+    "sitemap": "网站地图",
+    "cookiePolicy": "Cookie 政策",
+    "icp": "沪ICP备XXXXXXXX号（备案号占位，上线前替换）",
     "copyright": "© {year} 浩鲸机器人。保留所有权利。",
     "tagline": "为全球客户提供智能仓储与货物转运解决方案。",
     "solutionsEcommerce": "电商",
@@ -37,12 +41,171 @@
   },
   "home": {
     "hero": {
+      "badge": "智能仓储 · 货物转运 · 方案集成商",
+      "title": "从设备到系统，一体化解决方案",
+      "subtitle": "浩鲸机器人提供端到端智能仓储与货物转运方案——无人叉车 AGV、AMR、机械臂、龙门吊与调度软件，作为一个系统统一调度。",
+      "ctaPrimary": "浏览产品",
+      "ctaSecondary": "预约方案咨询",
       "placeholder": {
-        "label": "主视觉图",
-        "format": "JPG / WebP",
-        "size": "1920x1080",
-        "description": "首页主视觉占位图"
+        "label": "主视觉图：全品类产品家族合影（AGV/AMR/叉车/机械臂/龙门吊/软件界面）",
+        "size": "16:9 · 建议 1920×1080"
       }
+    },
+    "ecosystem": {
+      "title": "我们的产品生态",
+      "subtitle": "全品类产品家族，覆盖货物转运的每一个环节。",
+      "explore": "了解更多",
+      "imageSize": "4:3 · 建议 1200×900",
+      "items": {
+        "AGV_FORKLIFT": {
+          "image": "无人叉车 AGV 产品实拍图（45° 角，白色/浅灰背景）",
+          "description": "无人叉车，实现托盘搬运、堆垛与对接的全自动化。"
+        },
+        "AMR": {
+          "image": "AMR 自主移动机器人产品实拍图（顶升/潜伏式）",
+          "description": "自主移动机器人，支撑灵活的货到人拣选与场内物流。"
+        },
+        "MANNED_FORKLIFT": {
+          "image": "有人叉车产品实拍图（电动平衡重式）",
+          "description": "高性能有人叉车，适配人机混合与过渡期的作业模式。"
+        },
+        "ROBOTIC_ARM": {
+          "image": "机械臂工作场景图（码垛/拆垛工位）",
+          "description": "机械臂，用于码垛、拆垛与高精度搬运作业。"
+        },
+        "GANTRY_CRANE": {
+          "image": "龙门吊/门式起重机场景图（堆场或港口）",
+          "description": "龙门吊系统，面向堆场与港口的重型集装箱搬运。"
+        },
+        "SYSTEM_SOFTWARE": {
+          "image": "调度系统软件界面截图（ dashboard / 地图调度视图）",
+          "description": "WCS/WES 调度软件，将所有设备编排为一个系统。"
+        }
+      }
+    },
+    "integration": {
+      "title": "一个系统，三层能力",
+      "subtitle": "我们不是设备制造商——我们把硬件、软件与行业经验集成交钥匙方案。",
+      "imageSize": "4:3 · 建议 1200×900",
+      "layers": {
+        "equipment": {
+          "title": "设备层",
+          "image": "设备层示意图：多品类设备组合线稿/渲染图",
+          "description": "全品类产品家族：无人叉车 AGV、AMR、机械臂、龙门吊与有人叉车。",
+          "points": ["全品类硬件阵容", "统一通信协议", "CE / ISO 认证设备"]
+        },
+        "system": {
+          "title": "系统层",
+          "image": "系统层示意图：调度软件连接多设备拓扑图",
+          "description": "WCS/WES 调度软件将每台设备连接成一支统一调度的车队。",
+          "points": ["多设备交通管制", "实时监控与数据看板", "开放 API 对接 WMS / ERP / MES"]
+        },
+        "solution": {
+          "title": "方案层",
+          "image": "方案层示意图：行业整仓方案鸟瞰效果图",
+          "description": "围绕你的吞吐量和场地布局设计的行业交钥匙方案。",
+          "points": ["定制化布局与仿真", "端到端交付与调试", "7×24 全球支持"]
+        }
+      }
+    },
+    "industries": {
+      "title": "行业解决方案",
+      "subtitle": "为驱动世界的行业提供经过验证的方案。",
+      "viewSolution": "查看方案",
+      "imageSize": "16:9 · 建议 1600×900",
+      "items": {
+        "E_COMMERCE": {
+          "image": "电商仓场景图：高位货架 + AMR 分拣作业",
+          "description": "面向电商仓的高吞吐分拣与货到人履约方案。",
+          "painPoint": "大促订单峰值"
+        },
+        "AUTOMOTIVE": {
+          "image": "汽车工厂场景图：产线边 AGV 配送",
+          "description": "面向汽车制造工厂的顺序化产线边配送方案。",
+          "painPoint": "严格节拍要求"
+        },
+        "THIRD_PARTY_LOGISTICS": {
+          "image": "第三方物流仓场景图：多客户多 SKU 混合作业",
+          "description": "灵活适配多客户、多 SKU 的 3PL 自动化方案。",
+          "painPoint": "SKU 结构多变"
+        },
+        "FOOD_COLD_CHAIN": {
+          "image": "冷链仓场景图：低温环境 AGV 作业（冷雾氛围）",
+          "description": "耐低温机器人与全程追溯，服务食品冷链仓储。",
+          "painPoint": "-25°C 低温作业"
+        },
+        "PHARMACEUTICAL": {
+          "image": "医药仓场景图：洁净环境 + 批次追溯作业",
+          "description": "符合 GMP 规范的搬运与全流程批次追溯。",
+          "painPoint": "合规与追溯"
+        },
+        "PORT": {
+          "image": "港口场景图：自动化集装箱堆场 + 龙门吊",
+          "description": "面向港口与场站的自动化集装箱搬运与堆场调度。",
+          "painPoint": "重型 7×24 作业"
+        }
+      }
+    },
+    "viewer3d": {
+      "title": "3D 产品交互预览",
+      "subtitle": "旋转、缩放，从每一个角度了解我们的设备。",
+      "resetView": "重置视角",
+      "productName": "平衡重式 AGV 叉车",
+      "productDescription": "激光 SLAM 导航，1.5 吨载重，为自动化托盘搬运与堆垛而设计。",
+      "viewFullSpecs": "查看完整参数",
+      "requestConsultation": "预约方案咨询",
+      "placeholder": {
+        "label": "3D 模型查看器（React Three Fiber）：拖拽旋转 / 滚轮缩放 / 自动旋转 / 型号切换",
+        "size": "1:1 · 模型格式 GLB/GLTF，单模型 ≤10MB"
+      },
+      "specs": {
+        "loadCapacity": { "label": "额定载重", "value": "1,500 kg" },
+        "liftHeight": { "label": "起升高度", "value": "3,000 mm" },
+        "navigation": { "label": "导航方式", "value": "激光 SLAM" },
+        "battery": { "label": "电池", "value": "锂电 48V / 200Ah" }
+      }
+    },
+    "video": {
+      "title": "见证浩鲸的实战表现",
+      "subtitle": "观看我们的方案在全球真实仓库中的运行表现。",
+      "play": "播放视频",
+      "placeholder": {
+        "label": "企业宣传视频（客户案例实拍 + 产品混剪）",
+        "size": "16:9 · 1920×1080 · MP4 + WebM 双格式"
+      }
+    },
+    "stats": {
+      "title": "经过验证的全球交付能力",
+      "subtitle": "用数字说话。",
+      "clientsTitle": "深受行业领导者信赖",
+      "items": {
+        "projects": { "value": "500+", "label": "交付项目" },
+        "countries": { "value": "30+", "label": "服务国家" },
+        "uptime": { "value": "99.9%", "label": "系统可用性" },
+        "pallets": { "value": "50M+", "label": "年处理托盘数" }
+      },
+      "clientLogo": {
+        "label": "客户 Logo（默认灰度，hover 恢复彩色）",
+        "size": "2:1 · 建议 240×120，透明底 PNG"
+      }
+    },
+    "certifications": {
+      "title": "全球认证，值得信赖",
+      "subtitle": "我们的产品符合最严格的国际安全与质量标准。",
+      "imageSize": "1:1 · 建议 200×200，透明底 PNG",
+      "items": {
+        "ce": { "image": "CE 认证标志", "name": "CE" },
+        "iso9001": { "image": "ISO 9001 质量管理体系认证标志", "name": "ISO 9001" },
+        "iso3691": { "image": "ISO 3691-4 无人叉车安全标准标志", "name": "ISO 3691-4" },
+        "iso13849": { "image": "ISO 13849 功能安全认证标志", "name": "ISO 13849" },
+        "ul": { "image": "UL 认证标志", "name": "UL" }
+      }
+    },
+    "cta": {
+      "title": "准备好改造你的仓库了吗？",
+      "subtitle": "告诉我们你的项目需求——方案工程师将在 24 小时内回复。",
+      "primary": "预约方案咨询",
+      "secondary": "浏览产品"
     }
   }
 }

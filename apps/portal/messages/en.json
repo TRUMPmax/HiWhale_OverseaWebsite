@@ -25,6 +25,10 @@
     "solutions": "Solutions",
     "contact": "Contact",
     "privacyPolicy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "sitemap": "Sitemap",
+    "cookiePolicy": "Cookie Policy",
+    "icp": "沪ICP备XXXXXXXX号（备案号占位，上线前替换）",
     "copyright": "© {year} Hiwhale Robotics. All rights reserved.",
     "tagline": "Intelligent warehousing and material handling solutions for global customers.",
     "solutionsEcommerce": "E-commerce",
@@ -37,12 +41,183 @@
   },
   "home": {
     "hero": {
+      "badge": "Smart Warehousing · Material Handling · Solution Integrator",
+      "title": "From Equipment to System, One Integrated Solution",
+      "subtitle": "Hiwhale Robotics delivers end-to-end intelligent warehousing and material handling — AGV forklifts, AMRs, robotic arms, gantry cranes and scheduling software, orchestrated as one system.",
+      "ctaPrimary": "Explore Products",
+      "ctaSecondary": "Request a Consultation",
       "placeholder": {
-        "label": "Hero Image",
-        "format": "JPG / WebP",
-        "size": "1920x1080",
-        "description": "Homepage hero visual placeholder"
+        "label": "主视觉图：全品类产品家族合影（AGV/AMR/叉车/机械臂/龙门吊/软件界面）",
+        "size": "16:9 · 建议 1920×1080"
       }
+    },
+    "ecosystem": {
+      "title": "Our Product Ecosystem",
+      "subtitle": "A full-category product family covering every step of material handling.",
+      "explore": "Explore",
+      "imageSize": "4:3 · 建议 1200×900",
+      "items": {
+        "AGV_FORKLIFT": {
+          "image": "无人叉车 AGV 产品实拍图（45° 角，白色/浅灰背景）",
+          "description": "Unmanned forklifts for automated pallet transport, stacking and docking."
+        },
+        "AMR": {
+          "image": "AMR 自主移动机器人产品实拍图（顶升/潜伏式）",
+          "description": "Autonomous mobile robots for flexible goods-to-person and internal logistics."
+        },
+        "MANNED_FORKLIFT": {
+          "image": "有人叉车产品实拍图（电动平衡重式）",
+          "description": "High-performance manned forklifts for hybrid and transitional operations."
+        },
+        "ROBOTIC_ARM": {
+          "image": "机械臂工作场景图（码垛/拆垛工位）",
+          "description": "Robotic arms for palletizing, depalletizing and precision handling."
+        },
+        "GANTRY_CRANE": {
+          "image": "龙门吊/门式起重机场景图（堆场或港口）",
+          "description": "Gantry crane systems for heavy-duty yard and port container handling."
+        },
+        "SYSTEM_SOFTWARE": {
+          "image": "调度系统软件界面截图（ dashboard / 地图调度视图）",
+          "description": "WCS/WES scheduling software that orchestrates every device as one system."
+        }
+      }
+    },
+    "integration": {
+      "title": "One System, Three Layers",
+      "subtitle": "We are not an equipment vendor — we integrate hardware, software and industry know-how into turnkey solutions.",
+      "imageSize": "4:3 · 建议 1200×900",
+      "layers": {
+        "equipment": {
+          "title": "Equipment Layer",
+          "image": "设备层示意图：多品类设备组合线稿/渲染图",
+          "description": "A full product family: AGV forklifts, AMRs, robotic arms, gantry cranes and manned forklifts.",
+          "points": [
+            "Full-category hardware lineup",
+            "Unified communication protocol",
+            "CE / ISO certified equipment"
+          ]
+        },
+        "system": {
+          "title": "System Layer",
+          "image": "系统层示意图：调度软件连接多设备拓扑图",
+          "description": "WCS/WES scheduling software connects every device into one orchestrated fleet.",
+          "points": [
+            "Multi-device traffic orchestration",
+            "Real-time monitoring & dashboards",
+            "Open API for WMS / ERP / MES"
+          ]
+        },
+        "solution": {
+          "title": "Solution Layer",
+          "image": "方案层示意图：行业整仓方案鸟瞰效果图",
+          "description": "Industry-specific turnkey solutions designed around your throughput and layout.",
+          "points": [
+            "Custom layout & simulation",
+            "End-to-end delivery & commissioning",
+            "24/7 global support"
+          ]
+        }
+      }
+    },
+    "industries": {
+      "title": "Solutions by Industry",
+      "subtitle": "Proven solutions for the industries that move the world.",
+      "viewSolution": "View Solution",
+      "imageSize": "16:9 · 建议 1600×900",
+      "items": {
+        "E_COMMERCE": {
+          "image": "电商仓场景图：高位货架 + AMR 分拣作业",
+          "description": "High-throughput sortation and goods-to-person fulfillment for e-commerce warehouses.",
+          "painPoint": "Peak order surges"
+        },
+        "AUTOMOTIVE": {
+          "image": "汽车工厂场景图：产线边 AGV 配送",
+          "description": "Just-in-sequence line-side delivery for automotive manufacturing plants.",
+          "painPoint": "Strict takt times"
+        },
+        "THIRD_PARTY_LOGISTICS": {
+          "image": "第三方物流仓场景图：多客户多 SKU 混合作业",
+          "description": "Flexible automation that adapts to multi-client, multi-SKU 3PL operations.",
+          "painPoint": "Variable SKU profiles"
+        },
+        "FOOD_COLD_CHAIN": {
+          "image": "冷链仓场景图：低温环境 AGV 作业（冷雾氛围）",
+          "description": "Cold-rated robots and full traceability for food and cold chain storage.",
+          "painPoint": "-25°C operation"
+        },
+        "PHARMACEUTICAL": {
+          "image": "医药仓场景图：洁净环境 + 批次追溯作业",
+          "description": "GMP-compliant handling with full batch traceability for pharma logistics.",
+          "painPoint": "Compliance & traceability"
+        },
+        "PORT": {
+          "image": "港口场景图：自动化集装箱堆场 + 龙门吊",
+          "description": "Automated container handling and yard scheduling for ports and terminals.",
+          "painPoint": "Heavy-duty 24/7 ops"
+        }
+      }
+    },
+    "viewer3d": {
+      "title": "Interactive 3D Product Preview",
+      "subtitle": "Rotate, zoom and explore our equipment from every angle.",
+      "resetView": "Reset View",
+      "productName": "Counterbalanced AGV Forklift",
+      "productDescription": "LiDAR SLAM navigation, 1.5t load capacity, designed for automated pallet transport and stacking.",
+      "viewFullSpecs": "View Full Specs",
+      "requestConsultation": "Request a Consultation",
+      "placeholder": {
+        "label": "3D 模型查看器（React Three Fiber）：拖拽旋转 / 滚轮缩放 / 自动旋转 / 型号切换",
+        "size": "1:1 · 模型格式 GLB/GLTF，单模型 ≤10MB"
+      },
+      "specs": {
+        "loadCapacity": { "label": "Load Capacity", "value": "1,500 kg" },
+        "liftHeight": { "label": "Lift Height", "value": "3,000 mm" },
+        "navigation": { "label": "Navigation", "value": "LiDAR SLAM" },
+        "battery": { "label": "Battery", "value": "Li-ion 48V / 200Ah" }
+      }
+    },
+    "video": {
+      "title": "See Hiwhale in Action",
+      "subtitle": "Watch how our solutions run in real warehouses around the world.",
+      "play": "Play video",
+      "placeholder": {
+        "label": "企业宣传视频（客户案例实拍 + 产品混剪）",
+        "size": "16:9 · 1920×1080 · MP4 + WebM 双格式"
+      }
+    },
+    "stats": {
+      "title": "Proven Results, Global Scale",
+      "subtitle": "Numbers that speak for our delivery capability.",
+      "clientsTitle": "Trusted by Industry Leaders",
+      "items": {
+        "projects": { "value": "500+", "label": "Projects Delivered" },
+        "countries": { "value": "30+", "label": "Countries Served" },
+        "uptime": { "value": "99.9%", "label": "System Uptime" },
+        "pallets": { "value": "50M+", "label": "Pallets Handled / Year" }
+      },
+      "clientLogo": {
+        "label": "客户 Logo（默认灰度，hover 恢复彩色）",
+        "size": "2:1 · 建议 240×120，透明底 PNG"
+      }
+    },
+    "certifications": {
+      "title": "Globally Certified, Trusted Worldwide",
+      "subtitle": "Our products meet the strictest international safety and quality standards.",
+      "imageSize": "1:1 · 建议 200×200，透明底 PNG",
+      "items": {
+        "ce": { "image": "CE 认证标志", "name": "CE" },
+        "iso9001": { "image": "ISO 9001 质量管理体系认证标志", "name": "ISO 9001" },
+        "iso3691": { "image": "ISO 3691-4 无人叉车安全标准标志", "name": "ISO 3691-4" },
+        "iso13849": { "image": "ISO 13849 功能安全认证标志", "name": "ISO 13849" },
+        "ul": { "image": "UL 认证标志", "name": "UL" }
+      }
+    },
+    "cta": {
+      "title": "Ready to Transform Your Warehouse?",
+      "subtitle": "Tell us about your project — our solution engineers will respond within 24 hours.",
+      "primary": "Request a Consultation",
+      "secondary": "Explore Products"
     }
   }
 }

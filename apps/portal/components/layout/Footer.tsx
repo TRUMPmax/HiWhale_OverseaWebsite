@@ -18,8 +18,8 @@ export function Footer() {
   const productCategories = Object.values(ProductCategory);
 
   return (
-    <footer className="bg-brand-navy py-16 text-white">
-      <div className="mx-auto max-w-7xl px-4 md:px-8 lg:px-12">
+    <footer className="bg-brand-navy text-white">
+      <div className="mx-auto max-w-7xl px-4 py-16 md:px-8 lg:px-12">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <h3 className="font-heading text-lg font-bold">{APP_NAME}</h3>
@@ -83,12 +83,29 @@ export function Footer() {
             </ul>
           </div>
         </div>
+      </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 md:flex-row">
-          <p className="text-sm text-white/60">{t("copyright", { year: currentYear })}</p>
-          <Link href="/privacy-policy" className="text-sm text-white/60 hover:text-white">
-            {t("privacyPolicy")}
-          </Link>
+      {/* 企业信息条：近黑深色，与蓝白主体区分（版权/备案/法律链接） */}
+      <div className="bg-[#061529]">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 md:flex-row md:px-8 lg:px-12">
+          <div className="flex flex-col items-center gap-1 text-center md:items-start md:text-left">
+            <p className="text-sm text-white/50">{t("copyright", { year: currentYear })}</p>
+            <p className="text-xs text-white/40">{t("icp")}</p>
+          </div>
+          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+            <Link href="/privacy-policy" className="text-xs text-white/50 hover:text-white">
+              {t("privacyPolicy")}
+            </Link>
+            <Link href="/terms" className="text-xs text-white/50 hover:text-white">
+              {t("terms")}
+            </Link>
+            <Link href="/sitemap" className="text-xs text-white/50 hover:text-white">
+              {t("sitemap")}
+            </Link>
+            <Link href="/cookie-policy" className="text-xs text-white/50 hover:text-white">
+              {t("cookiePolicy")}
+            </Link>
+          </nav>
         </div>
       </div>
     </footer>

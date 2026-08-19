@@ -1,24 +1,26 @@
-import { APP_NAME } from "@hiwhale/shared/constants";
-import { useTranslations } from "next-intl";
-import { Placeholder } from "@/components/ui/Placeholder";
+import { Hero } from "@/components/home/Hero";
+import { ProductEcosystem } from "@/components/home/ProductEcosystem";
+import { SolutionIntegration } from "@/components/home/SolutionIntegration";
+import { IndustrySolutions } from "@/components/home/IndustrySolutions";
+import { ProductViewer3D } from "@/components/home/ProductViewer3D";
+import { VideoShowcase } from "@/components/home/VideoShowcase";
+import { StatsAndClients } from "@/components/home/StatsAndClients";
+import { Certifications } from "@/components/home/Certifications";
+import { CTASection } from "@/components/home/CTASection";
 
-/** 首页占位 */
+/** 首页：Hero + 8 个静态功能分区（滚轮叙事动效后续叠加） */
 export default function HomePage() {
-  const t = useTranslations("metadata");
-  const th = useTranslations("home");
-
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-4 py-24">
-      <h1 className="font-heading text-foreground text-4xl font-bold md:text-5xl">{APP_NAME}</h1>
-      <p className="text-muted mt-4 text-lg">{t("description")}</p>
-      <div className="mt-12 w-full max-w-md">
-        <Placeholder
-          label={th("hero.placeholder.label")}
-          format={th("hero.placeholder.format")}
-          size={th("hero.placeholder.size")}
-          description={th("hero.placeholder.description")}
-        />
-      </div>
-    </div>
+    <>
+      <Hero />
+      <ProductEcosystem />
+      <SolutionIntegration />
+      <IndustrySolutions />
+      <ProductViewer3D />
+      <VideoShowcase />
+      <StatsAndClients />
+      <Certifications />
+      <CTASection />
+    </>
   );
 }
