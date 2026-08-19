@@ -69,7 +69,8 @@ export function HeroNarrative() {
       gsap.set(q(".np-curtain"), { yPercent: 100 });
       gsap.set(q(".np-curtain-logo"), { scale: 1.2 });
       gsap.set(q(".np-curtain-text"), { opacity: 0, y: 20 });
-      gsap.set(q(".np-sun"), { scale: 0.1, opacity: 0 });
+      gsap.set(q(".np-earth"), { scale: 0.3, opacity: 0 });
+      gsap.set(q(".np-rays"), { opacity: 0 });
 
       const tl = gsap.timeline({
         defaults: { ease: "power2.out" },
@@ -133,8 +134,9 @@ export function HeroNarrative() {
       // 第四幕 75-100%：深蓝幕布上升，Logo 收缩居中收尾
       tl.to(q(".np-data-inner"), { opacity: 0, scale: 0.95, duration: 0.06 }, 0.75);
       tl.to(q(".np-curtain"), { yPercent: 0, duration: 0.18, ease: "power2.inOut" }, 0.76);
-      tl.to(q(".np-sun"), { scale: 1, opacity: 1, duration: 0.16, ease: "power2.inOut" }, 0.78);
+      tl.to(q(".np-earth"), { scale: 1, opacity: 1, duration: 0.18, ease: "power2.inOut" }, 0.76);
       tl.to(q(".np-curtain-logo"), { scale: 1, duration: 0.14 }, 0.84);
+      tl.to(q(".np-rays"), { opacity: 1, duration: 0.12 }, 0.86);
       tl.to(q(".np-curtain-text"), { opacity: 1, y: 0, duration: 0.08, stagger: 0.03 }, 0.9);
 
       // 鼠标视差：各层按深度 ±px 跟随
@@ -293,25 +295,34 @@ export function HeroNarrative() {
           </div>
         </div>
 
-        {/* 幕布层：亮黄色星辰覆盖整个终幕 + 中央恒星 + 蓝色品牌文字 */}
+        {/* 幕布层：星空持续推进 → 地球升起 → 丁达尔光芒中的品牌名 */}
         <div className="np-curtain bg-night-deep absolute inset-0 flex flex-col items-center justify-center overflow-hidden">
           <Starfield
             className="absolute inset-0 h-full w-full"
-            density={0.001}
-            yellowRatio={0.45}
+            progressRef={scrollProgressRef}
+            density={0.0008}
+            yellowRatio={0.15}
           />
-          {/* 中央黄色恒星（品牌 Logo 中的那抹黄） */}
-          <div className="np-sun pointer-events-none absolute inset-0 flex items-center justify-center">
+          {/* 丁达尔放射光芒（自中心向外发散，缓慢旋转） */}
+          <div className="np-rays pointer-events-none absolute left-1/2 top-1/2 h-[130vmin] w-[130vmin] -translate-x-1/2 -translate-y-1/2">
+            <div className="god-rays h-full w-full rounded-full" />
+          </div>
+          {/* 地球：视角推进的最终画面（后期可替换为素材 earth-night-4k.png，1:1 透明底） */}
+          <div className="np-earth pointer-events-none absolute inset-0 flex items-center justify-center">
             <div
-              className="animate-sun-pulse h-[36vmin] w-[36vmin] rounded-full"
+              className="h-[42vmin] w-[42vmin] rounded-full"
               style={{
                 background:
-                  "radial-gradient(circle, rgba(255,248,220,1) 0%, rgba(255,210,90,0.95) 26%, rgba(255,178,44,0.4) 52%, rgba(255,178,44,0) 70%)",
+                  "radial-gradient(circle at 34% 28%, #4A90D9 0%, #1D4E89 34%, #0B2545 68%, #050D1F 100%)",
+                boxShadow:
+                  "0 0 8vmin rgba(96,150,255,0.45), 0 0 3vmin rgba(140,180,255,0.5), inset -3vmin -3vmin 8vmin rgba(0,0,0,0.55)",
               }}
             />
           </div>
-          <div className="np-curtain-logo font-heading relative text-5xl font-bold tracking-tight text-blue-400 drop-shadow-[0_0_30px_rgba(74,144,255,0.65)] md:text-7xl">
-            HiWhale Robotics<sup className="text-2xl">™</sup>
+          <div className="np-curtain-logo font-heading relative text-5xl font-bold tracking-tight drop-shadow-[0_0_28px_rgba(96,165,250,0.75)] md:text-7xl">
+            <span className="text-brand-star drop-shadow-[0_0_20px_rgba(255,210,90,0.7)]">Hi</span>
+            <span className="text-blue-400">Whale Robotics</span>
+            <sup className="text-2xl text-blue-300">™</sup>
           </div>
           <p className="np-curtain-text relative mt-6 text-white/60">
             {t("narrative.curtainTagline")}

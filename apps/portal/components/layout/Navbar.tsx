@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname, useRouter } from "@/navigation";
-import { APP_NAME } from "@hiwhale/shared/constants";
 import { Menu, X, Globe, User } from "lucide-react";
+import { BrandName } from "@/components/ui/BrandName";
 
 /** 顶部导航栏：滚动变白 + 模糊 + 高度收缩 */
 export function Navbar() {
@@ -43,8 +43,8 @@ export function Navbar() {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 md:px-8 lg:px-12">
-        <Link href="/" className="font-heading text-brand-navy text-xl font-bold">
-          {APP_NAME}
+        <Link href="/" className="font-heading text-xl font-bold">
+          <BrandName variant={scrolled ? "light" : "dark"} />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

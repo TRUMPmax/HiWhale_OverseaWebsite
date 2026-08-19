@@ -2,8 +2,8 @@
 
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/navigation";
+import { BrandName } from "@/components/ui/BrandName";
 import {
-  APP_NAME,
   getLocalizedLabel,
   PRODUCT_CATEGORY_LABELS,
   ProductCategory,
@@ -22,7 +22,9 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-16 md:px-8 lg:px-12">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div>
-            <h3 className="font-heading text-lg font-bold">{APP_NAME}</h3>
+            <h3 className="font-heading text-lg font-bold">
+              <BrandName variant="dark" />
+            </h3>
             <p className="mt-4 text-sm text-white/70">{t("tagline")}</p>
           </div>
 
