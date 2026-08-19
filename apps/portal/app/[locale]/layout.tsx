@@ -27,7 +27,7 @@ const notoSansSC = Noto_Sans_SC({
 });
 
 export const metadata: Metadata = {
-  title: "Hiwhale Robotics",
+  title: "HiWhale Robotics",
   description: "Intelligent warehousing and material handling solutions",
 };
 

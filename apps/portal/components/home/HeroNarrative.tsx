@@ -285,7 +285,7 @@ export function HeroNarrative() {
         {/* 幕布层：深蓝收尾 + Logo */}
         <div className="np-curtain absolute inset-0 flex flex-col items-center justify-center bg-[#061529]">
           <div className="np-curtain-logo font-heading text-5xl font-bold tracking-tight md:text-7xl">
-            Hiwhale <span className="text-brand-blue">Robotics</span>
+            HiWhale <span className="text-brand-blue">Robotics</span>
             <sup className="text-2xl">™</sup>
           </div>
           <p className="np-curtain-text mt-6 text-white/60">{t("narrative.curtainTagline")}</p>

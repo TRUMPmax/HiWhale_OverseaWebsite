@@ -1,5 +1,5 @@
 /** 共享常量与枚举 */
-export const APP_NAME = "Hiwhale Robotics";
+export const APP_NAME = "HiWhale Robotics";
 
 export type Locale = "en" | "zh";
 

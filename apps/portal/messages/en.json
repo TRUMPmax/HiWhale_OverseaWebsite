@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "title": "Hiwhale Robotics",
+    "title": "HiWhale Robotics",
     "description": "Intelligent warehousing and material handling solutions"
   },
   "nav": {
@@ -29,7 +29,7 @@
     "sitemap": "Sitemap",
     "cookiePolicy": "Cookie Policy",
     "icp": "沪ICP备XXXXXXXX号（备案号占位，上线前替换）",
-    "copyright": "© {year} Hiwhale Robotics. All rights reserved.",
+    "copyright": "© {year} HiWhale Robotics. All rights reserved.",
     "tagline": "Intelligent warehousing and material handling solutions for global customers.",
     "solutionsEcommerce": "E-commerce",
     "solutionsAutomotive": "Automotive",
@@ -43,7 +43,7 @@
     "hero": {
       "badge": "Smart Warehousing · Material Handling · Solution Integrator",
       "title": "From Equipment to System, One Integrated Solution",
-      "subtitle": "Hiwhale Robotics delivers end-to-end intelligent warehousing and material handling — AGV forklifts, AMRs, robotic arms, gantry cranes and scheduling software, orchestrated as one system.",
+      "subtitle": "HiWhale Robotics delivers end-to-end intelligent warehousing and material handling — AGV forklifts, AMRs, robotic arms, gantry cranes and scheduling software, orchestrated as one system.",
       "ctaPrimary": "Explore Products",
       "ctaSecondary": "Request a Consultation",
       "placeholder": {
@@ -178,7 +178,7 @@
       }
     },
     "video": {
-      "title": "See Hiwhale in Action",
+      "title": "See HiWhale in Action",
       "subtitle": "Watch how our solutions run in real warehouses around the world.",
       "play": "Play video",
       "placeholder": {
