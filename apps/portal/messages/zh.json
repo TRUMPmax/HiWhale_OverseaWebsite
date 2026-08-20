@@ -487,11 +487,25 @@
       "empty": "暂无对话记录。向 AI 助手提问任何产品问题吧。",
       "openChat": "打开 AI 对话",
       "you": "我",
-      "assistant": "AI 助手"
+      "assistant": "AI 助手",
+      "viewTitle": "对话详情",
+      "messagesCount": "{count} 条消息",
+      "lastActive": "最近活跃",
+      "close": "关闭"
+    },
+    "inquiries": {
+      "detailTitle": "询盘详情",
+      "submittedLabel": "提交时间",
+      "requirementsLabel": "需求详情",
+      "followUpTitle": "跟进记录",
+      "addNotePlaceholder": "添加一条跟进记录…",
+      "addNoteSubmit": "添加记录",
+      "close": "关闭"
     },
     "saved": {
       "remove": "取消收藏",
       "view": "查看详情",
+      "savedAt": "收藏于 {date}",
       "empty": "还没有收藏的产品。去产品页逛逛，收藏感兴趣的型号。"
     },
     "profile": {

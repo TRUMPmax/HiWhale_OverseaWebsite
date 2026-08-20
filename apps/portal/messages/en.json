@@ -505,11 +505,25 @@
       "empty": "No conversations yet. Ask the AI assistant anything about our products.",
       "openChat": "Open AI Chat",
       "you": "You",
-      "assistant": "AI Assistant"
+      "assistant": "AI Assistant",
+      "viewTitle": "Conversation",
+      "messagesCount": "{count} messages",
+      "lastActive": "Last active",
+      "close": "Close"
+    },
+    "inquiries": {
+      "detailTitle": "Inquiry Detail",
+      "submittedLabel": "Submitted",
+      "requirementsLabel": "Requirements",
+      "followUpTitle": "Follow-up Records",
+      "addNotePlaceholder": "Add a follow-up note…",
+      "addNoteSubmit": "Add Note",
+      "close": "Close"
     },
     "saved": {
       "remove": "Remove from saved",
       "view": "View Details",
+      "savedAt": "Saved on {date}",
       "empty": "No saved products yet. Browse products and save the ones you like."
     },
     "profile": {

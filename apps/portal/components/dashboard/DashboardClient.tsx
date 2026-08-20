@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Bot, CheckCircle2, MessageSquareText, Package, Trash2 } from "lucide-react";
+import { Bot, CheckCircle2, ChevronRight, MessageSquareText, Package, Trash2 } from "lucide-react";
 import {
   getLocalizedLabel,
   getProductBySlug,
@@ -14,15 +14,15 @@ import { Link, useRouter } from "@/navigation";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { useAuthStore } from "@/store/auth";
 import { useChatStore } from "@/store/chat";
-import { MOCK_INQUIRIES } from "./mock-inquiries";
+import { MOCK_INQUIRIES, type MockInquiry } from "./mock-inquiries";
+import { ChatHistoryViewer, type StoredChatMessage } from "./ChatHistoryViewer";
+import { InquiryDrawer } from "./InquiryDrawer";
 
 type Tab = "inquiries" | "chat" | "saved" | "profile";
 
-type StoredChatMessage = {
-  id: string;
-  role: "user" | "assistant" | "system";
-  content: string;
-  ts: number;
+type SavedItem = {
+  slug: string;
+  savedAt: string;
 };
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
@@ -48,7 +48,8 @@ export function DashboardClient() {
   const [mounted, setMounted] = useState(false);
   const [tab, setTab] = useState<Tab>("inquiries");
   const [chatMessages, setChatMessages] = useState<StoredChatMessage[]>([]);
-  const [savedSlugs, setSavedSlugs] = useState<string[]>([]);
+  const [savedItems, setSavedItems] = useState<SavedItem[]>([]);
+  const [selectedInquiry, setSelectedInquiry] = useState<MockInquiry | null>(null);
   const [profileSaved, setProfileSaved] = useState(false);
   const [profile, setProfile] = useState({
     name: "",
@@ -67,7 +68,12 @@ export function DashboardClient() {
     } catch {
       // 损坏数据忽略
     }
-    setSavedSlugs(MOCK_PRODUCTS.slice(0, 3).map((p) => p.slug));
+    setSavedItems(
+      MOCK_PRODUCTS.slice(0, 3).map((p, i) => ({
+        slug: p.slug,
+        savedAt: new Date(Date.now() - (i + 1) * 86400000 * 3).toISOString(),
+      })),
+    );
   }, []);
 
   useEffect(() => {
@@ -90,9 +96,12 @@ export function DashboardClient() {
     { key: "profile", label: t("tabs.profile") },
   ];
 
-  const savedProducts = savedSlugs
-    .map((slug) => getProductBySlug(slug))
-    .filter((p) => p !== undefined);
+  const savedProducts = savedItems
+    .map((item) => ({ item, product: getProductBySlug(item.slug) }))
+    .filter(
+      (entry): entry is { item: SavedItem; product: NonNullable<typeof entry.product> } =>
+        entry.product !== undefined,
+    );
 
   return (
     <section>
@@ -133,7 +142,12 @@ export function DashboardClient() {
             {tab === "inquiries" && (
               <div className="space-y-4">
                 {MOCK_INQUIRIES.map((inquiry) => (
-                  <div key={inquiry.id} className="rounded-xl border border-slate-200 bg-white p-5">
+                  <button
+                    key={inquiry.id}
+                    type="button"
+                    onClick={() => setSelectedInquiry(inquiry)}
+                    className="w-full rounded-xl border border-slate-200 bg-white p-5 text-left transition-all hover:border-blue-300 hover:shadow-md"
+                  >
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-subtle font-mono text-xs">{inquiry.id}</span>
                       <span className="text-subtle text-xs">{inquiry.date}</span>
@@ -153,19 +167,22 @@ export function DashboardClient() {
                         </span>
                       ))}
                     </div>
-                    <p className="text-muted mt-3 text-sm leading-relaxed">
-                      {inquiry.description[loc]}
-                    </p>
-                  </div>
+                    <div className="mt-3 flex items-center gap-2">
+                      <p className="text-muted line-clamp-2 flex-1 text-sm leading-relaxed">
+                        {inquiry.description[loc]}
+                      </p>
+                      <ChevronRight className="text-subtle h-4 w-4 shrink-0" />
+                    </div>
+                  </button>
                 ))}
               </div>
             )}
 
             {/* AI 对话历史 */}
             {tab === "chat" && (
-              <div className="rounded-xl border border-slate-200 bg-white p-5">
+              <div>
                 {chatMessages.length === 0 ? (
-                  <div className="flex flex-col items-center gap-4 py-10 text-center">
+                  <div className="flex flex-col items-center gap-4 rounded-xl border border-slate-200 bg-white p-5 py-10 text-center">
                     <Bot className="text-subtle h-10 w-10" />
                     <p className="text-muted text-sm">{t("chatHistory.empty")}</p>
                     <button
@@ -178,38 +195,7 @@ export function DashboardClient() {
                     </button>
                   </div>
                 ) : (
-                  <div className="space-y-3">
-                    {chatMessages.map((message) =>
-                      message.role === "system" ? (
-                        <p key={message.id} className="text-subtle text-center text-xs">
-                          {message.content}
-                        </p>
-                      ) : (
-                        <div
-                          key={message.id}
-                          className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                        >
-                          <div
-                            className={`max-w-[80%] rounded-xl px-3 py-2 text-sm leading-relaxed ${
-                              message.role === "user"
-                                ? "bg-brand-blue text-white"
-                                : "text-foreground bg-blue-50"
-                            }`}
-                          >
-                            <div
-                              className={`mb-0.5 text-[0.625rem] ${message.role === "user" ? "text-white/60" : "text-subtle"}`}
-                            >
-                              {message.role === "user"
-                                ? t("chatHistory.you")
-                                : t("chatHistory.assistant")}{" "}
-                              · {new Date(message.ts).toLocaleString(locale)}
-                            </div>
-                            {message.content}
-                          </div>
-                        </div>
-                      ),
-                    )}
-                  </div>
+                  <ChatHistoryViewer messages={chatMessages} />
                 )}
               </div>
             )}
@@ -217,7 +203,7 @@ export function DashboardClient() {
             {/* 收藏的产品 */}
             {tab === "saved" && (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {savedProducts.map((product) => (
+                {savedProducts.map(({ item, product }) => (
                   <div
                     key={product.slug}
                     className="relative rounded-xl border border-slate-200 bg-white p-5"
@@ -226,7 +212,7 @@ export function DashboardClient() {
                       type="button"
                       aria-label={t("saved.remove")}
                       onClick={() =>
-                        setSavedSlugs((prev) => prev.filter((s) => s !== product.slug))
+                        setSavedItems((prev) => prev.filter((s) => s.slug !== product.slug))
                       }
                       className="text-subtle hover:text-foreground absolute right-3 top-3 z-10 rounded-lg bg-white/80 p-1.5 transition-colors"
                     >
@@ -242,6 +228,11 @@ export function DashboardClient() {
                       {product.name[loc]}
                     </h3>
                     <p className="text-muted mt-1 font-mono text-xs">{product.model}</p>
+                    <p className="text-subtle mt-1 text-xs">
+                      {t("saved.savedAt", {
+                        date: new Date(item.savedAt).toLocaleDateString(locale),
+                      })}
+                    </p>
                     <Link
                       href={`/products/${product.slug}`}
                       className="text-brand-blue mt-3 inline-block text-sm font-medium hover:underline"
@@ -343,6 +334,11 @@ export function DashboardClient() {
           </div>
         </div>
       </div>
+
+      {/* 询盘详情抽屉 */}
+      {selectedInquiry && (
+        <InquiryDrawer inquiry={selectedInquiry} onClose={() => setSelectedInquiry(null)} />
+      )}
     </section>
   );
 }
