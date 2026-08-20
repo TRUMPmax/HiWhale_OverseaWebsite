@@ -2,8 +2,8 @@ import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { getLocalizedLabel, INDUSTRY_LABELS, MOCK_SOLUTIONS } from "@hiwhale/shared/constants";
 import { Link } from "@/navigation";
-import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
+import { INDUSTRY_IMAGE_NAMES } from "@/components/home/assets";
 
 /** 行业方案列表页 */
 export default function SolutionsPage({ params: { locale } }: { params: { locale: string } }) {
@@ -26,12 +26,11 @@ export default function SolutionsPage({ params: { locale } }: { params: { locale
             {MOCK_SOLUTIONS.map((solution, index) => (
               <Reveal key={solution.slug} delay={index * 80} className="h-full">
                 <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-6 transition-all hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg">
-                  <Placeholder
-                    ratio="aspect-video"
-                    className="p-4"
-                    label={`行业方案场景图：${getLocalizedLabel(INDUSTRY_LABELS, solution.industry, "zh")}`}
-                    size="16:9 · 建议 1600×900"
-                    name={solution.imageName}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/images/industries/${INDUSTRY_IMAGE_NAMES[solution.industry]}`}
+                    alt={getLocalizedLabel(INDUSTRY_LABELS, solution.industry, locale)}
+                    className="aspect-video w-full rounded-lg object-cover"
                   />
                   <span className="mt-5 inline-flex w-fit items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
                     {getLocalizedLabel(INDUSTRY_LABELS, solution.industry, locale)}

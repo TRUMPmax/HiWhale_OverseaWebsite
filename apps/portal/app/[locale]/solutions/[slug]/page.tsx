@@ -10,10 +10,10 @@ import {
   PRODUCT_CATEGORY_LABELS,
 } from "@hiwhale/shared/constants";
 import { Link } from "@/navigation";
-import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
 import { Starfield } from "@/components/ui/Starfield";
 import { ProductCard } from "@/components/products/ProductCard";
+import { INDUSTRY_IMAGE_NAMES } from "@/components/home/assets";
 
 export function generateStaticParams() {
   return MOCK_SOLUTIONS.map((solution) => ({ slug: solution.slug }));
@@ -57,11 +57,11 @@ export default async function SolutionDetailPage({
       <section className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24 lg:px-12">
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <Reveal>
-            <Placeholder
-              ratio="aspect-video"
-              label={`行业方案场景图：${getLocalizedLabel(INDUSTRY_LABELS, solution.industry, "zh")}`}
-              size="16:9 · 建议 1600×900"
-              name={solution.imageName}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`/images/industries/${INDUSTRY_IMAGE_NAMES[solution.industry]}`}
+              alt={getLocalizedLabel(INDUSTRY_LABELS, solution.industry, locale)}
+              className="aspect-video w-full rounded-xl border border-slate-200 object-cover"
             />
           </Reveal>
           <Reveal delay={120}>

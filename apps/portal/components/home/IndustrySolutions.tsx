@@ -7,6 +7,10 @@ import { getLocalizedLabel, INDUSTRY_LABELS, Industry } from "@hiwhale/shared/co
 
 /** 已投放真实素材的行业（public/images/industries/ 下有图即用真图） */
 const INDUSTRIES_WITH_IMAGE: ReadonlySet<Industry> = new Set([
+  Industry.E_COMMERCE,
+  Industry.AUTOMOTIVE,
+  Industry.THIRD_PARTY_LOGISTICS,
+  Industry.FOOD_COLD_CHAIN,
   Industry.PHARMACEUTICAL,
   Industry.PORT,
 ]);
