@@ -57,33 +57,25 @@
       "explore": "了解更多",
       "imageSize": "4:3 · 建议 1200×900",
       "items": {
-        "AGV_FORKLIFT": {
-          "image": "无人叉车 AGV 产品实拍图（45° 角，白色/浅灰背景）",
-          "description": "无人叉车，实现托盘搬运、堆垛与对接的全自动化。"
+        "FORKLIFT": {
+          "image": "叉车产品组合图（有人叉车 + 无人叉车 AGV）",
+          "description": "有人叉车 · 无人叉车，覆盖各类托盘搬运任务。"
         },
-        "AMR": {
-          "image": "AMR 自主移动机器人产品实拍图（顶升/潜伏式）",
-          "description": "自主移动机器人，支撑灵活的货到人拣选与场内物流。"
-        },
-        "MANNED_FORKLIFT": {
-          "image": "有人叉车产品实拍图（电动平衡重式）",
-          "description": "高性能有人叉车，适配人机混合与过渡期的作业模式。"
+        "MOBILE_ROBOT": {
+          "image": "移动机器人组合图（RGV + AGV + AMR）",
+          "description": "RGV · AGV · AMR，构建柔性厂内物流。"
         },
         "ROBOTIC_ARM": {
           "image": "机械臂工作场景图（码垛/拆垛工位）",
-          "description": "机械臂，用于码垛、拆垛与高精度搬运作业。"
+          "description": "机械臂，胜任码垛、拆垛与精密搬运。"
         },
         "GANTRY_CRANE": {
           "image": "龙门吊/门式起重机场景图（堆场或港口）",
-          "description": "龙门吊系统，面向堆场与港口的重型集装箱搬运。"
+          "description": "龙门吊，面向堆场与港口的重载作业。"
         },
-        "SYSTEM_SOFTWARE": {
-          "image": "调度系统软件界面截图（ dashboard / 地图调度视图）",
-          "description": "WCS/WES 调度软件，将所有设备编排为一个系统。"
-        },
-        "IWMS": {
-          "image": "仓储管理系统 IWMS 界面截图（库存看板视图）",
-          "description": "仓储管理系统，统筹库存、订单与履约。"
+        "SOFTWARE": {
+          "image": "软件系统界面拼图（WCS 调度地图 + IWMS 库存看板）",
+          "description": "调度系统 WCS · 仓储管理系统 IWMS，仓库的智慧大脑。"
         }
       }
     },
@@ -226,7 +218,8 @@
       "subtitle": "覆盖智能仓储与货物转运全场景的全品类产品矩阵，为一体化系统而生。"
     },
     "filters": {
-      "all": "全部"
+      "all": "全部",
+      "allInGroup": "全部{group}"
     },
     "viewDetails": "查看详情",
     "detail": {

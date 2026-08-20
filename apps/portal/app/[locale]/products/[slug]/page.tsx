@@ -2,10 +2,14 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Download, Radar, ShieldCheck, Wifi, Zap } from "lucide-react";
 import {
+  getGroupOfCategory,
   getLocalizedLabel,
+  getProductBySlug,
+  getRelatedProducts,
   INDUSTRY_LABELS,
   MOCK_PRODUCTS,
   PRODUCT_CATEGORY_LABELS,
+  PRODUCT_GROUP_LABELS,
   ProductCategory,
 } from "@hiwhale/shared/constants";
 import { Link } from "@/navigation";
@@ -22,10 +26,7 @@ import {
 const FEATURE_ICONS = [Zap, ShieldCheck, Radar, Wifi];
 
 /** 软件类产品：详情页以“界面展示”替代 360° 3D 查看器 */
-const SOFTWARE_CATEGORIES: ProductCategory[] = [
-  ProductCategory.SYSTEM_SOFTWARE,
-  ProductCategory.IWMS,
-];
+const SOFTWARE_CATEGORIES: ProductCategory[] = [ProductCategory.WCS, ProductCategory.IWMS];
 
 export function generateStaticParams() {
   return MOCK_PRODUCTS.map((product) => ({ slug: product.slug }));
@@ -38,17 +39,17 @@ export default async function ProductDetailPage({
   params: { locale: string; slug: string };
 }) {
   setRequestLocale(locale);
-  const product = MOCK_PRODUCTS.find((p) => p.slug === slug);
+  const product = getProductBySlug(slug);
   if (!product) notFound();
 
   const t = await getTranslations("products.detail");
   const tCta = await getTranslations("products.cta");
   const loc = locale === "zh" ? ("zh" as const) : ("en" as const);
   const imageBase = product.imageName.replace(/\.[^.]+$/, "");
+  const group = getGroupOfCategory(product.category);
+  const groupLabel = getLocalizedLabel(PRODUCT_GROUP_LABELS, group, locale);
+  const related = getRelatedProducts(product, 3);
   const isSoftware = SOFTWARE_CATEGORIES.includes(product.category);
-  const related = MOCK_PRODUCTS.filter(
-    (p) => p.category === product.category && p.slug !== product.slug,
-  ).slice(0, 3);
 
   return (
     <>
@@ -61,6 +62,10 @@ export default async function ProductDetailPage({
           <span className="mx-2">/</span>
           <Link href="/products" className="hover:text-brand-blue">
             {t("breadcrumbProducts")}
+          </Link>
+          <span className="mx-2">/</span>
+          <Link href={`/products?group=${group}`} className="hover:text-brand-blue">
+            {groupLabel}
           </Link>
           <span className="mx-2">/</span>
           <span className="text-foreground">{product.name[loc]}</span>

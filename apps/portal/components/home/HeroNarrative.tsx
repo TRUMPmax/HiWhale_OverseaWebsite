@@ -11,13 +11,13 @@ import {
   getLocalizedLabel,
   INDUSTRY_LABELS,
   Industry,
-  PRODUCT_CATEGORY_LABELS,
-  ProductCategory,
+  PRODUCT_GROUP_LABELS,
+  ProductGroup,
 } from "@hiwhale/shared/constants";
-import { CATEGORY_IMAGE_NAMES, INDUSTRY_IMAGE_NAMES } from "./assets";
+import { GROUP_IMAGE_NAMES, INDUSTRY_IMAGE_NAMES } from "./assets";
 
 /** 产品芯片的景深层次（translateZ） */
-const CHIP_DEPTHS = [0, 60, 20, 80, 40, 10, 70];
+const CHIP_DEPTHS = [0, 60, 20, 80, 40];
 
 /** 数值指标（第 4 个 24/7 为静态文本，不参与滚动计数） */
 const METRICS = [
@@ -49,7 +49,7 @@ export function HeroNarrative() {
   /** 滚轮叙事进度 0..1，驱动星空"逼近"效果 */
   const scrollProgressRef = useRef(0);
 
-  const categories = Object.values(ProductCategory);
+  const groups = Object.values(ProductGroup);
   const industries = Object.values(Industry);
 
   useEffect(() => {
@@ -220,18 +220,18 @@ export function HeroNarrative() {
             className="np-products-inner mt-10 flex max-w-5xl flex-wrap items-center justify-center gap-4"
             style={{ transformStyle: "preserve-3d" }}
           >
-            {categories.map((category, i) => (
+            {groups.map((group, i) => (
               <div
-                key={category}
-                className="np-chip w-24 lg:w-32"
+                key={group}
+                className="np-chip w-28 lg:w-36"
                 style={{ transform: `translateZ(${CHIP_DEPTHS[i]}px)` }}
               >
                 <div className="border-brand-blue/40 bg-brand-blue/20 flex aspect-[4/3] flex-col items-center justify-center rounded-xl border p-2">
                   <span className="text-center text-xs font-medium">
-                    {getLocalizedLabel(PRODUCT_CATEGORY_LABELS, category, locale)}
+                    {getLocalizedLabel(PRODUCT_GROUP_LABELS, group, locale)}
                   </span>
                   <span className="mt-1 font-mono text-[0.625rem] text-white/60">
-                    {CATEGORY_IMAGE_NAMES[category]}
+                    {GROUP_IMAGE_NAMES[group]}
                   </span>
                 </div>
               </div>

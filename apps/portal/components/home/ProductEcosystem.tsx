@@ -1,30 +1,29 @@
 import { useTranslations, useLocale } from "next-intl";
-import { Bot, Cog, Container, Hand, LayoutDashboard, Monitor, Truck } from "lucide-react";
+import { Bot, Cog, Container, Monitor, Truck } from "lucide-react";
 import { Link } from "@/navigation";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
-import { CATEGORY_IMAGE_NAMES } from "./assets";
+import { GROUP_IMAGE_NAMES } from "./assets";
 import {
   getLocalizedLabel,
+  PRODUCT_CATEGORY_GROUPS,
   PRODUCT_CATEGORY_LABELS,
-  ProductCategory,
+  PRODUCT_GROUP_LABELS,
+  ProductGroup,
 } from "@hiwhale/shared/constants";
 
-const CATEGORY_ICONS: Record<ProductCategory, typeof Truck> = {
-  [ProductCategory.AGV_FORKLIFT]: Truck,
-  [ProductCategory.AMR]: Bot,
-  [ProductCategory.MANNED_FORKLIFT]: Hand,
-  [ProductCategory.ROBOTIC_ARM]: Cog,
-  [ProductCategory.GANTRY_CRANE]: Container,
-  [ProductCategory.SYSTEM_SOFTWARE]: Monitor,
-  [ProductCategory.IWMS]: LayoutDashboard,
+const GROUP_ICONS: Record<ProductGroup, typeof Truck> = {
+  [ProductGroup.FORKLIFT]: Truck,
+  [ProductGroup.MOBILE_ROBOT]: Bot,
+  [ProductGroup.ROBOTIC_ARM]: Cog,
+  [ProductGroup.GANTRY_CRANE]: Container,
+  [ProductGroup.SOFTWARE]: Monitor,
 };
 
-/** 首页分区 2：产品生态（6 大品类卡片） */
+/** 首页分区 2：产品生态（5 大类产品卡片） */
 export function ProductEcosystem() {
   const t = useTranslations("home.ecosystem");
   const locale = useLocale();
-  const categories = Object.values(ProductCategory);
 
   return (
     <section className="bg-slate-50">
@@ -37,29 +36,33 @@ export function ProductEcosystem() {
         </div>
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category, index) => {
-            const Icon = CATEGORY_ICONS[category];
+          {PRODUCT_CATEGORY_GROUPS.map(({ group, categories }, index) => {
+            const Icon = GROUP_ICONS[group];
+            const subcategories = categories
+              .map((c) => getLocalizedLabel(PRODUCT_CATEGORY_LABELS, c, locale))
+              .join(" · ");
             return (
-              <Reveal key={category} delay={index * 80} className="h-full">
+              <Reveal key={group} delay={index * 80} className="h-full">
                 <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-6 transition-all hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg">
                   <Placeholder
                     ratio="aspect-[4/3]"
                     className="p-4"
-                    label={t(`items.${category}.image`)}
+                    label={t(`items.${group}.image`)}
                     size={t("imageSize")}
-                    name={CATEGORY_IMAGE_NAMES[category]}
+                    name={GROUP_IMAGE_NAMES[group]}
                   />
                   <div className="mt-5 flex items-center gap-3">
                     <Icon className="text-brand-blue h-5 w-5" />
                     <h3 className="font-heading text-foreground text-lg font-bold">
-                      {getLocalizedLabel(PRODUCT_CATEGORY_LABELS, category, locale)}
+                      {getLocalizedLabel(PRODUCT_GROUP_LABELS, group, locale)}
                     </h3>
                   </div>
+                  <p className="text-brand-blue mt-1 text-xs font-medium">{subcategories}</p>
                   <p className="text-muted mt-2 flex-1 text-sm leading-relaxed">
-                    {t(`items.${category}.description`)}
+                    {t(`items.${group}.description`)}
                   </p>
                   <Link
-                    href={`/products?category=${category}`}
+                    href={`/products?group=${group}`}
                     className="text-brand-blue mt-4 text-sm font-medium hover:underline"
                   >
                     {t("explore")} →

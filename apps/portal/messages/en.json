@@ -57,17 +57,13 @@
       "explore": "Explore",
       "imageSize": "4:3 · 建议 1200×900",
       "items": {
-        "AGV_FORKLIFT": {
-          "image": "无人叉车 AGV 产品实拍图（45° 角，白色/浅灰背景）",
-          "description": "Unmanned forklifts for automated pallet transport, stacking and docking."
+        "FORKLIFT": {
+          "image": "叉车产品组合图（有人叉车 + 无人叉车 AGV）",
+          "description": "Manned forklifts and AGV forklifts for every pallet handling task."
         },
-        "AMR": {
-          "image": "AMR 自主移动机器人产品实拍图（顶升/潜伏式）",
-          "description": "Autonomous mobile robots for flexible goods-to-person and internal logistics."
-        },
-        "MANNED_FORKLIFT": {
-          "image": "有人叉车产品实拍图（电动平衡重式）",
-          "description": "High-performance manned forklifts for hybrid and transitional operations."
+        "MOBILE_ROBOT": {
+          "image": "移动机器人组合图（RGV + AGV + AMR）",
+          "description": "RGVs, AGVs and AMRs for flexible in-plant material flow."
         },
         "ROBOTIC_ARM": {
           "image": "机械臂工作场景图（码垛/拆垛工位）",
@@ -77,13 +73,9 @@
           "image": "龙门吊/门式起重机场景图（堆场或港口）",
           "description": "Gantry crane systems for heavy-duty yard and port container handling."
         },
-        "SYSTEM_SOFTWARE": {
-          "image": "调度系统软件界面截图（ dashboard / 地图调度视图）",
-          "description": "WCS/WES scheduling software that orchestrates every device as one system."
-        },
-        "IWMS": {
-          "image": "仓储管理系统 IWMS 界面截图（库存看板视图）",
-          "description": "Warehouse management system for inventory, orders and fulfillment orchestration."
+        "SOFTWARE": {
+          "image": "软件系统界面拼图（WCS 调度地图 + IWMS 库存看板）",
+          "description": "WCS scheduler and IWMS platform — the brain of the warehouse."
         }
       }
     },
@@ -238,7 +230,8 @@
       "subtitle": "A full-category lineup of intelligent warehousing and material handling equipment — engineered to work as one system."
     },
     "filters": {
-      "all": "All"
+      "all": "All",
+      "allInGroup": "All {group}"
     },
     "viewDetails": "View Details",
     "detail": {

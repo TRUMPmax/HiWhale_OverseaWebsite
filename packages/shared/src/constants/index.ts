@@ -14,23 +14,45 @@ export function getLocalizedLabel<T>(
   return labels[locale as Locale] ?? labels[fallback];
 }
 
-export enum ProductCategory {
-  AGV_FORKLIFT = "AGV_FORKLIFT",
-  AMR = "AMR",
-  MANNED_FORKLIFT = "MANNED_FORKLIFT",
+/** 产品大类（一级分类） */
+export enum ProductGroup {
+  FORKLIFT = "FORKLIFT",
+  MOBILE_ROBOT = "MOBILE_ROBOT",
   ROBOTIC_ARM = "ROBOTIC_ARM",
   GANTRY_CRANE = "GANTRY_CRANE",
-  SYSTEM_SOFTWARE = "SYSTEM_SOFTWARE",
+  SOFTWARE = "SOFTWARE",
+}
+
+export const PRODUCT_GROUP_LABELS: Record<ProductGroup, { en: string; zh: string }> = {
+  [ProductGroup.FORKLIFT]: { en: "Forklifts", zh: "叉车产品" },
+  [ProductGroup.MOBILE_ROBOT]: { en: "Mobile Robots", zh: "移动机器人" },
+  [ProductGroup.ROBOTIC_ARM]: { en: "Robotic Arms", zh: "机械臂" },
+  [ProductGroup.GANTRY_CRANE]: { en: "Gantry Cranes", zh: "龙门吊" },
+  [ProductGroup.SOFTWARE]: { en: "Software", zh: "软件系统" },
+};
+
+/** 产品品类（二级分类） */
+export enum ProductCategory {
+  MANNED_FORKLIFT = "MANNED_FORKLIFT",
+  AGV_FORKLIFT = "AGV_FORKLIFT",
+  RGV = "RGV",
+  AGV = "AGV",
+  AMR = "AMR",
+  ROBOTIC_ARM = "ROBOTIC_ARM",
+  GANTRY_CRANE = "GANTRY_CRANE",
+  WCS = "WCS",
   IWMS = "IWMS",
 }
 
 export const PRODUCT_CATEGORY_LABELS: Record<ProductCategory, { en: string; zh: string }> = {
-  [ProductCategory.AGV_FORKLIFT]: { en: "AGV Forklift", zh: "无人叉车 AGV" },
-  [ProductCategory.AMR]: { en: "AMR", zh: "自主移动机器人 AMR" },
   [ProductCategory.MANNED_FORKLIFT]: { en: "Manned Forklift", zh: "有人叉车" },
+  [ProductCategory.AGV_FORKLIFT]: { en: "AGV Forklift", zh: "无人叉车 AGV" },
+  [ProductCategory.RGV]: { en: "RGV", zh: "有轨制导车 RGV" },
+  [ProductCategory.AGV]: { en: "AGV", zh: "自动导引车 AGV" },
+  [ProductCategory.AMR]: { en: "AMR", zh: "自主移动机器人 AMR" },
   [ProductCategory.ROBOTIC_ARM]: { en: "Robotic Arm", zh: "机械臂" },
   [ProductCategory.GANTRY_CRANE]: { en: "Gantry Crane", zh: "龙门吊" },
-  [ProductCategory.SYSTEM_SOFTWARE]: { en: "System Software", zh: "调度系统软件" },
+  [ProductCategory.WCS]: { en: "WCS Scheduler", zh: "调度系统 WCS" },
   [ProductCategory.IWMS]: { en: "IWMS Platform", zh: "仓储管理系统 IWMS" },
 };
 
@@ -73,7 +95,8 @@ export enum InquiryStatus {
   CLOSED = "CLOSED",
 }
 
-export * from "./mock-products";
+export * from "./product-groups";
+export * from "./products";
 
 export const INQUIRY_STATUS_LABELS: Record<InquiryStatus, { en: string; zh: string }> = {
   [InquiryStatus.NEW]: { en: "New", zh: "新询盘" },
