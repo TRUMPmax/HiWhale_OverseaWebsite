@@ -80,6 +80,10 @@
         "SYSTEM_SOFTWARE": {
           "image": "调度系统软件界面截图（ dashboard / 地图调度视图）",
           "description": "WCS/WES 调度软件，将所有设备编排为一个系统。"
+        },
+        "IWMS": {
+          "image": "仓储管理系统 IWMS 界面截图（库存看板视图）",
+          "description": "仓储管理系统，统筹库存、订单与履约。"
         }
       }
     },
@@ -240,7 +244,11 @@
       "specsTitle": "技术规格",
       "featuresTitle": "核心特性",
       "scenariosTitle": "适用行业",
-      "relatedTitle": "相关产品"
+      "relatedTitle": "相关产品",
+      "interface": {
+        "title": "界面展示",
+        "subtitle": "平台核心界面一览"
+      }
     },
     "cta": {
       "title": "不确定哪款型号适合您的仓库？",

@@ -8,6 +8,7 @@ export const CATEGORY_IMAGE_NAMES: Record<ProductCategory, string> = {
   [ProductCategory.ROBOTIC_ARM]: "product-robotic-arm.png",
   [ProductCategory.GANTRY_CRANE]: "product-gantry-crane.png",
   [ProductCategory.SYSTEM_SOFTWARE]: "product-system-software.png",
+  [ProductCategory.IWMS]: "product-iwms.png",
 };
 
 /** 各行业场景图素材文件名 */

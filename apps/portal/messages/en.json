@@ -80,6 +80,10 @@
         "SYSTEM_SOFTWARE": {
           "image": "调度系统软件界面截图（ dashboard / 地图调度视图）",
           "description": "WCS/WES scheduling software that orchestrates every device as one system."
+        },
+        "IWMS": {
+          "image": "仓储管理系统 IWMS 界面截图（库存看板视图）",
+          "description": "Warehouse management system for inventory, orders and fulfillment orchestration."
         }
       }
     },
@@ -252,7 +256,11 @@
       "specsTitle": "Technical Specifications",
       "featuresTitle": "Key Features",
       "scenariosTitle": "Applicable Industries",
-      "relatedTitle": "Related Products"
+      "relatedTitle": "Related Products",
+      "interface": {
+        "title": "Interface Showcase",
+        "subtitle": "A glimpse of the platform's core screens"
+      }
     },
     "cta": {
       "title": "Not sure which model fits your warehouse?",

@@ -21,6 +21,7 @@ export enum ProductCategory {
   ROBOTIC_ARM = "ROBOTIC_ARM",
   GANTRY_CRANE = "GANTRY_CRANE",
   SYSTEM_SOFTWARE = "SYSTEM_SOFTWARE",
+  IWMS = "IWMS",
 }
 
 export const PRODUCT_CATEGORY_LABELS: Record<ProductCategory, { en: string; zh: string }> = {
@@ -30,6 +31,7 @@ export const PRODUCT_CATEGORY_LABELS: Record<ProductCategory, { en: string; zh: 
   [ProductCategory.ROBOTIC_ARM]: { en: "Robotic Arm", zh: "机械臂" },
   [ProductCategory.GANTRY_CRANE]: { en: "Gantry Crane", zh: "龙门吊" },
   [ProductCategory.SYSTEM_SOFTWARE]: { en: "System Software", zh: "调度系统软件" },
+  [ProductCategory.IWMS]: { en: "IWMS Platform", zh: "仓储管理系统 IWMS" },
 };
 
 export enum Industry {

@@ -1,5 +1,5 @@
 import { useTranslations, useLocale } from "next-intl";
-import { Bot, Cog, Container, Hand, Monitor, Truck } from "lucide-react";
+import { Bot, Cog, Container, Hand, LayoutDashboard, Monitor, Truck } from "lucide-react";
 import { Link } from "@/navigation";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
@@ -17,6 +17,7 @@ const CATEGORY_ICONS: Record<ProductCategory, typeof Truck> = {
   [ProductCategory.ROBOTIC_ARM]: Cog,
   [ProductCategory.GANTRY_CRANE]: Container,
   [ProductCategory.SYSTEM_SOFTWARE]: Monitor,
+  [ProductCategory.IWMS]: LayoutDashboard,
 };
 
 /** 首页分区 2：产品生态（6 大品类卡片） */

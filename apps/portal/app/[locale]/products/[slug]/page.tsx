@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Download, Radar, RotateCcw, ShieldCheck, Wifi, Zap } from "lucide-react";
+import { Download, Radar, ShieldCheck, Wifi, Zap } from "lucide-react";
 import {
   getLocalizedLabel,
   INDUSTRY_LABELS,
   MOCK_PRODUCTS,
   PRODUCT_CATEGORY_LABELS,
+  ProductCategory,
 } from "@hiwhale/shared/constants";
 import { Link } from "@/navigation";
 import { Placeholder } from "@/components/ui/Placeholder";
@@ -13,8 +14,18 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Starfield } from "@/components/ui/Starfield";
 import { ProductCard } from "@/components/products/ProductCard";
 import { AskAIButton } from "@/components/products/AskAIButton";
+import {
+  InterfaceShowcaseSection,
+  Viewer3DSection,
+} from "@/components/products/ProductMediaSections";
 
 const FEATURE_ICONS = [Zap, ShieldCheck, Radar, Wifi];
+
+/** 软件类产品：详情页以“界面展示”替代 360° 3D 查看器 */
+const SOFTWARE_CATEGORIES: ProductCategory[] = [
+  ProductCategory.SYSTEM_SOFTWARE,
+  ProductCategory.IWMS,
+];
 
 export function generateStaticParams() {
   return MOCK_PRODUCTS.map((product) => ({ slug: product.slug }));
@@ -34,6 +45,7 @@ export default async function ProductDetailPage({
   const tCta = await getTranslations("products.cta");
   const loc = locale === "zh" ? ("zh" as const) : ("en" as const);
   const imageBase = product.imageName.replace(/\.[^.]+$/, "");
+  const isSoftware = SOFTWARE_CATEGORIES.includes(product.category);
   const related = MOCK_PRODUCTS.filter(
     (p) => p.category === product.category && p.slug !== product.slug,
   ).slice(0, 3);
@@ -121,33 +133,12 @@ export default async function ProductDetailPage({
         </div>
       </section>
 
-      {/* 3D 查看器占位 */}
-      <section className="mt-16 bg-slate-50 md:mt-24">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 md:grid-cols-2 md:px-8 md:py-24 lg:px-12">
-          <Reveal>
-            <Placeholder
-              ratio="aspect-square"
-              variant="block"
-              label="360° 3D 模型查看器占位：React Three Fiber + OrbitControls，拖拽旋转/滚轮缩放/自动旋转"
-              size="1:1 · GLB/GLTF ≤10MB"
-              name={`model-${slug}.glb`}
-            />
-          </Reveal>
-          <Reveal delay={120}>
-            <h2 className="font-heading text-foreground text-2xl font-bold md:text-3xl">
-              {t("viewerTitle")}
-            </h2>
-            <p className="text-muted mt-4 leading-relaxed">{t("viewerNote")}</p>
-            <button
-              type="button"
-              className="text-brand-blue border-brand-blue mt-6 inline-flex items-center gap-2 rounded-lg border bg-white px-5 py-2.5 text-sm font-medium transition-colors hover:bg-blue-50"
-            >
-              <RotateCcw className="h-4 w-4" />
-              {t("resetView")}
-            </button>
-          </Reveal>
-        </div>
-      </section>
+      {/* 媒体分区：硬件 → 360° 3D 查看器占位；软件 → 界面展示 */}
+      {isSoftware ? (
+        <InterfaceShowcaseSection product={product} loc={loc} />
+      ) : (
+        <Viewer3DSection slug={slug} />
+      )}
 
       {/* 技术规格表 */}
       <section className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24 lg:px-12">
