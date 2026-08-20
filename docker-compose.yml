@@ -75,6 +75,80 @@ services:
   #   networks:
   #     - hiwhale-network
 
+  # API 占位服务（NestJS 后端就绪前）
+  api:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    container_name: hiwhale-api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hiwhale}:${POSTGRES_PASSWORD:-hiwhale_dev}@postgres:5432/${POSTGRES_DB:-hiwhale}
+      REDIS_URL: redis://default:${REDIS_PASSWORD:-hiwhale_dev}@redis:6379
+      MINIO_ENDPOINT: minio
+    expose:
+      - "4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:4000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks:
+      - hiwhale-network
+
+  # 门户（Next.js standalone）
+  portal:
+    build:
+      context: .
+      dockerfile: docker/portal.Dockerfile
+    container_name: hiwhale-portal
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: http://api:4000
+    expose:
+      - "3000"
+    depends_on:
+      - api
+    networks:
+      - hiwhale-network
+
+  # 管理后台（Next.js standalone）
+  admin:
+    build:
+      context: .
+      dockerfile: docker/admin.Dockerfile
+    container_name: hiwhale-admin
+    restart: unless-stopped
+    expose:
+      - "3001"
+    depends_on:
+      - api
+    networks:
+      - hiwhale-network
+
+  # 反向代理（唯一对外端口）
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx.Dockerfile
+    container_name: hiwhale-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      # 生产启用 HTTPS 时取消注释（需先在 nginx.conf 中启用 443 server 块并挂载证书）
+      # - "443:443"
+    depends_on:
+      - portal
+      - admin
+      - api
+    networks:
+      - hiwhale-network
+
 volumes:
   postgres_data:
   redis_data:
