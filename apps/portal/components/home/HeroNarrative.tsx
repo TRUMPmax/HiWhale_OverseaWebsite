@@ -247,18 +247,24 @@ export function HeroNarrative() {
         <div className="np-scenes pointer-events-none absolute inset-0 flex items-center justify-center px-4">
           <div className="grid w-full max-w-5xl grid-cols-3 gap-5">
             {industries.map((industry) => (
-              <div key={industry} className="ns-card text-foreground rounded-xl bg-white p-4">
-                <div className="border-brand-blue/40 bg-brand-blue/10 flex aspect-video flex-col items-center justify-center rounded-lg border p-2">
-                  <span className="text-brand-blue font-mono text-[0.625rem]">
-                    {INDUSTRY_IMAGE_NAMES[industry]}
+              <div
+                key={industry}
+                className="ns-card text-foreground overflow-hidden rounded-xl bg-white"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/images/industries/${INDUSTRY_IMAGE_NAMES[industry]}`}
+                  alt={getLocalizedLabel(INDUSTRY_LABELS, industry, locale)}
+                  className="aspect-video w-full object-cover"
+                />
+                <div className="p-4 pt-3">
+                  <h3 className="font-heading text-sm font-bold">
+                    {getLocalizedLabel(INDUSTRY_LABELS, industry, locale)}
+                  </h3>
+                  <span className="mt-1 inline-block rounded-md bg-blue-50 px-2 py-0.5 text-xs text-blue-700">
+                    {t(`industries.items.${industry}.painPoint`)}
                   </span>
                 </div>
-                <h3 className="font-heading mt-3 text-sm font-bold">
-                  {getLocalizedLabel(INDUSTRY_LABELS, industry, locale)}
-                </h3>
-                <span className="mt-1 inline-block rounded-md bg-blue-50 px-2 py-0.5 text-xs text-blue-700">
-                  {t(`industries.items.${industry}.painPoint`)}
-                </span>
               </div>
             ))}
           </div>
