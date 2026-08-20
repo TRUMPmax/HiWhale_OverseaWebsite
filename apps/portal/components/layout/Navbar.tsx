@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Link, usePathname, useRouter } from "@/navigation";
-import { ChevronDown, Menu, X, Globe, User } from "lucide-react";
+import { Link } from "@/navigation";
+import { ChevronDown, Menu, X, User } from "lucide-react";
 import { BrandName } from "@/components/ui/BrandName";
+import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import {
   getLocalizedLabel,
   PRODUCT_CATEGORY_GROUPS,
@@ -17,8 +18,6 @@ export function Navbar() {
   const t = useTranslations("nav");
   const tc = useTranslations("common");
   const locale = useLocale();
-  const pathname = usePathname();
-  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -37,11 +36,10 @@ export function Navbar() {
     { href: "/contact" as const, label: t("contact") },
   ];
 
-  const currentLocale = pathname.startsWith("/zh") ? "zh" : "en";
-
-  const switchLocale = (locale: string) => {
-    router.replace(pathname, { locale });
-  };
+  // 未滚动时导航栏透明，浮在深色 Hero 上，文字用浅色
+  const navLinkClass = `text-sm font-medium transition-colors hover:text-brand-blue ${
+    scrolled ? "text-foreground" : "text-white/85"
+  }`;
 
   return (
     <header
@@ -58,10 +56,7 @@ export function Navbar() {
           {navItems.map((item) =>
             item.href === "/products" ? (
               <div key={item.href} className="group relative">
-                <Link
-                  href={item.href}
-                  className="text-foreground hover:text-brand-blue flex items-center gap-1 text-sm font-medium transition-colors"
-                >
+                <Link href={item.href} className={`${navLinkClass} flex items-center gap-1`}>
                   {item.label}
                   <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:rotate-180" />
                 </Link>
@@ -96,11 +91,7 @@ export function Navbar() {
                 </div>
               </div>
             ) : (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-foreground hover:text-brand-blue text-sm font-medium transition-colors"
-              >
+              <Link key={item.href} href={item.href} className={navLinkClass}>
                 {item.label}
               </Link>
             ),
@@ -108,18 +99,7 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-4 md:flex">
-          <div className="relative flex items-center gap-1">
-            <Globe className="text-muted h-4 w-4" />
-            <select
-              aria-label={tc("language")}
-              className="text-foreground bg-transparent text-sm outline-none"
-              value={currentLocale}
-              onChange={(e) => switchLocale(e.target.value)}
-            >
-              <option value="en">{tc("english")}</option>
-              <option value="zh">{tc("chinese")}</option>
-            </select>
-          </div>
+          <LocaleSwitcher variant={scrolled ? "light" : "dark"} />
           <Link
             href="/auth/login"
             className="bg-brand-blue flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
@@ -130,7 +110,7 @@ export function Navbar() {
         </div>
 
         <button
-          className="md:hidden"
+          className={`md:hidden ${scrolled || mobileOpen ? "text-foreground" : "text-white"}`}
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label={tc("toggleMenu")}
         >
@@ -167,17 +147,8 @@ export function Navbar() {
                 )}
               </div>
             ))}
-            <div className="flex items-center gap-2 pt-2">
-              <Globe className="text-muted h-4 w-4" />
-              <select
-                aria-label={tc("language")}
-                className="bg-transparent text-sm"
-                value={currentLocale}
-                onChange={(e) => switchLocale(e.target.value)}
-              >
-                <option value="en">{tc("english")}</option>
-                <option value="zh">{tc("chinese")}</option>
-              </select>
+            <div className="pt-2">
+              <LocaleSwitcher variant="light" />
             </div>
             <Link
               href="/auth/login"
