@@ -9,6 +9,18 @@ function escapeCsv(value: string): string {
   return `"${value.replace(/"/g, '""')}"`;
 }
 
+/** 通用 CSV 下载（带 BOM，Excel 中文兼容） */
+export function downloadCsv(filename: string, header: string[], rows: string[][]): void {
+  const csv = "﻿" + [header, ...rows].map((r) => r.map(escapeCsv).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 /** 将询盘列表导出为 CSV（带 BOM，Excel 中文兼容）并触发下载 */
 export function exportInquiriesCsv(rows: MockAdminInquiry[]): void {
   const header = [
