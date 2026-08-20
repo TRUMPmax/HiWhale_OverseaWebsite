@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Bot, Send, Trash2, X } from "lucide-react";
+import { Bot, Maximize2, Minimize2, Send, Trash2, X } from "lucide-react";
 import { useAuthStore } from "@/store/auth";
 import { useChatStore } from "@/store/chat";
 import { getMockReply } from "./mock-replies";
@@ -35,6 +35,13 @@ export function AIChatWidget() {
   const [typing, setTyping] = useState(false);
   /** 回复前的“正在输入”指示 */
   const [awaitingReply, setAwaitingReply] = useState(false);
+  /** 窗口放大（桌面端居中最大化） */
+  const [maximized, setMaximized] = useState(false);
+  /** 窗口拖动偏移（相对默认右下角锚点，仅桌面端） */
+  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const dragRef = useRef<{ startX: number; startY: number; baseX: number; baseY: number } | null>(
+    null,
+  );
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // 挂载后读取历史
@@ -113,6 +120,31 @@ export function AIChatWidget() {
 
   const clearHistory = () => setMessages([]);
 
+  /** 头部拖动（仅桌面端、非最大化时；点在按钮上不触发） */
+  const onHeaderPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (maximized || window.innerWidth < 640) return;
+    if ((e.target as HTMLElement).closest("button")) return;
+    dragRef.current = { startX: e.clientX, startY: e.clientY, baseX: pos.x, baseY: pos.y };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const onHeaderPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    // 限制在视口内，保证窗口始终可用
+    const nx = Math.min(
+      Math.max(drag.baseX + e.clientX - drag.startX, -(window.innerWidth - 160)),
+      window.innerWidth - 160,
+    );
+    const ny = Math.min(
+      Math.max(drag.baseY + e.clientY - drag.startY, -(window.innerHeight - 120)),
+      window.innerHeight - 120,
+    );
+    setPos({ x: nx, y: ny });
+  };
+  const onHeaderPointerUp = () => {
+    dragRef.current = null;
+  };
+
   // 未挂载（SSR/水合前）或未登录：不渲染
   if (!mounted || !user) return null;
 
@@ -130,11 +162,29 @@ export function AIChatWidget() {
         </button>
       )}
 
-      {/* 聊天窗口（移动端全屏） */}
+      {/* 聊天窗口（移动端全屏；桌面端可拖动 + 可放大） */}
       {isChatOpen && (
-        <div className="fixed inset-0 z-40 flex flex-col border border-slate-200 bg-white shadow-2xl sm:inset-auto sm:bottom-20 sm:right-6 sm:h-[32rem] sm:max-h-[80vh] sm:w-96 sm:max-w-[calc(100vw-2rem)] sm:rounded-xl">
-          {/* 头部 */}
-          <div className="bg-brand-navy flex items-center gap-2 px-4 py-3 text-white sm:rounded-t-xl">
+        <div
+          style={
+            !maximized && (pos.x !== 0 || pos.y !== 0)
+              ? { transform: `translate(${pos.x}px, ${pos.y}px)` }
+              : undefined
+          }
+          className={`fixed inset-0 z-40 flex flex-col border border-slate-200 bg-white shadow-2xl ${
+            maximized
+              ? "sm:inset-0 sm:m-auto sm:h-[85vh] sm:w-[min(56rem,92vw)] sm:max-w-none sm:rounded-xl"
+              : "sm:inset-auto sm:bottom-20 sm:right-6 sm:h-[32rem] sm:max-h-[80vh] sm:w-96 sm:max-w-[calc(100vw-2rem)] sm:rounded-xl"
+          }`}
+        >
+          {/* 头部（桌面端可拖动） */}
+          <div
+            onPointerDown={onHeaderPointerDown}
+            onPointerMove={onHeaderPointerMove}
+            onPointerUp={onHeaderPointerUp}
+            className={`bg-brand-navy flex touch-none select-none items-center gap-2 px-4 py-3 text-white sm:rounded-t-xl ${
+              maximized ? "" : "sm:cursor-move"
+            }`}
+          >
             <Bot className="h-5 w-5" />
             <span className="font-heading text-sm font-bold">{t("title")}</span>
             <span className="ml-1 flex items-center gap-1 text-xs text-white/70">
@@ -142,6 +192,14 @@ export function AIChatWidget() {
               {t("online")}
             </span>
             <div className="ml-auto flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setMaximized((v) => !v)}
+                aria-label={maximized ? t("minimize") : t("maximize")}
+                className="hidden rounded p-1.5 text-white/70 transition-colors hover:bg-white/10 hover:text-white sm:block"
+              >
+                {maximized ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+              </button>
               <button
                 type="button"
                 onClick={clearHistory}

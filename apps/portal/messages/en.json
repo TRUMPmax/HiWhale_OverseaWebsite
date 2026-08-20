@@ -481,6 +481,8 @@
   "chat": {
     "title": "AI Assistant",
     "online": "Online",
+    "maximize": "Maximize window",
+    "minimize": "Restore window",
     "welcome": "Hi! I'm the HiWhale AI assistant. Ask me about products, certifications or solution selection — or pick a quick question below.",
     "quick1": "What load capacity do your AGV forklifts have?",
     "quick2": "What certifications do your products carry?",
