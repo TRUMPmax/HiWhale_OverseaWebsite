@@ -215,5 +215,65 @@
       "curtainTagline": "智能仓储 · 货物转运 · 方案集成商",
       "curtainCta": "探索我们的方案"
     }
+  },
+  "products": {
+    "banner": {
+      "title": "产品中心",
+      "subtitle": "覆盖智能仓储与货物转运全场景的全品类产品矩阵，为一体化系统而生。"
+    },
+    "filters": {
+      "all": "全部"
+    },
+    "viewDetails": "查看详情",
+    "detail": {
+      "breadcrumbHome": "首页",
+      "breadcrumbProducts": "产品",
+      "quickSpecs": "核心参数",
+      "requestConsultation": "预约咨询",
+      "downloadSpec": "下载产品规格书",
+      "askAI": "咨询 AI 了解该产品",
+      "aiReady": "AI 助手即将上线，您的账号已准备就绪。",
+      "dismiss": "关闭",
+      "viewerTitle": "360° 3D 模型",
+      "viewerNote": "拖拽旋转，滚轮缩放。上传该产品的 GLB 模型后，交互式 3D 查看器将在此启用。",
+      "resetView": "重置视角",
+      "specsTitle": "技术规格",
+      "featuresTitle": "核心特性",
+      "scenariosTitle": "适用行业",
+      "relatedTitle": "相关产品"
+    },
+    "cta": {
+      "title": "不确定哪款型号适合您的仓库？",
+      "subtitle": "告诉我们您的吞吐量与场地布局，方案工程师将在 24 小时内为您推荐合适的配置。",
+      "button": "预约咨询"
+    }
+  },
+  "auth": {
+    "loginTab": "登录",
+    "registerTab": "注册",
+    "loginTitle": "欢迎回来",
+    "registerTitle": "创建账号",
+    "name": "姓名",
+    "namePlaceholder": "张三",
+    "company": "公司",
+    "companyPlaceholder": "您的公司",
+    "email": "邮箱",
+    "emailPlaceholder": "you@company.com",
+    "password": "密码",
+    "passwordPlaceholder": "至少 8 位字符",
+    "confirmPassword": "确认密码",
+    "confirmPasswordPlaceholder": "再次输入密码",
+    "terms": "我已阅读并同意服务条款与隐私政策",
+    "submitLogin": "登录",
+    "submitRegister": "创建账号",
+    "close": "关闭",
+    "errors": {
+      "emailInvalid": "请输入有效的邮箱地址",
+      "passwordMin": "密码至少 8 位字符",
+      "passwordMismatch": "两次输入的密码不一致",
+      "nameRequired": "请输入您的姓名",
+      "companyRequired": "请输入您的公司",
+      "termsRequired": "请先同意服务条款"
+    }
   }
 }

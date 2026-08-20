@@ -227,5 +227,65 @@
       "curtainTagline": "Intelligent Warehousing · Material Handling · Solution Integrator",
       "curtainCta": "Discover Our Solutions"
     }
+  },
+  "products": {
+    "banner": {
+      "title": "Our Products",
+      "subtitle": "A full-category lineup of intelligent warehousing and material handling equipment — engineered to work as one system."
+    },
+    "filters": {
+      "all": "All"
+    },
+    "viewDetails": "View Details",
+    "detail": {
+      "breadcrumbHome": "Home",
+      "breadcrumbProducts": "Products",
+      "quickSpecs": "Key Specifications",
+      "requestConsultation": "Request Consultation",
+      "downloadSpec": "Download Spec Sheet",
+      "askAI": "Ask AI about this product",
+      "aiReady": "AI Assistant will be available soon. Your account is ready.",
+      "dismiss": "Dismiss",
+      "viewerTitle": "360° 3D Model",
+      "viewerNote": "Drag to rotate, scroll to zoom. The interactive 3D viewer will be enabled here once the GLB model for this product is uploaded.",
+      "resetView": "Reset View",
+      "specsTitle": "Technical Specifications",
+      "featuresTitle": "Key Features",
+      "scenariosTitle": "Applicable Industries",
+      "relatedTitle": "Related Products"
+    },
+    "cta": {
+      "title": "Not sure which model fits your warehouse?",
+      "subtitle": "Tell us about your throughput and layout — our solution engineers will recommend the right configuration within 24 hours.",
+      "button": "Request a Consultation"
+    }
+  },
+  "auth": {
+    "loginTab": "Login",
+    "registerTab": "Register",
+    "loginTitle": "Welcome back",
+    "registerTitle": "Create your account",
+    "name": "Full Name",
+    "namePlaceholder": "John Smith",
+    "company": "Company",
+    "companyPlaceholder": "Your company",
+    "email": "Email",
+    "emailPlaceholder": "you@company.com",
+    "password": "Password",
+    "passwordPlaceholder": "At least 8 characters",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Repeat your password",
+    "terms": "I agree to the Terms of Service and Privacy Policy",
+    "submitLogin": "Sign In",
+    "submitRegister": "Create Account",
+    "close": "Close",
+    "errors": {
+      "emailInvalid": "Please enter a valid email address",
+      "passwordMin": "Password must be at least 8 characters",
+      "passwordMismatch": "Passwords do not match",
+      "nameRequired": "Please enter your name",
+      "companyRequired": "Please enter your company",
+      "termsRequired": "You must agree to the terms"
+    }
   }
 }

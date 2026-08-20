@@ -4,6 +4,7 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { Providers } from "@/components/providers";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { AuthModal } from "@/components/auth/AuthModal";
 import { locales } from "@/navigation";
 import "../globals.css";
 
@@ -57,6 +58,7 @@ export default async function LocaleLayout({
             <main className="flex-1 pt-20">{children}</main>
             <Footer />
           </div>
+          <AuthModal />
         </Providers>
       </body>
     </html>

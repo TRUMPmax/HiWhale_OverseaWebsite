@@ -71,6 +71,8 @@ export enum InquiryStatus {
   CLOSED = "CLOSED",
 }
 
+export * from "./mock-products";
+
 export const INQUIRY_STATUS_LABELS: Record<InquiryStatus, { en: string; zh: string }> = {
   [InquiryStatus.NEW]: { en: "New", zh: "新询盘" },
   [InquiryStatus.FOLLOWING]: { en: "Following", zh: "跟进中" },
