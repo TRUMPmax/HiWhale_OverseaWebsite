@@ -29,15 +29,15 @@
     "sitemap": "网站地图",
     "cookiePolicy": "Cookie 政策",
     "icp": "沪ICP备XXXXXXXX号（备案号占位，上线前替换）",
-    "copyright": "© {year} 浩鲸机器人。保留所有权利。",
+    "copyright": "© {year} 浩鲸机器人（青岛）有限公司。保留所有权利。",
     "tagline": "为全球客户提供智能仓储与货物转运解决方案。",
     "solutionsEcommerce": "电商",
     "solutionsAutomotive": "汽车",
     "solutions3pl": "第三方物流",
     "solutionsColdChain": "冷链",
-    "contactEmail": "info@hiwhale.com",
-    "contactPhone": "+86 400-000-0000",
-    "contactAddress": "中国上海"
+    "contactEmail": "mia@gdhjtech.com",
+    "contactPhone": "+86-1866-1717-757",
+    "contactAddress": "山东省青岛市崂山区中韩街道科苑纬一路创新园二期C座"
   },
   "home": {
     "hero": {
@@ -331,14 +331,14 @@
       "text": "我们的使命：让每一个仓库都像一个智能有机体一样运转——设备、软件与人协同如一，遍及全球。"
     },
     "positioning": {
-      "title": "方案集成商，而不只是设备商",
-      "text": "浩鲸机器人从机器人工程团队起步，成长为全栈方案集成商。我们以一个责任主体的身份，设计、交付并调试完整的智能仓储系统——从无人叉车、AMR 到调度软件。",
+      "title": "软硬件自研的方案集成商",
+      "text": "浩鲸自主研发虎鲸系列 iWMS 智能仓储管理系统与蓝鲸系列智能仓储设备，同时高度集成行业顶尖硬件厂商的各型智能物流装备，根据不同业务场景为客户量身定制可快速落地的全链路智能工厂解决方案。",
       "text2": "这意味着一份合同、一套系统架构、一支对您的吞吐目标负责的团队，从首次现场勘测到 24/7 运营。"
     },
     "milestones": {
       "title": "发展历程",
       "items": {
-        "m2016": { "year": "2016", "event": "机器人工程团队在上海创立" },
+        "m2017": { "year": "2017", "event": "广东浩鲸科技有限公司在粤港澳大湾区深圳成立" },
         "m2018": { "year": "2018", "event": "交付首个无人叉车 AGV 项目并通过验收" },
         "m2020": { "year": "2020", "event": "浩鲸 WCS 调度软件平台发布" },
         "m2022": { "year": "2022", "event": "开启海外拓展，首批项目落地欧洲与东南亚" },
@@ -348,12 +348,12 @@
     },
     "presence": {
       "title": "全球布局",
-      "subtitle": "总部位于上海，服务全球客户。",
+      "subtitle": "总部位于深圳，设有深圳、苏州、青岛三大交付中心，服务全球客户。",
       "locations": {
-        "hq": "上海总部",
-        "frankfurt": "法兰克福",
-        "singapore": "新加坡",
-        "houston": "休斯顿"
+        "shenzhen": "深圳总部",
+        "suzhou": "苏州基地",
+        "qingdao": "青岛基地",
+        "overseas": "海外市场"
       }
     },
     "rd": {
@@ -383,13 +383,13 @@
     "info": {
       "title": "联系方式",
       "email": "邮箱",
-      "emailValue": "info@hiwhale.com",
+      "emailValue": "mia@gdhjtech.com",
       "phone": "电话",
-      "phoneValue": "+86 400-000-0000",
+      "phoneValue": "+86-1866-1717-757",
       "address": "地址",
-      "addressValue": "中国 上海",
+      "addressValue": "山东省青岛市崂山区中韩街道科苑纬一路创新园二期C座13楼",
       "whatsapp": "WhatsApp",
-      "whatsappValue": "+86 138-0000-0000",
+      "whatsappValue": "+86-1866-1717-757",
       "linkedin": "LinkedIn",
       "linkedinValue": "HiWhale Robotics"
     },

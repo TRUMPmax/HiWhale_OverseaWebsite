@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Reveal } from "@/components/ui/Reveal";
 
-const MILESTONE_KEYS = ["m2016", "m2018", "m2020", "m2022", "m2024", "m2026"] as const;
+const MILESTONE_KEYS = ["m2017", "m2018", "m2020", "m2022", "m2024", "m2026"] as const;
 
 /** 关于我们 3：里程碑时间线（桌面端左右交错） */
 export function Milestones() {

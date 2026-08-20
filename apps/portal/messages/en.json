@@ -29,15 +29,15 @@
     "sitemap": "Sitemap",
     "cookiePolicy": "Cookie Policy",
     "icp": "沪ICP备XXXXXXXX号（备案号占位，上线前替换）",
-    "copyright": "© {year} HiWhale Robotics. All rights reserved.",
+    "copyright": "© {year} HiWhale Robotics (Qingdao) Co., Ltd. All rights reserved.",
     "tagline": "Intelligent warehousing and material handling solutions for global customers.",
     "solutionsEcommerce": "E-commerce",
     "solutionsAutomotive": "Automotive",
     "solutions3pl": "3PL",
     "solutionsColdChain": "Cold Chain",
-    "contactEmail": "info@hiwhale.com",
-    "contactPhone": "+86 400-000-0000",
-    "contactAddress": "Shanghai, China"
+    "contactEmail": "mia@gdhjtech.com",
+    "contactPhone": "+86-1866-1717-757",
+    "contactAddress": "Laoshan District, Qingdao, Shandong, China"
   },
   "home": {
     "hero": {
@@ -343,14 +343,17 @@
       "text": "Our mission: make every warehouse run as one intelligent organism — equipment, software and people orchestrated together, anywhere in the world."
     },
     "positioning": {
-      "title": "A Solution Integrator, Not Just an Equipment Vendor",
-      "text": "HiWhale Robotics started as a robotics engineering team and grew into a full-scope solution integrator. We design, deliver and commission complete intelligent warehousing systems — from AGV forklifts and AMRs to scheduling software — as one accountable partner.",
+      "title": "A Solution Integrator with In-House Software & Hardware",
+      "text": "HiWhale develops its own Orca-series iWMS intelligent warehouse management system and Blue Whale-series intelligent warehousing equipment, while integrating top-tier hardware from industry-leading manufacturers — delivering tailor-made, rapidly deployable end-to-end smart factory solutions for every business scenario.",
       "text2": "That means one contract, one system architecture and one team responsible for your throughput target, from the first site survey to 24/7 operations."
     },
     "milestones": {
       "title": "Our Journey",
       "items": {
-        "m2016": { "year": "2016", "event": "Founded in Shanghai by a robotics engineering team" },
+        "m2017": {
+          "year": "2017",
+          "event": "Guangdong Haojing Technology Co., Ltd. founded in Shenzhen, Greater Bay Area"
+        },
         "m2018": { "year": "2018", "event": "First AGV forklift project delivered and accepted" },
         "m2020": { "year": "2020", "event": "HiWhale WCS scheduling platform launched" },
         "m2022": {
@@ -363,12 +366,12 @@
     },
     "presence": {
       "title": "Global Presence",
-      "subtitle": "Headquartered in Shanghai, serving customers worldwide.",
+      "subtitle": "Three delivery bases — Shenzhen, Suzhou and Qingdao — serving customers worldwide.",
       "locations": {
-        "hq": "Shanghai HQ",
-        "frankfurt": "Frankfurt",
-        "singapore": "Singapore",
-        "houston": "Houston"
+        "shenzhen": "Shenzhen HQ",
+        "suzhou": "Suzhou",
+        "qingdao": "Qingdao",
+        "overseas": "Overseas Markets"
       }
     },
     "rd": {
@@ -398,13 +401,13 @@
     "info": {
       "title": "Get in Touch",
       "email": "Email",
-      "emailValue": "info@hiwhale.com",
+      "emailValue": "mia@gdhjtech.com",
       "phone": "Phone",
-      "phoneValue": "+86 400-000-0000",
+      "phoneValue": "+86-1866-1717-757",
       "address": "Address",
-      "addressValue": "Shanghai, China",
+      "addressValue": "13th Floor, Building C, Innovation Park, Keyuanwei 1st Road, Laoshan District, Qingdao, China",
       "whatsapp": "WhatsApp",
-      "whatsappValue": "+86 138-0000-0000",
+      "whatsappValue": "+86-1866-1717-757",
       "linkedin": "LinkedIn",
       "linkedinValue": "HiWhale Robotics"
     },

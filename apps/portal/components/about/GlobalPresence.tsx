@@ -3,7 +3,7 @@ import { MapPin } from "lucide-react";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
 
-const LOCATION_KEYS = ["hq", "frankfurt", "singapore", "houston"] as const;
+const LOCATION_KEYS = ["shenzhen", "suzhou", "qingdao", "overseas"] as const;
 
 /** 关于我们 4：全球布局 */
 export function GlobalPresence() {
@@ -20,7 +20,7 @@ export function GlobalPresence() {
           <Placeholder
             ratio="aspect-[21/9]"
             className="mt-8"
-            label="全球布局世界地图（标注：中国总部+海外服务点）"
+            label="全球布局世界地图（标注：深圳总部 + 苏州基地 + 青岛基地）"
             size="21:9 · 建议 2100×900"
             name="about-world-map.png"
           />
