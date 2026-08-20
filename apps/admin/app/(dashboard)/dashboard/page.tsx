@@ -1,0 +1,198 @@
+import { AlertTriangle, Inbox, MessageSquareText, TrendingUp, Users } from "lucide-react";
+import {
+  getLocalizedLabel,
+  INQUIRY_STATUS_LABELS,
+  PRODUCT_CATEGORY_LABELS,
+} from "@hiwhale/shared/constants";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { TrendChart } from "@/components/dashboard/TrendChart";
+
+const STATS = [
+  { title: "今日询盘", value: "12", delta: "+20.1% 较昨日", icon: Inbox },
+  { title: "本月新增用户", value: "86", delta: "+12.5% 较上月", icon: Users },
+  { title: "AI 对话量", value: "1,432", delta: "+8.3% 较昨日", icon: MessageSquareText },
+  { title: "产品浏览量", value: "8,209", delta: "+15.2% 较昨日", icon: TrendingUp },
+];
+
+const STATUS_BADGE: Record<string, string> = {
+  NEW: "bg-blue-50 text-blue-700 hover:bg-blue-50",
+  FOLLOWING: "bg-amber-50 text-amber-700 hover:bg-amber-50",
+  WON: "bg-green-50 text-green-700 hover:bg-green-50",
+  CLOSED: "bg-slate-100 text-slate-500 hover:bg-slate-100",
+};
+
+/** 最近询盘 Mock 数据 */
+const RECENT_INQUIRIES = [
+  {
+    id: "INQ-0820-01",
+    customer: "Thomas Müller",
+    company: "Bavaria Logistics GmbH",
+    country: "德国",
+    category: "AGV_FORKLIFT",
+    status: "NEW",
+    time: "2026-08-20 09:42",
+    assignee: "未分配",
+  },
+  {
+    id: "INQ-0820-02",
+    customer: "Sarah Johnson",
+    company: "Midwest Fulfillment Inc.",
+    country: "美国",
+    category: "AMR",
+    status: "FOLLOWING",
+    time: "2026-08-20 08:15",
+    assignee: "陈凯文",
+  },
+  {
+    id: "INQ-0819-01",
+    customer: "Kenji Tanaka",
+    company: "Tanaka Seiki Co., Ltd.",
+    country: "日本",
+    category: "ROBOTIC_ARM",
+    status: "FOLLOWING",
+    time: "2026-08-19 17:33",
+    assignee: "李晓梅",
+  },
+  {
+    id: "INQ-0819-02",
+    customer: "Ahmad Rahman",
+    company: "HarborLink Terminal",
+    country: "新加坡",
+    category: "GANTRY_CRANE",
+    status: "WON",
+    time: "2026-08-19 14:08",
+    assignee: "陈凯文",
+  },
+  {
+    id: "INQ-0818-03",
+    customer: "Emma Dubois",
+    company: "FraisChaîne SAS",
+    country: "法国",
+    category: "WCS",
+    status: "CLOSED",
+    time: "2026-08-18 11:26",
+    assignee: "张伟",
+  },
+] as const;
+
+const TODOS = [
+  { icon: Inbox, text: "3 条新询盘待分配", tone: "text-brand-blue bg-blue-50" },
+  {
+    icon: AlertTriangle,
+    text: "2 篇文档向量化失败待重试",
+    tone: "text-amber-600 bg-amber-50",
+  },
+  {
+    icon: MessageSquareText,
+    text: "5 条 AI 对话被用户标记为无用",
+    tone: "text-amber-600 bg-amber-50",
+  },
+  { icon: Users, text: "1 个员工账号待审核开通", tone: "text-brand-blue bg-blue-50" },
+];
+
+/** 仪表盘 */
+export default function DashboardPage() {
+  return (
+    <div className="space-y-6">
+      {/* 统计卡片 */}
+      <div className="grid grid-cols-4 gap-4">
+        {STATS.map((stat) => (
+          <Card key={stat.title}>
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-slate-500">{stat.title}</span>
+                <stat.icon className="text-brand-blue h-5 w-5" />
+              </div>
+              <div className="mt-2 text-3xl font-bold text-slate-900">{stat.value}</div>
+              <div className="mt-1 text-xs font-medium text-green-600">{stat.delta}</div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-3 gap-4">
+        {/* 趋势图 */}
+        <Card className="col-span-2">
+          <CardHeader>
+            <CardTitle className="text-base">近30天趋势</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TrendChart />
+          </CardContent>
+        </Card>
+
+        {/* 待办提醒 */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">待办提醒</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {TODOS.map((todo) => (
+              <div
+                key={todo.text}
+                className="flex items-center gap-3 rounded-lg border border-slate-100 p-3"
+              >
+                <span
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${todo.tone}`}
+                >
+                  <todo.icon className="h-4 w-4" />
+                </span>
+                <span className="text-sm text-slate-700">{todo.text}</span>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* 最近询盘 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">最近询盘</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>客户</TableHead>
+                <TableHead>公司</TableHead>
+                <TableHead>国家/地区</TableHead>
+                <TableHead>意向品类</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>提交时间</TableHead>
+                <TableHead>负责人</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {RECENT_INQUIRIES.map((inquiry) => (
+                <TableRow key={inquiry.id}>
+                  <TableCell className="font-medium">{inquiry.customer}</TableCell>
+                  <TableCell>{inquiry.company}</TableCell>
+                  <TableCell>{inquiry.country}</TableCell>
+                  <TableCell>
+                    {getLocalizedLabel(PRODUCT_CATEGORY_LABELS, inquiry.category, "zh")}
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={STATUS_BADGE[inquiry.status]}>
+                      {getLocalizedLabel(INQUIRY_STATUS_LABELS, inquiry.status, "zh")}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-slate-500">{inquiry.time}</TableCell>
+                  <TableCell>{inquiry.assignee}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
