@@ -283,6 +283,11 @@
     "terms": "I agree to the Terms of Service and Privacy Policy",
     "submitLogin": "Sign In",
     "submitRegister": "Create Account",
+    "code": "Email Verification Code",
+    "codePlaceholder": "6-digit code",
+    "sendCode": "Send Code",
+    "resendIn": "Resend in {s}s",
+    "codeSentDemo": "Verification code sent to your email (demo mode: {code})",
     "close": "Close",
     "errors": {
       "emailInvalid": "Please enter a valid email address",
@@ -290,7 +295,10 @@
       "passwordMismatch": "Passwords do not match",
       "nameRequired": "Please enter your name",
       "companyRequired": "Please enter your company",
-      "termsRequired": "You must agree to the terms"
+      "termsRequired": "You must agree to the terms",
+      "codeInvalid": "Please enter the 6-digit verification code",
+      "codeNotSent": "Please request a verification code first",
+      "codeMismatch": "Incorrect code, please try again"
     }
   },
   "solutions": {

@@ -18,6 +18,7 @@ export function createRegisterSchema(t: Translate) {
       name: z.string().min(2, t("errors.nameRequired")),
       company: z.string().min(2, t("errors.companyRequired")),
       email: z.string().email(t("errors.emailInvalid")),
+      code: z.string().regex(/^\d{6}$/, t("errors.codeInvalid")),
       password: z.string().min(8, t("errors.passwordMin")),
       confirmPassword: z.string(),
       terms: z.boolean().refine((v) => v, t("errors.termsRequired")),
