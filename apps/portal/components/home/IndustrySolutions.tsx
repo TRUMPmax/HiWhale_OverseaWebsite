@@ -5,6 +5,22 @@ import { Reveal } from "@/components/ui/Reveal";
 import { INDUSTRY_IMAGE_NAMES } from "./assets";
 import { getLocalizedLabel, INDUSTRY_LABELS, Industry } from "@hiwhale/shared/constants";
 
+/** 已投放真实素材的行业（public/images/industries/ 下有图即用真图） */
+const INDUSTRIES_WITH_IMAGE: ReadonlySet<Industry> = new Set([
+  Industry.PHARMACEUTICAL,
+  Industry.PORT,
+]);
+
+/** 行业 → 对应方案详情页 */
+const INDUSTRY_SOLUTION_SLUG: Record<Industry, string> = {
+  [Industry.E_COMMERCE]: "e-commerce-fulfillment",
+  [Industry.AUTOMOTIVE]: "automotive-line-side",
+  [Industry.THIRD_PARTY_LOGISTICS]: "3pl-multi-client",
+  [Industry.FOOD_COLD_CHAIN]: "cold-chain-automation",
+  [Industry.PHARMACEUTICAL]: "pharma-compliant-logistics",
+  [Industry.PORT]: "port-container-yard",
+};
+
 /** 首页分区 4：行业解决方案（6 个大图卡片，2 列） */
 export function IndustrySolutions() {
   const t = useTranslations("home.industries");
@@ -25,13 +41,22 @@ export function IndustrySolutions() {
           {industries.map((industry, index) => (
             <Reveal key={industry} delay={index * 80} className="h-full">
               <div className="flex h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition-all hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg">
-                <Placeholder
-                  ratio="aspect-video"
-                  className="rounded-none border-0"
-                  label={t(`items.${industry}.image`)}
-                  size={t("imageSize")}
-                  name={INDUSTRY_IMAGE_NAMES[industry]}
-                />
+                {INDUSTRIES_WITH_IMAGE.has(industry) ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={`/images/industries/${INDUSTRY_IMAGE_NAMES[industry]}`}
+                    alt={getLocalizedLabel(INDUSTRY_LABELS, industry, locale)}
+                    className="aspect-video w-full object-cover"
+                  />
+                ) : (
+                  <Placeholder
+                    ratio="aspect-video"
+                    className="rounded-none border-0"
+                    label={t(`items.${industry}.image`)}
+                    size={t("imageSize")}
+                    name={INDUSTRY_IMAGE_NAMES[industry]}
+                  />
+                )}
                 <div className="flex flex-1 flex-col p-6">
                   <h3 className="font-heading text-foreground text-xl font-bold">
                     {getLocalizedLabel(INDUSTRY_LABELS, industry, locale)}
@@ -44,7 +69,7 @@ export function IndustrySolutions() {
                       {t(`items.${industry}.painPoint`)}
                     </span>
                     <Link
-                      href="/solutions"
+                      href={`/solutions/${INDUSTRY_SOLUTION_SLUG[industry]}`}
                       className="text-brand-blue text-sm font-medium hover:underline"
                     >
                       {t("viewSolution")} →

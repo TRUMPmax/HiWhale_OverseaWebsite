@@ -20,6 +20,9 @@ const GROUP_ICONS: Record<ProductGroup, typeof Truck> = {
   [ProductGroup.SOFTWARE]: Monitor,
 };
 
+/** 已投放真实素材的产品组（public/images/products/ 下有图即用真图） */
+const GROUPS_WITH_IMAGE: ReadonlySet<ProductGroup> = new Set([ProductGroup.ROBOTIC_ARM]);
+
 /** 首页分区 2：产品生态（5 大类产品卡片） */
 export function ProductEcosystem() {
   const t = useTranslations("home.ecosystem");
@@ -44,13 +47,22 @@ export function ProductEcosystem() {
             return (
               <Reveal key={group} delay={index * 80} className="h-full">
                 <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-6 transition-all hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg">
-                  <Placeholder
-                    ratio="aspect-[4/3]"
-                    className="p-4"
-                    label={t(`items.${group}.image`)}
-                    size={t("imageSize")}
-                    name={GROUP_IMAGE_NAMES[group]}
-                  />
+                  {GROUPS_WITH_IMAGE.has(group) ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={`/images/products/${GROUP_IMAGE_NAMES[group]}`}
+                      alt={getLocalizedLabel(PRODUCT_GROUP_LABELS, group, locale)}
+                      className="aspect-[4/3] w-full rounded-lg object-cover"
+                    />
+                  ) : (
+                    <Placeholder
+                      ratio="aspect-[4/3]"
+                      className="p-4"
+                      label={t(`items.${group}.image`)}
+                      size={t("imageSize")}
+                      name={GROUP_IMAGE_NAMES[group]}
+                    />
+                  )}
                   <div className="mt-5 flex items-center gap-3">
                     <Icon className="text-brand-blue h-5 w-5" />
                     <h3 className="font-heading text-foreground text-lg font-bold">
