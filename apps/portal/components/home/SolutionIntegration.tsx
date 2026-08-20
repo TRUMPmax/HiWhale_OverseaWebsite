@@ -3,10 +3,11 @@ import { Boxes, Network, Package } from "lucide-react";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
 
+/** 已就绪的真实素材（public/images/home/ 下存在即用真图，否则占位） */
 const LAYERS = [
-  { key: "equipment", icon: Package, imageName: "home-layer-equipment.png" },
-  { key: "system", icon: Network, imageName: "home-layer-system.png" },
-  { key: "solution", icon: Boxes, imageName: "home-layer-solution.png" },
+  { key: "equipment", icon: Package, imageName: "home-layer-equipment.png", hasImage: true },
+  { key: "system", icon: Network, imageName: "home-layer-system.png", hasImage: false },
+  { key: "solution", icon: Boxes, imageName: "home-layer-solution.png", hasImage: false },
 ] as const;
 
 /** 首页分区 3：方案集成三层能力（设备层 → 系统层 → 方案层，左右交替） */
@@ -57,12 +58,21 @@ export function SolutionIntegration() {
                     </ul>
                   </div>
                   <div className="w-full flex-1">
-                    <Placeholder
-                      ratio="aspect-[4/3]"
-                      label={t(`layers.${layer.key}.image`)}
-                      size={t("imageSize")}
-                      name={layer.imageName}
-                    />
+                    {layer.hasImage ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={`/images/home/${layer.imageName}`}
+                        alt={t(`layers.${layer.key}.title`)}
+                        className="aspect-[4/3] w-full rounded-xl border border-slate-200 object-cover"
+                      />
+                    ) : (
+                      <Placeholder
+                        ratio="aspect-[4/3]"
+                        label={t(`layers.${layer.key}.image`)}
+                        size={t("imageSize")}
+                        name={layer.imageName}
+                      />
+                    )}
                   </div>
                 </div>
               </Reveal>
