@@ -14,6 +14,8 @@
   "common": {
     "login": "登录",
     "signup": "注册",
+    "logout": "退出登录",
+    "dashboard": "控制台",
     "language": "语言",
     "english": "English",
     "chinese": "中文",
@@ -254,6 +256,8 @@
     "registerTab": "注册",
     "loginTitle": "欢迎回来",
     "registerTitle": "创建账号",
+    "noAccount": "还没有账号？",
+    "hasAccount": "已有账号？",
     "name": "姓名",
     "namePlaceholder": "张三",
     "company": "公司",
@@ -446,6 +450,48 @@
         "descriptionMin": "请用至少 20 个字符描述您的项目",
         "privacyRequired": "请先同意隐私政策"
       }
+    }
+  },
+  "chat": {
+    "title": "AI 助手",
+    "online": "在线",
+    "welcome": "您好！我是浩鲸 AI 助手。可以问我产品参数、认证或方案选型的问题，也可以点击下方快捷问题。",
+    "quick1": "你们的无人叉车最大载重是多少？",
+    "quick2": "你们的产品有哪些认证？",
+    "quick3": "能帮我推荐一套仓储方案吗？",
+    "inputPlaceholder": "输入您的问题…",
+    "send": "发送",
+    "clear": "清空记录",
+    "close": "关闭",
+    "contextLine": "咨询产品：{name}"
+  },
+  "dashboard": {
+    "title": "我的控制台",
+    "tabs": {
+      "inquiries": "我的询盘",
+      "chat": "AI 对话记录",
+      "saved": "收藏的产品",
+      "profile": "个人资料"
+    },
+    "chatHistory": {
+      "empty": "暂无对话记录。向 AI 助手提问任何产品问题吧。",
+      "openChat": "打开 AI 对话",
+      "you": "我",
+      "assistant": "AI 助手"
+    },
+    "saved": {
+      "remove": "取消收藏",
+      "view": "查看详情",
+      "empty": "还没有收藏的产品。去产品页逛逛，收藏感兴趣的型号。"
+    },
+    "profile": {
+      "name": "姓名",
+      "company": "公司",
+      "email": "邮箱",
+      "phone": "电话",
+      "country": "国家/地区",
+      "save": "保存修改",
+      "saved": "资料已保存。"
     }
   }
 }

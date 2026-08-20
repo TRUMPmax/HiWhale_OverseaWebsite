@@ -132,7 +132,7 @@ export default async function ProductDetailPage({
                 <Download className="h-4 w-4" />
                 {t("downloadSpec")}
               </a>
-              <AskAIButton />
+              <AskAIButton productName={product.name[loc]} />
             </div>
           </Reveal>
         </div>

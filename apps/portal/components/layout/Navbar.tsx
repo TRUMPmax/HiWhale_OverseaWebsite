@@ -6,6 +6,7 @@ import { Link } from "@/navigation";
 import { ChevronDown, Menu, X, User } from "lucide-react";
 import { BrandName } from "@/components/ui/BrandName";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
+import { useAuthStore } from "@/store/auth";
 import {
   getLocalizedLabel,
   PRODUCT_CATEGORY_GROUPS,
@@ -20,6 +21,13 @@ export function Navbar() {
   const locale = useLocale();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  /** 挂载前不渲染登录态相关 UI，避免水合不一致 */
+  const [mounted, setMounted] = useState(false);
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 16);
@@ -100,13 +108,71 @@ export function Navbar() {
 
         <div className="hidden items-center gap-4 md:flex">
           <LocaleSwitcher variant={scrolled ? "light" : "dark"} />
-          <Link
-            href="/auth/login"
-            className="bg-brand-blue flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
-          >
-            <User className="h-4 w-4" />
-            {tc("login")}
-          </Link>
+          {/* 登录态：未登录 → 登录/注册；已登录 → 头像下拉 */}
+          {mounted && user ? (
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setUserMenuOpen((v) => !v)}
+                aria-label={user.name}
+                className="bg-brand-blue flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold text-white transition-opacity hover:opacity-90"
+              >
+                {user.name.charAt(0).toUpperCase()}
+              </button>
+              {userMenuOpen && (
+                <>
+                  <button
+                    type="button"
+                    aria-hidden="true"
+                    tabIndex={-1}
+                    className="fixed inset-0 z-40 cursor-default"
+                    onClick={() => setUserMenuOpen(false)}
+                  />
+                  <div className="absolute right-0 top-full z-50 mt-2 w-44 rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg">
+                    <div className="border-border truncate border-b px-3 py-2">
+                      <div className="text-foreground truncate text-sm font-medium">
+                        {user.name}
+                      </div>
+                      <div className="text-subtle truncate text-xs">{user.email}</div>
+                    </div>
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="text-foreground hover:text-brand-blue block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-slate-50"
+                    >
+                      {tc("dashboard")}
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        logout();
+                        setUserMenuOpen(false);
+                      }}
+                      className="text-muted hover:text-brand-blue block w-full rounded-lg px-3 py-2 text-left text-sm transition-colors hover:bg-slate-50"
+                    >
+                      {tc("logout")}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          ) : mounted ? (
+            <>
+              <Link
+                href="/auth/register"
+                className="text-brand-blue border-brand-blue rounded-lg border bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-blue-50"
+              >
+                {tc("signup")}
+              </Link>
+              <Link
+                href="/auth/login"
+                className="bg-brand-blue flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+              >
+                <User className="h-4 w-4" />
+                {tc("login")}
+              </Link>
+            </>
+          ) : null}
         </div>
 
         <button
@@ -150,12 +216,54 @@ export function Navbar() {
             <div className="pt-2">
               <LocaleSwitcher variant="light" />
             </div>
-            <Link
-              href="/auth/login"
-              className="bg-brand-blue rounded-lg px-4 py-2 text-center text-sm font-medium text-white"
-            >
-              {tc("login")}
-            </Link>
+            {/* 移动端登录态 */}
+            {mounted && user ? (
+              <div className="flex flex-col gap-3 pt-2">
+                <div className="flex items-center gap-3">
+                  <span className="bg-brand-blue flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold text-white">
+                    {user.name.charAt(0).toUpperCase()}
+                  </span>
+                  <div className="min-w-0">
+                    <div className="text-foreground truncate text-sm font-medium">{user.name}</div>
+                    <div className="text-subtle truncate text-xs">{user.email}</div>
+                  </div>
+                </div>
+                <Link
+                  href="/dashboard"
+                  className="bg-brand-blue rounded-lg px-4 py-2 text-center text-sm font-medium text-white"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {tc("dashboard")}
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    setMobileOpen(false);
+                  }}
+                  className="text-muted border-border rounded-lg border px-4 py-2 text-sm font-medium"
+                >
+                  {tc("logout")}
+                </button>
+              </div>
+            ) : mounted ? (
+              <div className="flex gap-3 pt-2">
+                <Link
+                  href="/auth/register"
+                  className="text-brand-blue border-brand-blue flex-1 rounded-lg border px-4 py-2 text-center text-sm font-medium"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {tc("signup")}
+                </Link>
+                <Link
+                  href="/auth/login"
+                  className="bg-brand-blue flex-1 rounded-lg px-4 py-2 text-center text-sm font-medium text-white"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {tc("login")}
+                </Link>
+              </div>
+            ) : null}
           </nav>
         </div>
       )}

@@ -5,6 +5,7 @@ import { Providers } from "@/components/providers";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AuthModal } from "@/components/auth/AuthModal";
+import { AIChatWidget } from "@/components/ai-chat/AIChatWidget";
 import { locales } from "@/navigation";
 import "../globals.css";
 
@@ -59,6 +60,7 @@ export default async function LocaleLayout({
             <Footer />
           </div>
           <AuthModal />
+          <AIChatWidget />
         </Providers>
       </body>
     </html>

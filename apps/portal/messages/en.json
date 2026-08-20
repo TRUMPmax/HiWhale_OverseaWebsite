@@ -14,6 +14,8 @@
   "common": {
     "login": "Login",
     "signup": "Sign Up",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
     "language": "Language",
     "english": "English",
     "chinese": "中文",
@@ -266,6 +268,8 @@
     "registerTab": "Register",
     "loginTitle": "Welcome back",
     "registerTitle": "Create your account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
     "name": "Full Name",
     "namePlaceholder": "John Smith",
     "company": "Company",
@@ -464,6 +468,48 @@
         "descriptionMin": "Please describe your project in at least 20 characters",
         "privacyRequired": "You must agree to the Privacy Policy"
       }
+    }
+  },
+  "chat": {
+    "title": "AI Assistant",
+    "online": "Online",
+    "welcome": "Hi! I'm the HiWhale AI assistant. Ask me about products, certifications or solution selection — or pick a quick question below.",
+    "quick1": "What load capacity do your AGV forklifts have?",
+    "quick2": "What certifications do your products carry?",
+    "quick3": "Can you recommend a solution for my warehouse?",
+    "inputPlaceholder": "Type your question…",
+    "send": "Send",
+    "clear": "Clear history",
+    "close": "Close",
+    "contextLine": "About product: {name}"
+  },
+  "dashboard": {
+    "title": "My Dashboard",
+    "tabs": {
+      "inquiries": "My Inquiries",
+      "chat": "AI Chat History",
+      "saved": "Saved Products",
+      "profile": "Profile"
+    },
+    "chatHistory": {
+      "empty": "No conversations yet. Ask the AI assistant anything about our products.",
+      "openChat": "Open AI Chat",
+      "you": "You",
+      "assistant": "AI Assistant"
+    },
+    "saved": {
+      "remove": "Remove from saved",
+      "view": "View Details",
+      "empty": "No saved products yet. Browse products and save the ones you like."
+    },
+    "profile": {
+      "name": "Full Name",
+      "company": "Company",
+      "email": "Email",
+      "phone": "Phone",
+      "country": "Country",
+      "save": "Save Changes",
+      "saved": "Profile saved."
     }
   }
 }
