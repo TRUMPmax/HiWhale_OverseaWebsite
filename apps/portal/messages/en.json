@@ -288,5 +288,179 @@
       "companyRequired": "Please enter your company",
       "termsRequired": "You must agree to the terms"
     }
+  },
+  "solutions": {
+    "banner": {
+      "title": "Solutions by Industry",
+      "subtitle": "Turnkey intelligent warehousing and material handling solutions, proven in the industries that move the world."
+    },
+    "viewSolution": "View Solution",
+    "detail": {
+      "breadcrumbHome": "Home",
+      "breadcrumbSolutions": "Solutions",
+      "painPointsTitle": "Industry Pain Points",
+      "solutionTitle": "Our Solution",
+      "equipmentTitle": "Equipment Combination",
+      "processTitle": "Deployment Process",
+      "resultsTitle": "Proven Results",
+      "relatedProductsTitle": "Related Products"
+    },
+    "cta": {
+      "title": "Need a solution built around your operation?",
+      "subtitle": "Tell us your industry and throughput goals — our solution engineers will design a tailored proposal.",
+      "button": "Request a Consultation"
+    }
+  },
+  "cases": {
+    "banner": {
+      "title": "Customer Cases",
+      "subtitle": "Real projects, measurable results — see how HiWhale solutions perform in production."
+    },
+    "filters": {
+      "all": "All"
+    },
+    "readCase": "Read Case",
+    "detail": {
+      "breadcrumbHome": "Home",
+      "breadcrumbCases": "Cases",
+      "backgroundTitle": "Background",
+      "challengeTitle": "The Challenge",
+      "solutionTitle": "The Solution",
+      "equipmentTitle": "Equipment Deployed",
+      "durationLabel": "Delivery Timeline",
+      "resultsTitle": "Results",
+      "relatedProductsTitle": "Related Products"
+    },
+    "cta": {
+      "title": "Want results like these?",
+      "subtitle": "Every project starts with a conversation. Tell us about your warehouse today.",
+      "button": "Request a Consultation"
+    }
+  },
+  "about": {
+    "mission": {
+      "title": "About HiWhale Robotics",
+      "text": "Our mission: make every warehouse run as one intelligent organism — equipment, software and people orchestrated together, anywhere in the world."
+    },
+    "positioning": {
+      "title": "A Solution Integrator, Not Just an Equipment Vendor",
+      "text": "HiWhale Robotics started as a robotics engineering team and grew into a full-scope solution integrator. We design, deliver and commission complete intelligent warehousing systems — from AGV forklifts and AMRs to scheduling software — as one accountable partner.",
+      "text2": "That means one contract, one system architecture and one team responsible for your throughput target, from the first site survey to 24/7 operations."
+    },
+    "milestones": {
+      "title": "Our Journey",
+      "items": {
+        "m2016": { "year": "2016", "event": "Founded in Shanghai by a robotics engineering team" },
+        "m2018": { "year": "2018", "event": "First AGV forklift project delivered and accepted" },
+        "m2020": { "year": "2020", "event": "HiWhale WCS scheduling platform launched" },
+        "m2022": {
+          "year": "2022",
+          "event": "Overseas expansion begins — first projects in Europe and Southeast Asia"
+        },
+        "m2024": { "year": "2024", "event": "500+ projects delivered across 30+ countries" },
+        "m2026": { "year": "2026", "event": "HiWhale global brand and IWMS platform released" }
+      }
+    },
+    "presence": {
+      "title": "Global Presence",
+      "subtitle": "Headquartered in Shanghai, serving customers worldwide.",
+      "locations": {
+        "hq": "Shanghai HQ",
+        "frankfurt": "Frankfurt",
+        "singapore": "Singapore",
+        "houston": "Houston"
+      }
+    },
+    "rd": {
+      "title": "R&D Strength",
+      "text": "More than half of our team works in R&D — navigation algorithms, fleet scheduling and industrial software. Our in-house test factory runs every configuration before it ships.",
+      "stats": {
+        "engineers": "R&D Engineers",
+        "patents": "Patents",
+        "countries": "Countries Served"
+      }
+    },
+    "partners": {
+      "title": "Partners & Certifications",
+      "certsTitle": "Certifications"
+    },
+    "cta": {
+      "title": "Let's build your next warehouse together",
+      "subtitle": "Talk to our solution engineers about your project.",
+      "button": "Request a Consultation"
+    }
+  },
+  "contact": {
+    "banner": {
+      "title": "Contact Us",
+      "subtitle": "Tell us about your project — our solution engineers respond within 24 hours."
+    },
+    "info": {
+      "title": "Get in Touch",
+      "email": "Email",
+      "emailValue": "info@hiwhale.com",
+      "phone": "Phone",
+      "phoneValue": "+86 400-000-0000",
+      "address": "Address",
+      "addressValue": "Shanghai, China",
+      "whatsapp": "WhatsApp",
+      "whatsappValue": "+86 138-0000-0000",
+      "linkedin": "LinkedIn",
+      "linkedinValue": "HiWhale Robotics"
+    },
+    "form": {
+      "title": "Tell Us About Your Project",
+      "name": "Full Name",
+      "namePlaceholder": "John Smith",
+      "company": "Company",
+      "companyPlaceholder": "Your company",
+      "email": "Email",
+      "emailPlaceholder": "you@company.com",
+      "phone": "Phone (optional)",
+      "phonePlaceholder": "+1 555 000 0000",
+      "country": "Country",
+      "countryPlaceholder": "Select your country",
+      "interest": "Product Interest",
+      "description": "Project Description",
+      "descriptionPlaceholder": "Warehouse size, SKU count, daily order volume, goals…",
+      "privacy": "I agree to the ",
+      "privacyLink": "Privacy Policy",
+      "submit": "Submit Inquiry",
+      "submitting": "Submitting…",
+      "successTitle": "Inquiry Received",
+      "successText": "Thank you for reaching out. A HiWhale solution engineer will contact you within 24 hours.",
+      "submitAnother": "Submit Another",
+      "countries": [
+        "United States",
+        "Canada",
+        "Mexico",
+        "Brazil",
+        "United Kingdom",
+        "Germany",
+        "France",
+        "Netherlands",
+        "Spain",
+        "Italy",
+        "Poland",
+        "Turkey",
+        "United Arab Emirates",
+        "Saudi Arabia",
+        "Singapore",
+        "Malaysia",
+        "Indonesia",
+        "Vietnam",
+        "Thailand",
+        "Japan",
+        "South Korea",
+        "Australia"
+      ],
+      "errors": {
+        "required": "This field is required",
+        "emailInvalid": "Please enter a valid email address",
+        "countryRequired": "Please select your country",
+        "descriptionMin": "Please describe your project in at least 20 characters",
+        "privacyRequired": "You must agree to the Privacy Policy"
+      }
+    }
   }
 }

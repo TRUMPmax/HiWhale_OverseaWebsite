@@ -97,6 +97,8 @@ export enum InquiryStatus {
 
 export * from "./product-groups";
 export * from "./products";
+export * from "./solutions";
+export * from "./cases";
 
 export const INQUIRY_STATUS_LABELS: Record<InquiryStatus, { en: string; zh: string }> = {
   [InquiryStatus.NEW]: { en: "New", zh: "新询盘" },
