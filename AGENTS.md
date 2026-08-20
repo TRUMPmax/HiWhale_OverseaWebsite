@@ -24,7 +24,7 @@
 - **双语**：portal 所有文案走 next-intl `t()`，`messages/en.json` + `zh.json` 必须同步；占位图说明文字刻意用中文（双语文件里都写中文，方便用户备料）
 - **占位素材**：`Placeholder` 组件（label=图片需求、size=比例+建议尺寸、name=素材文件名）；用户把素材放进 `assets/inbox/<类别>/`，接入时移动到 `apps/portal/public/images/<类别>/` 并在组件里加白名单开关（参考 IndustrySolutions 的 `INDUSTRIES_WITH_IMAGE` 模式）
 - **mock 数据**：全部集中在 `packages/shared/src/constants/{products,solutions,cases}/`（每实体一个文件 + index 注册表）；后端就绪后只换数据访问层
-- **公司真实信息**：浩鲸机器人（青岛）有限公司 / 广东浩鲸科技有限公司；联系 mia@gdhjtech.com / +86-1866-1717-757；深圳总部 + 苏州/青岛基地；禁止再写"上海"
+- **公司真实信息**：浩鲸机器人（青岛）有限公司 / 广东浩鲸科技有限公司；联系 mia@gdhjtech.com / +86 176-8558-8160；深圳总部 + 苏州/青岛基地；禁止再写"上海"
 - **认证标识**：本地手绘 SVG（CE 按官方构造；UL 为示意版待官方素材；ISO 用文字徽章——ISO 禁止 logo 商用）
 
 ## 网络环境备注
