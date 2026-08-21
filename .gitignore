@@ -56,3 +56,4 @@ worktrees/
 
 # Superpowers scratch
 .superpowers/
+kimi-export-session*.md
