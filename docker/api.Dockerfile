@@ -1,13 +1,40 @@
 # syntax=docker/dockerfile:1
 
-# HiWhale API（占位服务）镜像
+# HiWhale API（NestJS）生产镜像
+# 注意：构建上下文为 monorepo 根目录
 
+FROM node:20-alpine AS base
+RUN corepack enable
+WORKDIR /app
+
+# ---- deps：仅拷贝清单文件，最大化利用缓存 ----
+FROM base AS deps
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY apps/portal/package.json apps/portal/package.json
+COPY apps/admin/package.json apps/admin/package.json
+COPY packages/shared/package.json packages/shared/package.json
+COPY api/package.json api/package.json
+RUN pnpm install --frozen-lockfile
+
+# ---- build：生成 Prisma Client 并编译 NestJS ----
+FROM base AS build
+COPY --from=deps /app/ /app/
+COPY . .
+RUN pnpm --filter @hiwhale/api exec prisma generate \
+  && pnpm --filter @hiwhale/api build
+
+# ---- runner ----
 FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=4000
 RUN addgroup -S nodejs && adduser -S api -G nodejs
-COPY api/server.js ./server.js
+# pnpm workspace：依赖符号链接需保持目录结构（根 node_modules + api/node_modules）
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/api/node_modules ./api/node_modules
+COPY --from=build /app/api/package.json ./api/package.json
+COPY --from=build /app/api/dist ./dist
+COPY --from=build /app/api/prisma ./prisma
 USER api
 EXPOSE 4000
-CMD ["node", "server.js"]
+CMD ["node", "dist/main.js"]
