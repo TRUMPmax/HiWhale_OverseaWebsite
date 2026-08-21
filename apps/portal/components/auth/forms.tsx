@@ -10,7 +10,8 @@ import {
   type LoginValues,
   type RegisterValues,
 } from "@/lib/auth-schemas";
-import { useAuthStore } from "@/store/auth";
+import { apiPost } from "@/lib/api";
+import { useAuthStore, type AuthUser } from "@/store/auth";
 
 const inputClass =
   "border-border focus:border-brand-blue w-full rounded-lg border bg-white px-3 py-2 text-sm outline-none transition-colors";
@@ -21,20 +22,32 @@ type AuthFormProps = {
   onSuccess?: () => void;
 };
 
-/** 登录表单（Mock：以邮箱前缀作为显示名直接登录） */
+type AuthResponse = {
+  user: AuthUser;
+  token: string;
+};
+
+/** 登录表单（真实 API：POST /api/auth/login） */
 export function LoginForm({ onSuccess }: AuthFormProps) {
   const t = useTranslations("auth");
   const login = useAuthStore((s) => s.login);
+  const [formError, setFormError] = useState("");
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginValues>({ resolver: zodResolver(createLoginSchema(t)) });
 
-  const onSubmit = (values: LoginValues) => {
-    login({ name: values.email.split("@")[0] ?? values.email, email: values.email });
-    onSuccess?.();
+  const onSubmit = async (values: LoginValues) => {
+    setFormError("");
+    try {
+      const res = await apiPost<AuthResponse>("/api/auth/login", values);
+      login(res.user, res.token);
+      onSuccess?.();
+    } catch (e) {
+      setFormError(e instanceof Error ? e.message : t("errors.requestFailed"));
+    }
   };
 
   return (
@@ -59,22 +72,26 @@ export function LoginForm({ onSuccess }: AuthFormProps) {
         />
         {errors.password && <p className={errorClass}>{errors.password.message}</p>}
       </div>
+      {formError && <p className={errorClass}>{formError}</p>}
       <button
         type="submit"
-        className="bg-brand-blue w-full rounded-lg py-2.5 font-medium text-white transition-opacity hover:opacity-90"
+        disabled={isSubmitting}
+        className="bg-brand-blue w-full rounded-lg py-2.5 font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
       >
-        {t("submitLogin")}
+        {isSubmitting ? t("submitting") : t("submitLogin")}
       </button>
     </form>
   );
 }
 
-/** 注册表单（Mock：邮箱验证码演示模式 + 提交即登录） */
+/** 注册表单（真实 API：send-code 获取邮箱验证码 + register；无 SMTP 时演示模式回显验证码） */
 export function RegisterForm({ onSuccess }: AuthFormProps) {
   const t = useTranslations("auth");
   const login = useAuthStore((s) => s.login);
   const [sentCode, setSentCode] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(0);
+  const [sending, setSending] = useState(false);
+  const [formError, setFormError] = useState("");
 
   const {
     register,
@@ -82,7 +99,8 @@ export function RegisterForm({ onSuccess }: AuthFormProps) {
     trigger,
     setError,
     clearErrors,
-    formState: { errors },
+    getValues,
+    formState: { errors, isSubmitting },
   } = useForm<RegisterValues>({ resolver: zodResolver(createRegisterSchema(t)) });
 
   // 重发倒计时
@@ -92,27 +110,44 @@ export function RegisterForm({ onSuccess }: AuthFormProps) {
     return () => clearInterval(timer);
   }, [countdown]);
 
-  /** 发送验证码（Mock：本地生成 6 位数字，演示模式直接展示；上线后替换为后端邮件接口） */
+  /** 发送验证码（真实 API；演示模式返回 devCode 直接展示） */
   const sendCode = async () => {
     const emailValid = await trigger("email");
     if (!emailValid) return;
-    const code = String(Math.floor(100000 + Math.random() * 900000));
-    setSentCode(code);
-    setCountdown(60);
-    clearErrors("code");
+    setSending(true);
+    try {
+      const res = await apiPost<{ sent: boolean; devCode?: string }>("/api/auth/send-code", {
+        email: getValues("email"),
+      });
+      setSentCode(res.devCode ?? "sent");
+      setCountdown(60);
+      clearErrors("code");
+    } catch (e) {
+      setFormError(e instanceof Error ? e.message : t("errors.requestFailed"));
+    } finally {
+      setSending(false);
+    }
   };
 
-  const onSubmit = (values: RegisterValues) => {
+  const onSubmit = async (values: RegisterValues) => {
     if (!sentCode) {
       setError("code", { message: t("errors.codeNotSent") });
       return;
     }
-    if (values.code !== sentCode) {
-      setError("code", { message: t("errors.codeMismatch") });
-      return;
+    setFormError("");
+    try {
+      const res = await apiPost<AuthResponse>("/api/auth/register", {
+        name: values.name,
+        company: values.company,
+        email: values.email,
+        code: values.code,
+        password: values.password,
+      });
+      login(res.user, res.token);
+      onSuccess?.();
+    } catch (e) {
+      setFormError(e instanceof Error ? e.message : t("errors.requestFailed"));
     }
-    login({ name: values.name, email: values.email });
-    onSuccess?.();
   };
 
   return (
@@ -161,14 +196,14 @@ export function RegisterForm({ onSuccess }: AuthFormProps) {
           <button
             type="button"
             onClick={sendCode}
-            disabled={countdown > 0}
+            disabled={countdown > 0 || sending}
             className="border-brand-blue text-brand-blue shrink-0 rounded-lg border px-3 text-sm font-medium transition-colors hover:bg-blue-50 disabled:opacity-50"
           >
-            {countdown > 0 ? t("resendIn", { s: countdown }) : t("sendCode")}
+            {countdown > 0 ? t("resendIn", { s: countdown }) : sending ? "…" : t("sendCode")}
           </button>
         </div>
         {errors.code && <p className={errorClass}>{errors.code.message}</p>}
-        {sentCode && (
+        {sentCode && sentCode !== "sent" && (
           <p className="text-muted mt-1 text-xs">{t("codeSentDemo", { code: sentCode })}</p>
         )}
       </div>
@@ -201,11 +236,13 @@ export function RegisterForm({ onSuccess }: AuthFormProps) {
         </label>
         {errors.terms && <p className={errorClass}>{errors.terms.message}</p>}
       </div>
+      {formError && <p className={errorClass}>{formError}</p>}
       <button
         type="submit"
-        className="bg-brand-blue w-full rounded-lg py-2.5 font-medium text-white transition-opacity hover:opacity-90"
+        disabled={isSubmitting}
+        className="bg-brand-blue w-full rounded-lg py-2.5 font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
       >
-        {t("submitRegister")}
+        {isSubmitting ? t("submitting") : t("submitRegister")}
       </button>
     </form>
   );

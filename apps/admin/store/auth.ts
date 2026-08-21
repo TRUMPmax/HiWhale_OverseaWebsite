@@ -10,21 +10,23 @@ export type AdminUser = {
 
 type AdminAuthState = {
   admin: AdminUser | null;
-  login: (admin: AdminUser) => void;
+  token: string | null;
+  login: (admin: AdminUser, token: string) => void;
   logout: () => void;
 };
 
-/** 管理后台 Mock 登录态（Stage 7）：仅本地持久化，后续接入真实认证 */
+/** 管理后台登录态（真实 API + 本地持久化） */
 export const useAdminAuthStore = create<AdminAuthState>()(
   persist(
     (set) => ({
       admin: null,
-      login: (admin) => set({ admin }),
-      logout: () => set({ admin: null }),
+      token: null,
+      login: (admin, token) => set({ admin, token }),
+      logout: () => set({ admin: null, token: null }),
     }),
     {
       name: "hiwhale-admin-auth",
-      partialize: (state) => ({ admin: state.admin }),
+      partialize: (state) => ({ admin: state.admin, token: state.token }),
     },
   ),
 );

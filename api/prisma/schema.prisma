@@ -282,8 +282,20 @@ model Faq {
   @@map("faqs")
 }
 
-// ---------- AI 对话 ----------
+// ---------- 邮箱验证码（注册/找回） ----------
 
+model EmailCode {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String
+  code      String
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([email])
+  @@map("email_codes")
+}
+
+// ---------- AI 对话 ----------
 model ChatConversation {
   id             String   @id @default(uuid()) @db.Uuid
   userId         String   @map("user_id") @db.Uuid

@@ -283,6 +283,7 @@
     "terms": "I agree to the Terms of Service and Privacy Policy",
     "submitLogin": "Sign In",
     "submitRegister": "Create Account",
+    "submitting": "Please wait…",
     "code": "Email Verification Code",
     "codePlaceholder": "6-digit code",
     "sendCode": "Send Code",
@@ -298,6 +299,7 @@
       "termsRequired": "You must agree to the terms",
       "codeInvalid": "Please enter the 6-digit verification code",
       "codeNotSent": "Please request a verification code first",
+      "requestFailed": "Request failed, please try again",
       "codeMismatch": "Incorrect code, please try again"
     }
   },

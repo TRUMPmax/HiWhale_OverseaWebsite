@@ -16,6 +16,7 @@
     "incremental": true,
     "skipLibCheck": true,
     "noEmit": false,
+    "strictPropertyInitialization": false,
     "plugins": []
   },
   "include": ["src/**/*.ts"],

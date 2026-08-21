@@ -9,11 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAdminAuthStore } from "@/store/auth";
 
-/** Mock 管理员凭据（后续接入真实认证） */
-const MOCK_EMAIL = "admin@hiwhale.com";
-const MOCK_PASSWORD = "admin123";
-
-/** 登录页 */
+/** 员工登录：真实 API（POST /api/auth/staff/login） */
 export default function LoginPage() {
   const router = useRouter();
   const admin = useAdminAuthStore((s) => s.admin);
@@ -22,6 +18,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
@@ -29,13 +26,34 @@ export default function LoginPage() {
     if (mounted && admin) router.replace("/dashboard");
   }, [mounted, admin, router]);
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email === MOCK_EMAIL && password === MOCK_PASSWORD) {
-      login({ name: "系统管理员", email, role: UserRole.SUPER_ADMIN });
+    setError("");
+    setSubmitting(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/auth/staff/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        },
+      );
+      const data = (await res.json().catch(() => ({}))) as {
+        message?: string;
+        user?: { id: string; name: string; email: string };
+        role?: UserRole;
+        token?: string;
+      };
+      if (!res.ok || !data.user || !data.token || !data.role) {
+        throw new Error(data.message ?? `登录失败（${res.status}）`);
+      }
+      login({ name: data.user.name, email: data.user.email, role: data.role }, data.token);
       router.push("/dashboard");
-    } else {
-      setError("邮箱或密码错误（演示账号：admin@hiwhale.com / admin123）");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "登录失败，请稍后重试");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -82,8 +100,12 @@ export default function LoginPage() {
               />
             </div>
             {error && <p className="text-sm text-red-600">{error}</p>}
-            <Button type="submit" className="bg-brand-blue hover:bg-brand-blue/90 w-full">
-              登录
+            <Button
+              type="submit"
+              disabled={submitting}
+              className="bg-brand-blue hover:bg-brand-blue/90 w-full"
+            >
+              {submitting ? "登录中…" : "登录"}
             </Button>
           </form>
         </CardContent>
