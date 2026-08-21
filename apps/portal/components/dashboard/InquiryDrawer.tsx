@@ -152,6 +152,7 @@ export function InquiryDrawer({ inquiry, onClose }: InquiryDrawerProps) {
 
           {/* 追加跟进 */}
           <div>
+            <p className="text-subtle mb-1.5 text-xs">{t("localNote")}</p>
             <textarea
               rows={3}
               value={draft}

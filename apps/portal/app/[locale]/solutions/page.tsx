@@ -1,14 +1,19 @@
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
-import { getLocalizedLabel, INDUSTRY_LABELS, MOCK_SOLUTIONS } from "@hiwhale/shared/constants";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getLocalizedLabel, INDUSTRY_LABELS } from "@hiwhale/shared/constants";
+import { fetchSolutions } from "@/lib/content";
 import { Link } from "@/navigation";
 import { Reveal } from "@/components/ui/Reveal";
 import { INDUSTRY_IMAGE_NAMES } from "@/components/home/assets";
 
-/** 行业方案列表页 */
-export default function SolutionsPage({ params: { locale } }: { params: { locale: string } }) {
+/** 行业方案列表页（数据来自 API，失败回退 Mock） */
+export default async function SolutionsPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
   setRequestLocale(locale);
-  const t = useTranslations("solutions");
+  const t = await getTranslations("solutions");
+  const solutions = await fetchSolutions();
   const loc = locale === "zh" ? ("zh" as const) : ("en" as const);
 
   return (
@@ -23,7 +28,7 @@ export default function SolutionsPage({ params: { locale } }: { params: { locale
       <section>
         <div className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24 lg:px-12">
           <div className="grid gap-6 md:grid-cols-2">
-            {MOCK_SOLUTIONS.map((solution, index) => (
+            {solutions.map((solution, index) => (
               <Reveal key={solution.slug} delay={index * 80} className="h-full">
                 <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-6 transition-all hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg">
                   {/* eslint-disable-next-line @next/next/no-img-element */}

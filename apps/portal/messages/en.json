@@ -476,7 +476,8 @@
         "emailInvalid": "Please enter a valid email address",
         "countryRequired": "Please select your country",
         "descriptionMin": "Please describe your project in at least 20 characters",
-        "privacyRequired": "You must agree to the Privacy Policy"
+        "privacyRequired": "You must agree to the Privacy Policy",
+        "submitFailed": "Submission failed, please try again later"
       }
     }
   },
@@ -520,6 +521,7 @@
       "followUpTitle": "Follow-up Records",
       "addNotePlaceholder": "Add a follow-up note…",
       "addNoteSubmit": "Add Note",
+      "localNote": "Notes added here are only visible to you",
       "close": "Close"
     },
     "saved": {

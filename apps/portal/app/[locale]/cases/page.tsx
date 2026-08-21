@@ -1,11 +1,12 @@
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { fetchCases } from "@/lib/content";
 import { CasesBrowser } from "@/components/cases/CasesBrowser";
 
-/** 客户案例列表页 */
-export default function CasesPage({ params: { locale } }: { params: { locale: string } }) {
+/** 客户案例列表页（数据来自 API，失败回退 Mock） */
+export default async function CasesPage({ params: { locale } }: { params: { locale: string } }) {
   setRequestLocale(locale);
-  const t = useTranslations("cases");
+  const t = await getTranslations("cases");
+  const cases = await fetchCases();
 
   return (
     <>
@@ -15,7 +16,7 @@ export default function CasesPage({ params: { locale } }: { params: { locale: st
           <p className="mt-4 max-w-2xl text-lg text-white/70">{t("banner.subtitle")}</p>
         </div>
       </section>
-      <CasesBrowser />
+      <CasesBrowser cases={cases} />
     </>
   );
 }

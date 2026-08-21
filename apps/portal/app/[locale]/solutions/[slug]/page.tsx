@@ -3,12 +3,11 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AlertTriangle } from "lucide-react";
 import {
   getLocalizedLabel,
-  getProductsByCategory,
-  getSolutionBySlug,
   INDUSTRY_LABELS,
   MOCK_SOLUTIONS,
   PRODUCT_CATEGORY_LABELS,
 } from "@hiwhale/shared/constants";
+import { fetchProducts, fetchSolution } from "@/lib/content";
 import { Link } from "@/navigation";
 import { Reveal } from "@/components/ui/Reveal";
 import { Starfield } from "@/components/ui/Starfield";
@@ -19,14 +18,14 @@ export function generateStaticParams() {
   return MOCK_SOLUTIONS.map((solution) => ({ slug: solution.slug }));
 }
 
-/** 行业方案详情页 */
+/** 行业方案详情页（数据来自 API，失败回退 Mock） */
 export default async function SolutionDetailPage({
   params: { locale, slug },
 }: {
   params: { locale: string; slug: string };
 }) {
   setRequestLocale(locale);
-  const solution = getSolutionBySlug(slug);
+  const solution = await fetchSolution(slug);
   if (!solution) notFound();
 
   const t = await getTranslations("solutions.detail");
@@ -34,8 +33,9 @@ export default async function SolutionDetailPage({
   const loc = locale === "zh" ? ("zh" as const) : ("en" as const);
 
   // 相关设备：每个品类取第一款产品
+  const allProducts = await fetchProducts();
   const relatedProducts = solution.equipment
-    .map((category) => getProductsByCategory(category)[0])
+    .map((category) => allProducts.find((p) => p.category === category))
     .filter((p) => p !== undefined);
 
   return (

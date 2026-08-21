@@ -10,8 +10,10 @@ import {
   getLocalizedLabel,
   PRODUCT_CATEGORY_GROUPS,
   PRODUCT_GROUP_LABELS,
+  ProductCategory,
   ProductGroup,
 } from "@hiwhale/shared/constants";
+import { apiPost } from "@/lib/api";
 import { Link } from "@/navigation";
 
 const inputClass =
@@ -23,6 +25,7 @@ export function ContactForm() {
   const t = useTranslations("contact.form");
   const locale = useLocale();
   const [submitted, setSubmitted] = useState(false);
+  const [formError, setFormError] = useState("");
 
   const schema = z.object({
     name: z.string().min(1, t("errors.required")),
@@ -48,10 +51,26 @@ export function ContactForm() {
 
   const countries = t.raw("countries") as string[];
 
-  const onSubmit = async () => {
-    // Mock 提交：模拟网络延迟后进入成功态（后续接入真实询盘 API）
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setSubmitted(true);
+  const onSubmit = async (values: ContactValues) => {
+    setFormError("");
+    // 意向产品：所选大类展开为其下全部品类
+    const categories = (values.interests ?? []).flatMap(
+      (g) => PRODUCT_CATEGORY_GROUPS.find((entry) => entry.group === g)?.categories ?? [],
+    ) as ProductCategory[];
+    try {
+      await apiPost("/api/inquiries", {
+        fullName: values.name,
+        company: values.company,
+        email: values.email,
+        phone: values.phone || undefined,
+        country: values.country,
+        categories,
+        description: values.description,
+      });
+      setSubmitted(true);
+    } catch (e) {
+      setFormError(e instanceof Error ? e.message : t("errors.submitFailed"));
+    }
   };
 
   if (submitted) {
@@ -187,6 +206,8 @@ export function ContactForm() {
           </label>
           {errors.privacy && <p className={errorClass}>{errors.privacy.message}</p>}
         </div>
+
+        {formError && <p className="text-xs text-red-600">{formError}</p>}
 
         <button
           type="submit"

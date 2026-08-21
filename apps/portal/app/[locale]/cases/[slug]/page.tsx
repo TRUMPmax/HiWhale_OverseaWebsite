@@ -1,13 +1,8 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Clock, Package, Quote } from "lucide-react";
-import {
-  getCaseBySlug,
-  getLocalizedLabel,
-  INDUSTRY_LABELS,
-  MOCK_CASES,
-  MOCK_PRODUCTS,
-} from "@hiwhale/shared/constants";
+import { getLocalizedLabel, INDUSTRY_LABELS, MOCK_CASES } from "@hiwhale/shared/constants";
+import { fetchCase, fetchProducts } from "@/lib/content";
 import { Link } from "@/navigation";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
@@ -18,20 +13,20 @@ export function generateStaticParams() {
   return MOCK_CASES.map((item) => ({ slug: item.slug }));
 }
 
-/** 客户案例详情页 */
+/** 客户案例详情页（数据来自 API，失败回退 Mock） */
 export default async function CaseDetailPage({
   params: { locale, slug },
 }: {
   params: { locale: string; slug: string };
 }) {
   setRequestLocale(locale);
-  const item = getCaseBySlug(slug);
+  const item = await fetchCase(slug);
   if (!item) notFound();
 
   const t = await getTranslations("cases.detail");
   const tCta = await getTranslations("cases.cta");
   const loc = locale === "zh" ? ("zh" as const) : ("en" as const);
-  const relatedProducts = MOCK_PRODUCTS.slice(0, 3);
+  const relatedProducts = (await fetchProducts()).slice(0, 3);
 
   const narrative = [
     { title: t("backgroundTitle"), text: item.background[loc] },

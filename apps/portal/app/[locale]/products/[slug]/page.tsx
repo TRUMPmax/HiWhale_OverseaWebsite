@@ -4,7 +4,6 @@ import { Download, Radar, ShieldCheck, Wifi, Zap } from "lucide-react";
 import {
   getGroupOfCategory,
   getLocalizedLabel,
-  getProductBySlug,
   getRelatedProducts,
   INDUSTRY_LABELS,
   MOCK_PRODUCTS,
@@ -13,7 +12,7 @@ import {
   ProductCategory,
 } from "@hiwhale/shared/constants";
 import type { MockProduct } from "@hiwhale/shared/constants";
-import { apiGet } from "@/lib/api";
+import { fetchProduct, fetchProducts } from "@/lib/content";
 import { Link } from "@/navigation";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
@@ -34,20 +33,11 @@ export function generateStaticParams() {
   return MOCK_PRODUCTS.map((product) => ({ slug: product.slug }));
 }
 
-/** 产品详情数据：优先 API 实时数据，失败/404 回退内置 Mock */
-async function fetchProduct(slug: string): Promise<MockProduct | undefined> {
-  try {
-    return await apiGet<MockProduct>(`/api/products/${slug}`);
-  } catch {
-    return getProductBySlug(slug);
-  }
-}
-
 /** 相关产品：优先 API 列表，失败回退 Mock */
 async function fetchRelated(product: MockProduct): Promise<MockProduct[]> {
   try {
-    const data = await apiGet<{ items: MockProduct[] }>("/api/products?pageSize=100");
-    return data.items
+    const all = await fetchProducts();
+    return all
       .filter((p) => p.category === product.category && p.slug !== product.slug)
       .slice(0, 3);
   } catch {

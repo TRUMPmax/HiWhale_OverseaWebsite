@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Download, Mail, MapPin, Phone, Send } from "lucide-react";
@@ -26,30 +26,49 @@ import { toast } from "sonner";
 import { exportInquiriesCsv } from "@/lib/export-csv";
 import { STAFF_OPTIONS } from "@/lib/mock/inquiries";
 import { useInquiriesStore } from "@/store/inquiries";
-import { useAdminAuthStore } from "@/store/auth";
 import { STATUS_BADGE } from "@/components/inquiries/status-badge";
 
-/** 询盘详情：客户信息 + 需求 + 意向产品 + 跟进时间线 + 状态/负责人操作 */
+/** 询盘详情：客户信息 + 需求 + 意向产品 + 跟进时间线 + 状态/负责人操作（数据来自 API） */
 export default function InquiryDetailPage({ params }: { params: { id: string } }) {
   const inquiry = useInquiriesStore((s) => s.inquiries.find((i) => i.id === params.id));
+  const followUps = useInquiriesStore((s) => s.details[params.id]);
+  const inquiries = useInquiriesStore((s) => s.inquiries);
+  const loading = useInquiriesStore((s) => s.loading);
+  const fetchInquiries = useInquiriesStore((s) => s.fetchInquiries);
+  const fetchDetail = useInquiriesStore((s) => s.fetchDetail);
   const setStatus = useInquiriesStore((s) => s.setStatus);
   const assign = useInquiriesStore((s) => s.assign);
   const addFollowUp = useInquiriesStore((s) => s.addFollowUp);
-  const adminName = useAdminAuthStore((s) => s.admin?.name ?? "管理员");
   const [draft, setDraft] = useState("");
+  const [saving, setSaving] = useState(false);
 
-  if (!inquiry) notFound();
+  // 加载列表（获取基本信息）+ 跟进记录
+  useEffect(() => {
+    if (inquiries.length === 0 && !loading) void fetchInquiries().catch(() => {});
+    void fetchDetail(params.id).catch(() => {});
+  }, [inquiries.length, loading, fetchInquiries, fetchDetail, params.id]);
 
-  const submitFollowUp = () => {
+  if (!inquiry) {
+    // 列表未加载完成时等待；加载完成后仍不存在 → 404
+    if (loading || inquiries.length === 0) return null;
+    notFound();
+  }
+
+  const timeline = followUps ?? inquiry.followUps;
+
+  const submitFollowUp = async () => {
     const text = draft.trim();
-    if (!text) return;
-    addFollowUp(inquiry.id, {
-      ts: new Date().toLocaleString("zh-CN", { hour12: false }),
-      author: adminName,
-      note: text,
-    });
-    setDraft("");
-    toast.success("跟进记录已添加");
+    if (!text || saving) return;
+    setSaving(true);
+    try {
+      await addFollowUp(inquiry.id, text);
+      setDraft("");
+      toast.success("跟进记录已添加");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "添加失败");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -135,8 +154,9 @@ export default function InquiryDetailPage({ params }: { params: { id: string } }
                 <Select
                   value={inquiry.status}
                   onValueChange={(v) => {
-                    setStatus(inquiry.id, v as InquiryStatus);
-                    toast.success("状态已更新");
+                    void setStatus(inquiry.id, v as InquiryStatus)
+                      .then(() => toast.success("状态已更新"))
+                      .catch((e) => toast.error(e instanceof Error ? e.message : "操作失败"));
                   }}
                 >
                   <SelectTrigger>
@@ -156,8 +176,9 @@ export default function InquiryDetailPage({ params }: { params: { id: string } }
                 <Select
                   value={inquiry.assignee ?? ""}
                   onValueChange={(v) => {
-                    assign(inquiry.id, v || null);
-                    toast.success("已分配负责人");
+                    void assign(inquiry.id, v || "")
+                      .then(() => toast.success("已分配负责人"))
+                      .catch((e) => toast.error(e instanceof Error ? e.message : "操作失败"));
                   }}
                 >
                   <SelectTrigger>
@@ -202,7 +223,7 @@ export default function InquiryDetailPage({ params }: { params: { id: string } }
                   aria-hidden="true"
                 />
                 <div className="space-y-5">
-                  {inquiry.followUps.map((item, index) => (
+                  {timeline.map((item, index) => (
                     <div key={`${item.ts}-${index}`} className="relative pl-7">
                       <span className="bg-brand-blue absolute left-1.5 top-1.5 h-2.5 w-2.5 -translate-x-1/2 rounded-full ring-2 ring-white" />
                       <div className="text-sm font-medium text-slate-900">{item.author}</div>
@@ -210,7 +231,7 @@ export default function InquiryDetailPage({ params }: { params: { id: string } }
                       <p className="mt-1 text-sm leading-relaxed text-slate-600">{item.note}</p>
                     </div>
                   ))}
-                  {inquiry.followUps.length === 0 && (
+                  {timeline.length === 0 && (
                     <p className="pl-7 text-sm text-slate-400">暂无跟进记录</p>
                   )}
                 </div>

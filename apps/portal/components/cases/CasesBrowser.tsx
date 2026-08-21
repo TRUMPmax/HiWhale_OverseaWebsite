@@ -2,25 +2,21 @@
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import {
-  getLocalizedLabel,
-  INDUSTRY_LABELS,
-  Industry,
-  MOCK_CASES,
-} from "@hiwhale/shared/constants";
+import { getLocalizedLabel, INDUSTRY_LABELS, Industry } from "@hiwhale/shared/constants";
+import type { MockCase } from "@hiwhale/shared/constants";
 import { Link } from "@/navigation";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
 
-/** 案例列表：行业筛选（客户端 useState）+ 案例卡片网格 */
-export function CasesBrowser() {
+/** 案例列表：行业筛选（客户端 useState）+ 案例卡片网格（数据由服务端页面传入） */
+export function CasesBrowser({ cases }: { cases: MockCase[] }) {
   const locale = useLocale();
   const t = useTranslations("cases");
   const loc = locale === "zh" ? ("zh" as const) : ("en" as const);
   const [active, setActive] = useState<Industry | "all">("all");
 
   const industries = Object.values(Industry);
-  const filtered = active === "all" ? MOCK_CASES : MOCK_CASES.filter((c) => c.industry === active);
+  const filtered = active === "all" ? cases : cases.filter((c) => c.industry === active);
 
   const tabClass = (selected: boolean) =>
     `shrink-0 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${

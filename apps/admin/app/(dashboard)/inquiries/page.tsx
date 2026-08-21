@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Download, Search } from "lucide-react";
+import { toast } from "sonner";
 import {
   getLocalizedLabel,
   INQUIRY_STATUS_LABELS,
@@ -27,13 +28,18 @@ import { useInquiriesStore } from "@/store/inquiries";
 
 const PAGE_SIZE = 8;
 
-/** 询盘管理列表：状态页签 + 搜索 + 导出 + 分页 */
+/** 询盘管理列表：状态页签 + 搜索 + 导出 + 分页（数据来自 API） */
 export default function InquiriesPage() {
   const inquiries = useInquiriesStore((s) => s.inquiries);
+  const fetchInquiries = useInquiriesStore((s) => s.fetchInquiries);
 
   const [status, setStatus] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    void fetchInquiries().catch((e) => toast.error(e instanceof Error ? e.message : "加载失败"));
+  }, [fetchInquiries]);
 
   const countOf = (s: string) =>
     s === "all" ? inquiries.length : inquiries.filter((i) => i.status === s).length;

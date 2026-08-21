@@ -11,6 +11,7 @@ import {
   PRODUCT_CATEGORY_LABELS,
 } from "@hiwhale/shared/constants";
 import { Link, useRouter } from "@/navigation";
+import { apiGet } from "@/lib/api";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { useAuthStore } from "@/store/auth";
 import { useChatStore } from "@/store/chat";
@@ -42,6 +43,7 @@ export function DashboardClient() {
   const loc = locale === "zh" ? ("zh" as const) : ("en" as const);
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
+  const token = useAuthStore((s) => s.token);
   const login = useAuthStore((s) => s.login);
   const openChat = useChatStore((s) => s.openChat);
 
@@ -49,6 +51,7 @@ export function DashboardClient() {
   const [tab, setTab] = useState<Tab>("inquiries");
   const [chatMessages, setChatMessages] = useState<StoredChatMessage[]>([]);
   const [savedItems, setSavedItems] = useState<SavedItem[]>([]);
+  const [inquiries, setInquiries] = useState<MockInquiry[]>(MOCK_INQUIRIES);
   const [selectedInquiry, setSelectedInquiry] = useState<MockInquiry | null>(null);
   const [profileSaved, setProfileSaved] = useState(false);
   const [profile, setProfile] = useState({
@@ -83,6 +86,40 @@ export function DashboardClient() {
   useEffect(() => {
     if (user) setProfile((p) => ({ ...p, name: user.name, email: user.email }));
   }, [user]);
+
+  // 我的询盘：登录后从 API 拉取（失败回退 Mock）
+  useEffect(() => {
+    if (!token) return;
+    type ApiInquiry = {
+      id: string;
+      date: string;
+      categories: string[];
+      status: string;
+      description: string;
+      followUps: Array<{ ts: string; author: string; note: string }>;
+    };
+    apiGet<{ items: ApiInquiry[] }>("/api/inquiries/mine", token)
+      .then((data) => {
+        setInquiries(
+          data.items.map((i) => ({
+            id: i.id,
+            date: i.date,
+            categories: i.categories as MockInquiry["categories"],
+            status: i.status as MockInquiry["status"],
+            description: { en: i.description, zh: i.description },
+            details: { en: i.description, zh: i.description },
+            followUps: i.followUps.map((f) => ({
+              ts: f.ts,
+              author: { en: f.author, zh: f.author },
+              note: { en: f.note, zh: f.note },
+            })),
+          })),
+        );
+      })
+      .catch(() => {
+        // API 不可用时保留 Mock 展示
+      });
+  }, [token]);
 
   // 未挂载或未登录：渲染占位，避免闪烁/水合不一致
   if (!mounted || !user) {
@@ -141,7 +178,7 @@ export function DashboardClient() {
             {/* 我的询盘 */}
             {tab === "inquiries" && (
               <div className="space-y-4">
-                {MOCK_INQUIRIES.map((inquiry) => (
+                {inquiries.map((inquiry) => (
                   <button
                     key={inquiry.id}
                     type="button"

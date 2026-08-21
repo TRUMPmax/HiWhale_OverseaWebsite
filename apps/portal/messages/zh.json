@@ -458,7 +458,8 @@
         "emailInvalid": "请输入有效的邮箱地址",
         "countryRequired": "请选择国家/地区",
         "descriptionMin": "请用至少 20 个字符描述您的项目",
-        "privacyRequired": "请先同意隐私政策"
+        "privacyRequired": "请先同意隐私政策",
+        "submitFailed": "提交失败，请稍后重试"
       }
     }
   },
@@ -502,6 +503,7 @@
       "followUpTitle": "跟进记录",
       "addNotePlaceholder": "添加一条跟进记录…",
       "addNoteSubmit": "添加记录",
+      "localNote": "此处添加的备注仅自己可见",
       "close": "关闭"
     },
     "saved": {
