@@ -34,5 +34,5 @@
 ## 进度
 
 阶段 0–10 全部完成（基座/设计系统/首页滚轮叙事/产品中心/方案案例关于联系/AI客服+用户中心/后台框架/后台CRUD/后台全模块/Docker）。
-后端阶段 1–7 完成：NestJS+Prisma+pgvector schema / 认证（JWT+邮箱验证码）/ 产品·方案·案例·询盘·用户 CRUD / MinIO 文件上传。前后台均已接入真实 API（mock 保留为 API 不可用时的回退）。
-剩余：后端阶段 8-10（AI 客服 RAG + 知识库 + 后台统计），见《Hiwhale_K3开发指南与功能需求.md》第六部分。
+后端全部完成：NestJS+Prisma+pgvector schema / 认证（JWT+邮箱验证码）/ 产品·方案·案例·询盘·用户·员工 CRUD / MinIO 文件上传 / DeepSeek 流式对话 / 站点设置与内容持久化 / 收藏夹 / 仪表盘统计 / 操作日志。前后台全链路真实 API，mock 仅作 API 不可用时的回退。
+唯一待做：RAG 检索管线（混合检索/重排，`api/src/modules/knowledge/retrieval.service.ts` 有接口桩，指南第六部分）——业主自行接入产品手册后实施。
