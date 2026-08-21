@@ -12,6 +12,8 @@ import {
   PRODUCT_GROUP_LABELS,
   ProductCategory,
 } from "@hiwhale/shared/constants";
+import type { MockProduct } from "@hiwhale/shared/constants";
+import { apiGet } from "@/lib/api";
 import { Link } from "@/navigation";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
@@ -32,6 +34,27 @@ export function generateStaticParams() {
   return MOCK_PRODUCTS.map((product) => ({ slug: product.slug }));
 }
 
+/** 产品详情数据：优先 API 实时数据，失败/404 回退内置 Mock */
+async function fetchProduct(slug: string): Promise<MockProduct | undefined> {
+  try {
+    return await apiGet<MockProduct>(`/api/products/${slug}`);
+  } catch {
+    return getProductBySlug(slug);
+  }
+}
+
+/** 相关产品：优先 API 列表，失败回退 Mock */
+async function fetchRelated(product: MockProduct): Promise<MockProduct[]> {
+  try {
+    const data = await apiGet<{ items: MockProduct[] }>("/api/products?pageSize=100");
+    return data.items
+      .filter((p) => p.category === product.category && p.slug !== product.slug)
+      .slice(0, 3);
+  } catch {
+    return getRelatedProducts(product, 3);
+  }
+}
+
 /** 产品详情页 */
 export default async function ProductDetailPage({
   params: { locale, slug },
@@ -39,7 +62,7 @@ export default async function ProductDetailPage({
   params: { locale: string; slug: string };
 }) {
   setRequestLocale(locale);
-  const product = getProductBySlug(slug);
+  const product = await fetchProduct(slug);
   if (!product) notFound();
 
   const t = await getTranslations("products.detail");
@@ -48,7 +71,7 @@ export default async function ProductDetailPage({
   const imageBase = product.imageName.replace(/\.[^.]+$/, "");
   const group = getGroupOfCategory(product.category);
   const groupLabel = getLocalizedLabel(PRODUCT_GROUP_LABELS, group, locale);
-  const related = getRelatedProducts(product, 3);
+  const related = await fetchRelated(product);
   const isSoftware = SOFTWARE_CATEGORIES.includes(product.category);
 
   return (

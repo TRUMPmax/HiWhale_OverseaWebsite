@@ -6,15 +6,13 @@ import { usePathname, useRouter } from "@/navigation";
 import {
   getGroupOfCategory,
   getLocalizedLabel,
-  getProductsByCategory,
-  getProductsByGroup,
-  MOCK_PRODUCTS,
   PRODUCT_CATEGORY_GROUPS,
   PRODUCT_CATEGORY_LABELS,
   PRODUCT_GROUP_LABELS,
   ProductCategory,
   ProductGroup,
 } from "@hiwhale/shared/constants";
+import type { MockProduct } from "@hiwhale/shared/constants";
 import { ProductCard } from "./ProductCard";
 
 const GROUP_VALUES = Object.values(ProductGroup) as string[];
@@ -23,8 +21,9 @@ const CATEGORY_VALUES = Object.values(ProductCategory) as string[];
 /**
  * 产品列表：两级筛选（大类 → 品类），筛选状态存于 URL（?group= / ?category=），
  * 通过 router.replace(scroll:false) 更新，链接可分享且渲染平滑。
+ * 数据由服务端页面传入（API 实时数据，失败时回退 Mock）。
  */
-export function ProductsBrowser() {
+export function ProductsBrowser({ products }: { products: MockProduct[] }) {
   const locale = useLocale();
   const t = useTranslations("products");
   const router = useRouter();
@@ -50,10 +49,10 @@ export function ProductsBrowser() {
   };
 
   const filtered = activeCategory
-    ? getProductsByCategory(activeCategory)
+    ? products.filter((p) => p.category === activeCategory)
     : activeGroup !== "all"
-      ? getProductsByGroup(activeGroup)
-      : MOCK_PRODUCTS;
+      ? products.filter((p) => getGroupOfCategory(p.category) === activeGroup)
+      : products;
 
   const subcategories =
     activeGroup === "all"

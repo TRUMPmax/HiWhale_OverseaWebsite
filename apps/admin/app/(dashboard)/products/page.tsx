@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Image as ImageIcon, Plus, Search } from "lucide-react";
+import { toast } from "sonner";
 import {
   getLocalizedLabel,
   PRODUCT_CATEGORY_LABELS,
@@ -38,9 +39,11 @@ import { useProductsStore, type AdminProduct } from "@/store/products";
 
 const PAGE_SIZE = 8;
 
-/** 产品管理列表：搜索 + 品类筛选 + 上下架 + 删除 + 分页 */
+/** 产品管理列表：搜索 + 品类筛选 + 上下架 + 删除 + 分页（数据来自 API） */
 export default function ProductsPage() {
   const products = useProductsStore((s) => s.products);
+  const loading = useProductsStore((s) => s.loading);
+  const fetchProducts = useProductsStore((s) => s.fetchProducts);
   const toggleStatus = useProductsStore((s) => s.toggleStatus);
   const deleteProduct = useProductsStore((s) => s.deleteProduct);
 
@@ -49,9 +52,13 @@ export default function ProductsPage() {
   const [page, setPage] = useState(1);
   const [pendingDelete, setPendingDelete] = useState<AdminProduct | null>(null);
 
+  useEffect(() => {
+    void fetchProducts().catch((e) => toast.error(e instanceof Error ? e.message : "加载失败"));
+  }, [fetchProducts]);
+
   const filtered = products.filter((p) => {
     const matchSearch =
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      p.name.zh.toLowerCase().includes(search.toLowerCase()) ||
       p.model.toLowerCase().includes(search.toLowerCase());
     const matchCategory = category === "all" || p.category === category;
     return matchSearch && matchCategory;
@@ -125,7 +132,7 @@ export default function ProductsPage() {
                     <span className="mt-0.5 font-mono text-[0.625rem]">{p.model}</span>
                   </span>
                 </TableCell>
-                <TableCell className="font-medium">{p.name}</TableCell>
+                <TableCell className="font-medium">{p.name.zh}</TableCell>
                 <TableCell className="font-mono text-xs">{p.model}</TableCell>
                 <TableCell>
                   <Badge variant="outline">
@@ -133,7 +140,15 @@ export default function ProductsPage() {
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <button type="button" onClick={() => toggleStatus(p.id)} title="点击切换上下架">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void toggleStatus(p.id).catch((e) =>
+                        toast.error(e instanceof Error ? e.message : "操作失败"),
+                      );
+                    }}
+                    title="点击切换上下架"
+                  >
                     <Badge
                       className={
                         p.status === "on"
@@ -145,7 +160,7 @@ export default function ProductsPage() {
                     </Badge>
                   </button>
                 </TableCell>
-                <TableCell className="text-slate-500">{p.createdAt}</TableCell>
+                <TableCell className="text-slate-500">{p.createdAt.slice(0, 10)}</TableCell>
                 <TableCell className="text-right">
                   <Link
                     href={`/products/${p.id}/edit`}
@@ -166,7 +181,7 @@ export default function ProductsPage() {
             {pageItems.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} className="h-32 text-center text-sm text-slate-400">
-                  暂无匹配的产品
+                  {loading ? "加载中…" : "暂无匹配的产品"}
                 </TableCell>
               </TableRow>
             )}
@@ -209,7 +224,7 @@ export default function ProductsPage() {
           <DialogHeader>
             <DialogTitle>确认删除？</DialogTitle>
             <DialogDescription>
-              删除产品「{pendingDelete?.name}」（{pendingDelete?.model}）后将无法恢复。
+              删除产品「{pendingDelete?.name.zh}」（{pendingDelete?.model}）后将无法恢复。
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -219,7 +234,11 @@ export default function ProductsPage() {
             <Button
               className="bg-red-600 hover:bg-red-700"
               onClick={() => {
-                if (pendingDelete) deleteProduct(pendingDelete.id);
+                if (pendingDelete) {
+                  void deleteProduct(pendingDelete.id)
+                    .then(() => toast.success("已删除"))
+                    .catch((e) => toast.error(e instanceof Error ? e.message : "删除失败"));
+                }
                 setPendingDelete(null);
               }}
             >

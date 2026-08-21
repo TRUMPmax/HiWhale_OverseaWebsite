@@ -23,4 +23,15 @@ export async function apiPost<T>(path: string, body: unknown): Promise<T> {
   return data as T;
 }
 
+/** GET 请求（服务端/客户端通用；不缓存，实时数据） */
+export async function apiGet<T>(path: string): Promise<T> {
+  const res = await fetch(`${API_BASE}${path}`, { cache: "no-store" });
+  if (!res.ok) {
+    const err = new Error(`Request failed (${res.status})`) as ApiError;
+    err.status = res.status;
+    throw err;
+  }
+  return (await res.json()) as T;
+}
+
 export { API_BASE };

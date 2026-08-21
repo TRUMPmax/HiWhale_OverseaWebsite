@@ -1,12 +1,25 @@
 import { Suspense } from "react";
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { MOCK_PRODUCTS } from "@hiwhale/shared/constants";
+import type { MockProduct } from "@hiwhale/shared/constants";
+import { apiGet } from "@/lib/api";
 import { ProductsBrowser } from "@/components/products/ProductsBrowser";
 
+/** 从 API 获取产品列表；API 不可用时回退到内置 Mock（站点永不白屏） */
+async function fetchProducts(): Promise<MockProduct[]> {
+  try {
+    const data = await apiGet<{ items: MockProduct[] }>("/api/products?pageSize=100");
+    return data.items.length > 0 ? data.items : MOCK_PRODUCTS;
+  } catch {
+    return MOCK_PRODUCTS;
+  }
+}
+
 /** 产品列表页：顶部横幅（服务端渲染）+ 可筛选产品网格（客户端组件） */
-export default function ProductsPage({ params: { locale } }: { params: { locale: string } }) {
+export default async function ProductsPage({ params: { locale } }: { params: { locale: string } }) {
   setRequestLocale(locale);
-  const t = useTranslations("products");
+  const t = await getTranslations("products");
+  const products = await fetchProducts();
 
   return (
     <>
@@ -17,7 +30,7 @@ export default function ProductsPage({ params: { locale } }: { params: { locale:
         </div>
       </section>
       <Suspense fallback={null}>
-        <ProductsBrowser />
+        <ProductsBrowser products={products} />
       </Suspense>
     </>
   );

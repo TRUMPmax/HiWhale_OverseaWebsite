@@ -7,18 +7,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FileText, Package, Plus, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import {
+  getGroupOfCategory,
   getLocalizedLabel,
   PRODUCT_CATEGORY_GROUPS,
   PRODUCT_CATEGORY_LABELS,
   PRODUCT_GROUP_LABELS,
 } from "@hiwhale/shared/constants";
-import type { MockProduct } from "@hiwhale/shared/constants";
+import type { ProductCategory } from "@hiwhale/shared/constants";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useProductsStore, type AdminProduct } from "@/store/products";
+import { useProductsStore, type AdminProduct, type ProductPayload } from "@/store/products";
 
 const schema = z.object({
   nameZh: z.string().min(1, "请输入中文名称"),
@@ -33,8 +34,8 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 type ProductFormProps = {
-  /** 编辑模式传入（store 记录 + Mock 详情） */
-  initial?: { record: AdminProduct; mock?: MockProduct };
+  /** 编辑模式传入（store 记录，含完整字段） */
+  initial?: { record: AdminProduct };
 };
 
 const UPLOAD_SLOTS = [
@@ -57,20 +58,22 @@ export function ProductForm({ initial }: ProductFormProps) {
     register,
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: initial
       ? {
-          nameZh: initial.record.name,
-          nameEn: initial.mock?.name.en ?? initial.record.name,
+          nameZh: initial.record.name.zh,
+          nameEn: initial.record.name.en,
           model: initial.record.model,
           category: initial.record.category,
-          description: initial.record.description,
+          description: initial.record.description.zh,
           status: initial.record.status === "on",
-          quickSpecs:
-            initial.mock?.quickSpecs.map((s) => ({ label: s.label.zh, value: s.value })) ?? [],
-          features: initial.mock?.features.map((f) => ({ text: f.zh })) ?? [],
+          quickSpecs: initial.record.quickSpecs.map((s) => ({
+            label: s.label.zh,
+            value: s.value,
+          })),
+          features: initial.record.features.map((f) => ({ text: f.zh })),
         }
       : {
           nameZh: "",
@@ -87,27 +90,38 @@ export function ProductForm({ initial }: ProductFormProps) {
   const specs = useFieldArray({ control, name: "quickSpecs" });
   const features = useFieldArray({ control, name: "features" });
 
-  const onSubmit = (values: FormValues) => {
-    const patch = {
-      name: values.nameZh,
+  const onSubmit = async (values: FormValues) => {
+    const category = values.category as ProductCategory;
+    const payload: ProductPayload = {
+      slug: initial?.record.slug ?? `custom-${Date.now()}`,
       model: values.model,
-      category: values.category as AdminProduct["category"],
-      description: values.description,
-      status: (values.status ? "on" : "off") as AdminProduct["status"],
+      category,
+      group: getGroupOfCategory(category),
+      name: { zh: values.nameZh, en: values.nameEn },
+      tagline: initial?.record.tagline ?? { zh: "", en: "" },
+      description: { zh: values.description, en: values.description },
+      quickSpecs: values.quickSpecs
+        .filter((r) => r.label.trim() && r.value.trim())
+        .map((r) => ({ label: { zh: r.label, en: r.label }, value: r.value })),
+      specGroups: initial?.record.specGroups ?? [],
+      features: values.features
+        .filter((f) => f.text.trim())
+        .map((f) => ({ zh: f.text, en: f.text })),
+      scenarios: initial?.record.scenarios ?? [],
+      imageName: initial?.record.imageName ?? `product-${values.model.toLowerCase()}.png`,
+      status: values.status ? "on" : "off",
     };
-    if (initial) {
-      updateProduct(initial.record.id, patch);
-    } else {
-      const id = `p-${Date.now()}`;
-      addProduct({
-        id,
-        slug: `custom-${id}`,
-        createdAt: new Date().toISOString().slice(0, 10),
-        ...patch,
-      });
+    try {
+      if (initial) {
+        await updateProduct(initial.record.id, payload);
+      } else {
+        await addProduct(payload);
+      }
+      toast.success("保存成功");
+      router.push("/products");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "保存失败");
     }
-    toast.success("保存成功");
-    router.push("/products");
   };
 
   return (
@@ -247,8 +261,12 @@ export function ProductForm({ initial }: ProductFormProps) {
       </Card>
 
       <div className="flex gap-3">
-        <Button type="submit" className="bg-brand-blue hover:bg-brand-blue/90">
-          保存
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-brand-blue hover:bg-brand-blue/90"
+        >
+          {isSubmitting ? "保存中…" : "保存"}
         </Button>
         <Button type="button" variant="outline" onClick={() => router.push("/products")}>
           取消
