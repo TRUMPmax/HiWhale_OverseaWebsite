@@ -11,6 +11,9 @@ import { UsersModule } from "./modules/users/users.module";
 import { UploadsModule } from "./modules/uploads/uploads.module";
 import { KnowledgeModule } from "./modules/knowledge/knowledge.module";
 import { ChatModule } from "./modules/chat/chat.module";
+import { StaffModule } from "./modules/staff/staff.module";
+import { StatsModule } from "./modules/stats/stats.module";
+import { LogsModule } from "./modules/logs/logs.module";
 
 @Module({
   imports: [
@@ -26,6 +29,9 @@ import { ChatModule } from "./modules/chat/chat.module";
     UploadsModule,
     KnowledgeModule,
     ChatModule,
+    StaffModule,
+    StatsModule,
+    LogsModule,
   ],
 })
 export class AppModule {}

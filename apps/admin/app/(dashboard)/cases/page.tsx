@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { getLocalizedLabel, INDUSTRY_LABELS } from "@hiwhale/shared/constants";
@@ -26,6 +26,11 @@ const PAGE_SIZE = 8;
 export default function CasesPage() {
   const cases = useCasesStore((s) => s.cases);
   const toggleStatus = useCasesStore((s) => s.toggleStatus);
+  const fetchCases = useCasesStore((s) => s.fetchCases);
+
+  useEffect(() => {
+    void fetchCases().catch((e) => toast.error(e instanceof Error ? e.message : "加载失败"));
+  }, [fetchCases]);
   const deleteCase = useCasesStore((s) => s.deleteCase);
 
   const [page, setPage] = useState(1);
@@ -74,8 +79,9 @@ export default function CasesPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      toggleStatus(item.id);
-                      toast.success("状态已更新");
+                      void toggleStatus(item.id)
+                        .then(() => toast.success("状态已更新"))
+                        .catch((e) => toast.error(e instanceof Error ? e.message : "操作失败"));
                     }}
                     title="点击切换发布状态"
                   >
@@ -129,8 +135,11 @@ export default function CasesPage() {
         onOpenChange={(open) => !open && setPendingDelete(null)}
         name={pendingDelete?.project ?? ""}
         onConfirm={() => {
-          if (pendingDelete) deleteCase(pendingDelete.id);
-          toast.success("已删除");
+          if (pendingDelete) {
+            void deleteCase(pendingDelete.id)
+              .then(() => toast.success("已删除"))
+              .catch((e) => toast.error(e instanceof Error ? e.message : "删除失败"));
+          }
         }}
       />
     </div>

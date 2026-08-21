@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { getLocalizedLabel, INDUSTRY_LABELS } from "@hiwhale/shared/constants";
@@ -26,6 +26,12 @@ const PAGE_SIZE = 8;
 export default function SolutionsPage() {
   const solutions = useSolutionsStore((s) => s.solutions);
   const toggleStatus = useSolutionsStore((s) => s.toggleStatus);
+  const loading = useSolutionsStore((s) => s.loading);
+  const fetchSolutions = useSolutionsStore((s) => s.fetchSolutions);
+
+  useEffect(() => {
+    void fetchSolutions().catch((e) => toast.error(e instanceof Error ? e.message : "加载失败"));
+  }, [fetchSolutions]);
   const deleteSolution = useSolutionsStore((s) => s.deleteSolution);
 
   const [page, setPage] = useState(1);
@@ -34,6 +40,7 @@ export default function SolutionsPage() {
   const [pendingDelete, setPendingDelete] = useState<AdminSolution | null>(null);
 
   const pageItems = solutions.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  void loading;
 
   return (
     <div className="space-y-6">
@@ -74,8 +81,9 @@ export default function SolutionsPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      toggleStatus(solution.id);
-                      toast.success("状态已更新");
+                      void toggleStatus(solution.id)
+                        .then(() => toast.success("状态已更新"))
+                        .catch((e) => toast.error(e instanceof Error ? e.message : "操作失败"));
                     }}
                     title="点击切换发布状态"
                   >
@@ -134,8 +142,11 @@ export default function SolutionsPage() {
         onOpenChange={(open) => !open && setPendingDelete(null)}
         name={pendingDelete?.titleZh ?? ""}
         onConfirm={() => {
-          if (pendingDelete) deleteSolution(pendingDelete.id);
-          toast.success("已删除");
+          if (pendingDelete) {
+            void deleteSolution(pendingDelete.id)
+              .then(() => toast.success("已删除"))
+              .catch((e) => toast.error(e instanceof Error ? e.message : "删除失败"));
+          }
         }}
       />
     </div>

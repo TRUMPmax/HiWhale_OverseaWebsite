@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, HttpException, HttpStatus } from "@nestjs/common";
 import type { InquiryStatus } from "@prisma/client";
 import { PrismaService } from "../../common/prisma/prisma.service";
+import { OperationLogService } from "../logs/logs.module";
 import type { CreateInquiryDto, ListInquiriesDto } from "./dto/inquiries.dto";
 
 /** 询盘提交限频：每 IP 每分钟 5 次（内存实现，单实例够用） */
@@ -18,7 +19,10 @@ function throttle(ip: string) {
 
 @Injectable()
 export class InquiriesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly logs: OperationLogService,
+  ) {}
 
   /** 公开：门户联系表单提交 */
   async create(dto: CreateInquiryDto, ip: string) {
@@ -120,19 +124,21 @@ export class InquiriesService {
     };
   }
 
-  async setStatus(id: string, status: InquiryStatus) {
+  async setStatus(id: string, status: InquiryStatus, operatorId?: string) {
     const exists = await this.prisma.inquiry.findUnique({ where: { id } });
     if (!exists) throw new NotFoundException("询盘不存在");
+    if (operatorId) await this.logs.log(operatorId, "变更询盘状态", `${exists.id} → ${status}`);
     return this.prisma.inquiry.update({ where: { id }, data: { status } });
   }
 
   /** 按员工姓名分配（STAFF 列表匹配） */
-  async assign(id: string, assigneeName: string) {
+  async assign(id: string, assigneeName: string, operatorId?: string) {
     const inquiry = await this.prisma.inquiry.findUnique({ where: { id } });
     if (!inquiry) throw new NotFoundException("询盘不存在");
     const staff = await this.prisma.staffUser.findFirst({
       where: { name: assigneeName },
     });
+    if (operatorId) await this.logs.log(operatorId, "分配询盘", `${inquiry.id} → ${assigneeName}`);
     return this.prisma.inquiry.update({
       where: { id },
       data: { assigneeId: staff?.id ?? null },

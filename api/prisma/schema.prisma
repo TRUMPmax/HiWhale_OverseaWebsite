@@ -304,8 +304,10 @@ model ChatConversation {
   id             String   @id @default(uuid()) @db.Uuid
   userId         String   @map("user_id") @db.Uuid
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  // 发起对话时的产品上下文（slug） 
+  // 发起对话时的产品上下文（slug）
   productContext String?  @map("product_context")
+  // 管理端标注状态：normal / flagged / review
+  status         String   @default("normal")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 

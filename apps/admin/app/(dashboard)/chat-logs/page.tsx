@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Download, Flag, Search } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -17,47 +17,109 @@ import {
 } from "@/components/ui/table";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Pagination } from "@/components/common/Pagination";
+import { adminApi } from "@/lib/api";
 import { downloadCsv } from "@/lib/export-csv";
-import { MOCK_CHAT_LOGS, type MockChatConversation } from "@/lib/mock/chat-logs";
 
 const PAGE_SIZE = 8;
 
-const STATUS_META: Record<MockChatConversation["status"], { label: string; className: string }> = {
+type AdminConversation = {
+  id: string;
+  user: string;
+  email: string;
+  productModel: string | null;
+  messageCount: number;
+  lastActive: string;
+  status: "normal" | "flagged" | "review";
+};
+
+type AdminMessage = {
+  id: string;
+  role: string;
+  content: string;
+  ts: string;
+};
+
+const STATUS_META: Record<AdminConversation["status"], { label: string; className: string }> = {
   normal: { label: "正常", className: "bg-green-50 text-green-700 hover:bg-green-50" },
   flagged: { label: "已标注", className: "bg-amber-50 text-amber-700 hover:bg-amber-50" },
   review: { label: "待复核", className: "bg-red-50 text-red-600 hover:bg-red-50" },
 };
 
-const STATUS_CYCLE: Record<MockChatConversation["status"], MockChatConversation["status"]> = {
+const STATUS_CYCLE: Record<AdminConversation["status"], AdminConversation["status"]> = {
   normal: "flagged",
   flagged: "review",
   review: "normal",
 };
 
-/** AI 对话记录：搜索 + 查看对话 + 标注流转 + 导出 */
+/** AI 对话记录：搜索 + 查看对话 + 标注流转 + 导出（数据来自 API） */
 export default function ChatLogsPage() {
-  const [logs, setLogs] = useState<MockChatConversation[]>(MOCK_CHAT_LOGS);
+  const [logs, setLogs] = useState<AdminConversation[]>([]);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [viewing, setViewing] = useState<MockChatConversation | null>(null);
+  const [viewing, setViewing] = useState<AdminConversation | null>(null);
+  const [messages, setMessages] = useState<AdminMessage[]>([]);
+  const [viewUser, setViewUser] = useState("");
 
-  const filtered = logs.filter((l) => l.user.toLowerCase().includes(search.toLowerCase()));
+  const fetchLogs = async () => {
+    setLoading(true);
+    try {
+      const data = await adminApi<{ items: AdminConversation[] }>("/api/chat/admin/conversations");
+      setLogs(data.items);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "加载失败");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void fetchLogs();
+  }, []);
+
+  const filtered = logs.filter(
+    (l) =>
+      l.user.toLowerCase().includes(search.toLowerCase()) ||
+      l.email.toLowerCase().includes(search.toLowerCase()),
+  );
   const pageItems = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  const cycleStatus = (log: MockChatConversation) => {
+  const cycleStatus = (log: AdminConversation) => {
     const next = STATUS_CYCLE[log.status];
-    setLogs((prev) => prev.map((l) => (l.id === log.id ? { ...l, status: next } : l)));
-    toast.success(`已更新为「${STATUS_META[next].label}」`);
+    void adminApi(`/api/chat/admin/conversations/${log.id}/status`, {
+      method: "PATCH",
+      body: { status: next },
+    })
+      .then(() => {
+        setLogs((prev) => prev.map((l) => (l.id === log.id ? { ...l, status: next } : l)));
+        toast.success(`已更新为「${STATUS_META[next].label}」`);
+      })
+      .catch((e) => toast.error(e instanceof Error ? e.message : "操作失败"));
+  };
+
+  const openConversation = (log: AdminConversation) => {
+    setViewing(log);
+    setMessages([]);
+    setViewUser(log.user);
+    void adminApi<{ user: string; items: AdminMessage[] }>(
+      `/api/chat/admin/conversations/${log.id}/messages`,
+    )
+      .then((data) => {
+        setMessages(data.items);
+        setViewUser(data.user);
+      })
+      .catch((e) => toast.error(e instanceof Error ? e.message : "加载失败"));
   };
 
   const exportCsv = () => {
     const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
     downloadCsv(
       `chat-logs-${date}.csv`,
-      ["会话 ID", "用户", "消息数", "最近活跃", "状态"],
+      ["会话 ID", "用户", "邮箱", "消息数", "最近活跃", "状态"],
       filtered.map((l) => [
         l.id,
         l.user,
+        l.email,
         String(l.messageCount),
         l.lastActive,
         STATUS_META[l.status].label,
@@ -76,7 +138,7 @@ export default function ChatLogsPage() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <Input
-                placeholder="搜索用户…"
+                placeholder="搜索用户 / 邮箱…"
                 className="w-56 pl-9"
                 value={search}
                 onChange={(e) => {
@@ -97,6 +159,7 @@ export default function ChatLogsPage() {
           <TableHeader>
             <TableRow>
               <TableHead>用户</TableHead>
+              <TableHead>邮箱</TableHead>
               <TableHead>消息数</TableHead>
               <TableHead>最近活跃</TableHead>
               <TableHead>状态</TableHead>
@@ -107,6 +170,7 @@ export default function ChatLogsPage() {
             {pageItems.map((log) => (
               <TableRow key={log.id}>
                 <TableCell className="font-medium">{log.user}</TableCell>
+                <TableCell className="text-slate-500">{log.email}</TableCell>
                 <TableCell>{log.messageCount}</TableCell>
                 <TableCell className="text-slate-500">{log.lastActive}</TableCell>
                 <TableCell>
@@ -118,7 +182,7 @@ export default function ChatLogsPage() {
                   <button
                     type="button"
                     className="text-brand-blue text-sm font-medium hover:underline"
-                    onClick={() => setViewing(log)}
+                    onClick={() => openConversation(log)}
                   >
                     查看对话
                   </button>
@@ -134,8 +198,8 @@ export default function ChatLogsPage() {
             ))}
             {pageItems.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="h-32 text-center text-sm text-slate-400">
-                  暂无匹配的记录
+                <TableCell colSpan={6} className="h-32 text-center text-sm text-slate-400">
+                  {loading ? "加载中…" : "暂无匹配的记录"}
                 </TableCell>
               </TableRow>
             )}
@@ -153,12 +217,12 @@ export default function ChatLogsPage() {
       <Dialog open={viewing !== null} onOpenChange={(open) => !open && setViewing(null)}>
         <DialogContent className="max-h-[80vh] max-w-2xl overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>与 {viewing?.user} 的对话</DialogTitle>
+            <DialogTitle>与 {viewUser} 的对话</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
-            {viewing?.messages.map((message, index) => (
+            {messages.map((message) => (
               <div
-                key={index}
+                key={message.id}
                 className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
@@ -173,12 +237,15 @@ export default function ChatLogsPage() {
                       message.role === "user" ? "text-white/60" : "text-slate-400"
                     }`}
                   >
-                    {message.role === "user" ? viewing.user : "AI 助手"} · {message.ts}
+                    {message.role === "user" ? viewUser : "AI 助手"} · {message.ts}
                   </div>
                   {message.content}
                 </div>
               </div>
             ))}
+            {messages.length === 0 && (
+              <p className="py-6 text-center text-sm text-slate-400">加载中…</p>
+            )}
           </div>
         </DialogContent>
       </Dialog>

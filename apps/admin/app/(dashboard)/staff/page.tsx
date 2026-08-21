@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import { getLocalizedLabel, USER_ROLE_LABELS, UserRole } from "@hiwhale/shared/constants";
@@ -66,11 +66,16 @@ const EMPTY_FORM = { name: "", email: "", role: UserRole.SALES, password: "" };
 /** 员工管理：列表 + 新增/编辑 + 禁用 + 权限矩阵 */
 export default function StaffPage() {
   const staff = useStaffStore((s) => s.staff);
+  const fetchStaff = useStaffStore((s) => s.fetchStaff);
   const addStaff = useStaffStore((s) => s.addStaff);
   const updateStaff = useStaffStore((s) => s.updateStaff);
   const toggleStatus = useStaffStore((s) => s.toggleStatus);
 
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  useEffect(() => {
+    void fetchStaff().catch((e) => toast.error(e instanceof Error ? e.message : "加载失败"));
+  }, [fetchStaff]);
   const [editing, setEditing] = useState<AdminStaff | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
 
@@ -86,7 +91,7 @@ export default function StaffPage() {
     setDialogOpen(true);
   };
 
-  const submit = () => {
+  const submit = async () => {
     if (!form.name.trim() || !form.email.trim()) {
       toast.error("请填写姓名与邮箱");
       return;
@@ -95,19 +100,22 @@ export default function StaffPage() {
       toast.error("请设置初始密码");
       return;
     }
-    if (editing) {
-      updateStaff(editing.id, { name: form.name, email: form.email, role: form.role });
-    } else {
-      addStaff({
-        id: `s-${Date.now()}`,
-        name: form.name.trim(),
-        email: form.email.trim(),
-        role: form.role,
-        status: "active",
-      });
+    try {
+      if (editing) {
+        await updateStaff(editing.id, { name: form.name, role: form.role });
+      } else {
+        await addStaff({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          role: form.role,
+          password: form.password,
+        });
+      }
+      toast.success("保存成功");
+      setDialogOpen(false);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "保存失败");
     }
-    toast.success("保存成功");
-    setDialogOpen(false);
   };
 
   return (
@@ -166,8 +174,9 @@ export default function StaffPage() {
                     type="button"
                     className="ml-4 text-sm font-medium text-red-600 hover:underline"
                     onClick={() => {
-                      toggleStatus(item.id);
-                      toast.success(item.status === "active" ? "已禁用" : "已启用");
+                      void toggleStatus(item.id)
+                        .then(() => toast.success(item.status === "active" ? "已禁用" : "已启用"))
+                        .catch((e) => toast.error(e instanceof Error ? e.message : "操作失败"));
                     }}
                   >
                     {item.status === "active" ? "禁用" : "启用"}
@@ -239,6 +248,7 @@ export default function StaffPage() {
               <Input
                 type="email"
                 value={form.email}
+                disabled={!!editing}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
               />
             </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Save, Send, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -24,30 +24,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { PageHeader } from "@/components/common/PageHeader";
+import { adminApi } from "@/lib/api";
 import { Pagination } from "@/components/common/Pagination";
 
 const PAGE_SIZE = 8;
-
-/** 操作日志 Mock（20 条） */
-const OP_LOGS = Array.from({ length: 20 }, (_, i) => {
-  const actions = [
-    { action: "更新产品", target: "MBV15R 平衡重式无人叉车" },
-    { action: "分配询盘", target: "INQ-0820-01 → 陈凯文" },
-    { action: "登录后台", target: "-" },
-    { action: "上传文档", target: "MBV15R-产品规格书.pdf" },
-    { action: "更新 AI 设置", target: "System Prompt" },
-    { action: "禁用用户", target: "Emma Dubois" },
-  ];
-  const action = actions[i % actions.length];
-  const date = new Date(Date.now() - i * 3600000 * 5);
-  return {
-    id: `log-${i + 1}`,
-    time: date.toLocaleString("zh-CN", { hour12: false }),
-    operator: ["系统管理员", "陈凯文", "李晓梅"][i % 3],
-    action: action.action,
-    target: action.target,
-  };
-});
 
 function Toggle({
   checked,
@@ -88,8 +68,19 @@ export default function SettingsPage() {
     dailyDigest: false,
   });
   const [logPage, setLogPage] = useState(1);
+  const [logs, setLogs] = useState<
+    Array<{ id: string; time: string; operator: string; action: string; target: string }>
+  >([]);
+  const [logsTotal, setLogsTotal] = useState(0);
 
-  const logItems = OP_LOGS.slice((logPage - 1) * PAGE_SIZE, logPage * PAGE_SIZE);
+  useEffect(() => {
+    adminApi<{ items: typeof logs; total: number }>(`/api/logs?page=${logPage}`)
+      .then((data) => {
+        setLogs(data.items);
+        setLogsTotal(data.total);
+      })
+      .catch(() => {});
+  }, [logPage]);
 
   return (
     <div className="space-y-6">
@@ -250,9 +241,11 @@ export default function SettingsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {logItems.map((log) => (
+                {logs.map((log) => (
                   <TableRow key={log.id}>
-                    <TableCell className="text-slate-500">{log.time}</TableCell>
+                    <TableCell className="text-slate-500">
+                      {new Date(log.time).toLocaleString("zh-CN", { hour12: false })}
+                    </TableCell>
                     <TableCell>{log.operator}</TableCell>
                     <TableCell>{log.action}</TableCell>
                     <TableCell className="text-slate-500">{log.target}</TableCell>
@@ -261,7 +254,7 @@ export default function SettingsPage() {
               </TableBody>
             </Table>
             <Pagination
-              total={OP_LOGS.length}
+              total={logsTotal}
               page={logPage}
               pageSize={PAGE_SIZE}
               onPageChange={setLogPage}

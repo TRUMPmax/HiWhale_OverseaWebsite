@@ -6,6 +6,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  Patch,
   Post,
   Res,
   UseGuards,
@@ -53,6 +54,38 @@ export class ChatController {
   async removeConversation(@CurrentUser() payload: JwtPayload, @Param("id") id: string) {
     this.requireUser(payload);
     const result = await this.chat.removeConversation(payload.sub, id);
+    if (!result) throw new NotFoundException("会话不存在");
+    return result;
+  }
+
+  // ---------- 管理端（staff） ----------
+
+  private requireStaff(payload: JwtPayload) {
+    if (payload.kind !== "staff") throw new ForbiddenException("仅后台员工可访问");
+  }
+
+  @Get("admin/conversations")
+  adminList(@CurrentUser() payload: JwtPayload) {
+    this.requireStaff(payload);
+    return this.chat.adminListConversations();
+  }
+
+  @Get("admin/conversations/:id/messages")
+  async adminMessages(@CurrentUser() payload: JwtPayload, @Param("id") id: string) {
+    this.requireStaff(payload);
+    const result = await this.chat.adminListMessages(id);
+    if (!result) throw new NotFoundException("会话不存在");
+    return result;
+  }
+
+  @Patch("admin/conversations/:id/status")
+  async adminSetStatus(
+    @CurrentUser() payload: JwtPayload,
+    @Param("id") id: string,
+    @Body("status") status: string,
+  ) {
+    this.requireStaff(payload);
+    const result = await this.chat.adminSetStatus(id, status);
     if (!result) throw new NotFoundException("会话不存在");
     return result;
   }

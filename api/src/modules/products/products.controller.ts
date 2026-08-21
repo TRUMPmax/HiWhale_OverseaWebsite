@@ -48,7 +48,7 @@ export class ProductsController {
   @Post()
   create(@CurrentUser() payload: JwtPayload, @Body() dto: UpsertProductDto) {
     requireStaff(payload);
-    return this.products.create(dto);
+    return this.products.create(dto, payload.sub);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -59,7 +59,7 @@ export class ProductsController {
     @Body() dto: Partial<UpsertProductDto>,
   ) {
     requireStaff(payload);
-    return this.products.update(id, dto);
+    return this.products.update(id, dto, payload.sub);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -70,13 +70,13 @@ export class ProductsController {
     @Body() dto: UpdateStatusDto,
   ) {
     requireStaff(payload);
-    return this.products.setStatus(id, dto.status);
+    return this.products.setStatus(id, dto.status, payload.sub);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(":id")
   remove(@CurrentUser() payload: JwtPayload, @Param("id") id: string) {
     requireStaff(payload);
-    return this.products.remove(id);
+    return this.products.remove(id, payload.sub);
   }
 }

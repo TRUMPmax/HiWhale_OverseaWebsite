@@ -68,7 +68,7 @@ export class InquiriesController {
     @Body() dto: UpdateInquiryStatusDto,
   ) {
     requireStaff(payload);
-    return this.inquiries.setStatus(id, dto.status);
+    return this.inquiries.setStatus(id, dto.status, payload.sub);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -79,7 +79,7 @@ export class InquiriesController {
     @Body() dto: AssignInquiryDto,
   ) {
     requireStaff(payload);
-    return this.inquiries.assign(id, dto.assigneeName);
+    return this.inquiries.assign(id, dto.assigneeName, payload.sub);
   }
 
   @UseGuards(JwtAuthGuard)

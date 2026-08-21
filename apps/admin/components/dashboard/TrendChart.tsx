@@ -37,12 +37,18 @@ const DATA = (() => {
   });
 })();
 
-/** 近 30 天趋势图：询盘数（品牌蓝）+ AI 对话量（琥珀） */
-export function TrendChart() {
+type TrendPoint = { date: string; inquiries: number; ai: number };
+
+/** 近 30 天趋势图：询盘数（品牌蓝）+ AI 对话量（琥珀）；无数据时回退 Mock 展示 */
+export function TrendChart({ data }: { data?: TrendPoint[] }) {
+  const chartData =
+    data && data.some((d) => d.inquiries > 0 || d.ai > 0)
+      ? data.map((d) => ({ date: d.date, 询盘数: d.inquiries, AI对话量: d.ai }))
+      : DATA;
   return (
     <div className="h-72 w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={DATA} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+        <AreaChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
           <XAxis dataKey="date" tick={{ fontSize: 12, fill: "#64748b" }} tickLine={false} />
           <YAxis tick={{ fontSize: 12, fill: "#64748b" }} tickLine={false} axisLine={false} />

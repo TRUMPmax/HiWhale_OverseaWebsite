@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { AlertTriangle, Inbox, MessageSquareText, TrendingUp, Users } from "lucide-react";
 import {
   getLocalizedLabel,
@@ -15,13 +18,24 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { TrendChart } from "@/components/dashboard/TrendChart";
+import { adminApi } from "@/lib/api";
 
-const STATS = [
-  { title: "今日询盘", value: "12", delta: "+20.1% 较昨日", icon: Inbox },
-  { title: "本月新增用户", value: "86", delta: "+12.5% 较上月", icon: Users },
-  { title: "AI 对话量", value: "1,432", delta: "+8.3% 较昨日", icon: MessageSquareText },
-  { title: "产品浏览量", value: "8,209", delta: "+15.2% 较昨日", icon: TrendingUp },
-];
+type DashboardStats = {
+  todayInquiries: number;
+  monthUsers: number;
+  aiConversations: number;
+  trend: Array<{ date: string; inquiries: number; ai: number }>;
+  recentInquiries: Array<{
+    id: string;
+    customer: string;
+    company: string;
+    country: string;
+    categories: string[];
+    status: string;
+    time: string;
+    assignee: string;
+  }>;
+};
 
 const STATUS_BADGE: Record<string, string> = {
   NEW: "bg-blue-50 text-blue-700 hover:bg-blue-50",
@@ -29,60 +43,6 @@ const STATUS_BADGE: Record<string, string> = {
   WON: "bg-green-50 text-green-700 hover:bg-green-50",
   CLOSED: "bg-slate-100 text-slate-500 hover:bg-slate-100",
 };
-
-/** 最近询盘 Mock 数据 */
-const RECENT_INQUIRIES = [
-  {
-    id: "INQ-0820-01",
-    customer: "Thomas Müller",
-    company: "Bavaria Logistics GmbH",
-    country: "德国",
-    category: "AGV_FORKLIFT",
-    status: "NEW",
-    time: "2026-08-20 09:42",
-    assignee: "未分配",
-  },
-  {
-    id: "INQ-0820-02",
-    customer: "Sarah Johnson",
-    company: "Midwest Fulfillment Inc.",
-    country: "美国",
-    category: "AMR",
-    status: "FOLLOWING",
-    time: "2026-08-20 08:15",
-    assignee: "陈凯文",
-  },
-  {
-    id: "INQ-0819-01",
-    customer: "Kenji Tanaka",
-    company: "Tanaka Seiki Co., Ltd.",
-    country: "日本",
-    category: "ROBOTIC_ARM",
-    status: "FOLLOWING",
-    time: "2026-08-19 17:33",
-    assignee: "李晓梅",
-  },
-  {
-    id: "INQ-0819-02",
-    customer: "Ahmad Rahman",
-    company: "HarborLink Terminal",
-    country: "新加坡",
-    category: "GANTRY_CRANE",
-    status: "WON",
-    time: "2026-08-19 14:08",
-    assignee: "陈凯文",
-  },
-  {
-    id: "INQ-0818-03",
-    customer: "Emma Dubois",
-    company: "FraisChaîne SAS",
-    country: "法国",
-    category: "WCS",
-    status: "CLOSED",
-    time: "2026-08-18 11:26",
-    assignee: "张伟",
-  },
-] as const;
 
 const TODOS = [
   { icon: Inbox, text: "3 条新询盘待分配", tone: "text-brand-blue bg-blue-50" },
@@ -99,13 +59,50 @@ const TODOS = [
   { icon: Users, text: "1 个员工账号待审核开通", tone: "text-brand-blue bg-blue-50" },
 ];
 
-/** 仪表盘 */
+/** 仪表盘（统计数据来自 API） */
 export default function DashboardPage() {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+
+  useEffect(() => {
+    adminApi<DashboardStats>("/api/stats/dashboard")
+      .then(setStats)
+      .catch(() => {
+        // API 不可用时保持占位
+      });
+  }, []);
+
+  const cards = [
+    {
+      title: "今日询盘",
+      value: String(stats?.todayInquiries ?? "-"),
+      delta: "实时数据",
+      icon: Inbox,
+    },
+    {
+      title: "本月新增用户",
+      value: String(stats?.monthUsers ?? "-"),
+      delta: "实时数据",
+      icon: Users,
+    },
+    {
+      title: "AI 对话量",
+      value: String(stats?.aiConversations ?? "-"),
+      delta: "累计会话数",
+      icon: MessageSquareText,
+    },
+    {
+      title: "产品浏览量",
+      value: "8,209",
+      delta: "示例数据（埋点未接入）",
+      icon: TrendingUp,
+    },
+  ];
+
   return (
     <div className="space-y-6">
       {/* 统计卡片 */}
       <div className="grid grid-cols-4 gap-4">
-        {STATS.map((stat) => (
+        {cards.map((stat) => (
           <Card key={stat.title}>
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
@@ -113,7 +110,11 @@ export default function DashboardPage() {
                 <stat.icon className="text-brand-blue h-5 w-5" />
               </div>
               <div className="mt-2 text-3xl font-bold text-slate-900">{stat.value}</div>
-              <div className="mt-1 text-xs font-medium text-green-600">{stat.delta}</div>
+              <div
+                className={`mt-1 text-xs font-medium ${stat.delta.includes("示例") ? "text-slate-400" : "text-green-600"}`}
+              >
+                {stat.delta}
+              </div>
             </CardContent>
           </Card>
         ))}
@@ -126,7 +127,7 @@ export default function DashboardPage() {
             <CardTitle className="text-base">近30天趋势</CardTitle>
           </CardHeader>
           <CardContent>
-            <TrendChart />
+            <TrendChart data={stats?.trend} />
           </CardContent>
         </Card>
 
@@ -172,13 +173,15 @@ export default function DashboardPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {RECENT_INQUIRIES.map((inquiry) => (
+              {(stats?.recentInquiries ?? []).map((inquiry) => (
                 <TableRow key={inquiry.id}>
                   <TableCell className="font-medium">{inquiry.customer}</TableCell>
                   <TableCell>{inquiry.company}</TableCell>
                   <TableCell>{inquiry.country}</TableCell>
                   <TableCell>
-                    {getLocalizedLabel(PRODUCT_CATEGORY_LABELS, inquiry.category, "zh")}
+                    {inquiry.categories
+                      .map((c) => getLocalizedLabel(PRODUCT_CATEGORY_LABELS, c, "zh"))
+                      .join(" / ")}
                   </TableCell>
                   <TableCell>
                     <Badge className={STATUS_BADGE[inquiry.status]}>
@@ -189,6 +192,13 @@ export default function DashboardPage() {
                   <TableCell>{inquiry.assignee}</TableCell>
                 </TableRow>
               ))}
+              {stats && stats.recentInquiries.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={7} className="h-24 text-center text-sm text-slate-400">
+                    暂无询盘
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>

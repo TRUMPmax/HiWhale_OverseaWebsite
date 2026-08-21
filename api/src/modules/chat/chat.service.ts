@@ -235,4 +235,63 @@ export class ChatService {
     await this.prisma.chatConversation.delete({ where: { id: conversationId } });
     return { deleted: true };
   }
+
+  // ---------- 管理端（staff） ----------
+
+  /** 全部会话列表（含用户信息） */
+  async adminListConversations() {
+    const items = await this.prisma.chatConversation.findMany({
+      orderBy: { updatedAt: "desc" },
+      include: {
+        user: { select: { name: true, email: true } },
+        _count: { select: { messages: true } },
+      },
+    });
+    return {
+      items: items.map((c) => ({
+        id: c.id,
+        user: c.user.name,
+        email: c.user.email,
+        productModel: c.productContext,
+        messageCount: c._count.messages,
+        lastActive: c.updatedAt.toISOString().slice(0, 16).replace("T", " "),
+        status: c.status,
+      })),
+    };
+  }
+
+  /** 会话消息（staff 查看） */
+  async adminListMessages(conversationId: string) {
+    const conversation = await this.prisma.chatConversation.findUnique({
+      where: { id: conversationId },
+      include: { user: { select: { name: true } } },
+    });
+    if (!conversation) return null;
+    const messages = await this.prisma.chatMessage.findMany({
+      where: { conversationId },
+      orderBy: { createdAt: "asc" },
+    });
+    return {
+      user: conversation.user.name,
+      items: messages.map((m) => ({
+        id: m.id,
+        role: m.role,
+        content: m.content,
+        ts: m.createdAt.toISOString().slice(11, 16),
+      })),
+    };
+  }
+
+  /** 标注会话状态（normal / flagged / review） */
+  async adminSetStatus(conversationId: string, status: string) {
+    const exists = await this.prisma.chatConversation.findUnique({
+      where: { id: conversationId },
+    });
+    if (!exists) return null;
+    await this.prisma.chatConversation.update({
+      where: { id: conversationId },
+      data: { status },
+    });
+    return { ok: true, status };
+  }
 }

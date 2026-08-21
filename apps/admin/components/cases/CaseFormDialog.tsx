@@ -38,8 +38,7 @@ const EMPTY = {
 
 /** 案例 新增/编辑 弹窗表单 */
 export function CaseFormDialog({ open, onOpenChange, initial }: CaseFormDialogProps) {
-  const addCase = useCasesStore((s) => s.addCase);
-  const updateCase = useCasesStore((s) => s.updateCase);
+  const saveCase = useCasesStore((s) => s.saveCase);
   const [form, setForm] = useState(EMPTY);
 
   useEffect(() => {
@@ -66,7 +65,7 @@ export function CaseFormDialog({ open, onOpenChange, initial }: CaseFormDialogPr
   const set = <K extends keyof typeof EMPTY>(key: K, value: (typeof EMPTY)[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
 
-  const submit = () => {
+  const submit = async () => {
     if (!form.clientName.trim() || !form.industry || !form.project.trim()) {
       toast.error("请填写客户名、行业与项目名");
       return;
@@ -81,12 +80,13 @@ export function CaseFormDialog({ open, onOpenChange, initial }: CaseFormDialogPr
       results: form.results.filter((r) => r.value.trim() || r.label.trim()),
       testimonial: { quote: form.quote, author: form.author, role: form.role },
     };
-    if (initial) {
-      updateCase(initial.id, payload);
-    } else {
-      addCase({ id: `case-${Date.now()}`, status: "draft", ...payload });
+    try {
+      await saveCase(payload, initial?.id);
+      toast.success("保存成功");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "保存失败");
+      return;
     }
-    toast.success("保存成功");
     onOpenChange(false);
   };
 

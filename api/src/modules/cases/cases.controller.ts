@@ -46,7 +46,7 @@ export class CasesController {
   @Post()
   create(@CurrentUser() payload: JwtPayload, @Body() dto: UpsertCaseDto) {
     requireStaff(payload);
-    return this.cases.create(dto);
+    return this.cases.create(dto, payload.sub);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -57,7 +57,7 @@ export class CasesController {
     @Body() dto: Partial<UpsertCaseDto>,
   ) {
     requireStaff(payload);
-    return this.cases.update(id, dto);
+    return this.cases.update(id, dto, payload.sub);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -68,13 +68,13 @@ export class CasesController {
     @Body() dto: UpdateCaseStatusDto,
   ) {
     requireStaff(payload);
-    return this.cases.setStatus(id, dto.status);
+    return this.cases.setStatus(id, dto.status, payload.sub);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(":id")
   remove(@CurrentUser() payload: JwtPayload, @Param("id") id: string) {
     requireStaff(payload);
-    return this.cases.remove(id);
+    return this.cases.remove(id, payload.sub);
   }
 }

@@ -1,6 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../../common/prisma/prisma.service";
+import { OperationLogService } from "../logs/logs.module";
 import type { UpsertSolutionDto } from "./dto/solutions.dto";
 
 function toDto(s: Prisma.SolutionGetPayload<object>) {
@@ -13,7 +14,10 @@ function asJson(value: unknown[] | undefined): Prisma.InputJsonValue {
 
 @Injectable()
 export class SolutionsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly logs: OperationLogService,
+  ) {}
 
   async list(publicOnly: boolean) {
     const items = await this.prisma.solution.findMany({
@@ -31,7 +35,7 @@ export class SolutionsService {
     return toDto(solution);
   }
 
-  async create(dto: UpsertSolutionDto) {
+  async create(dto: UpsertSolutionDto, operatorId?: string) {
     try {
       const solution = await this.prisma.solution.create({
         data: {
@@ -48,6 +52,7 @@ export class SolutionsService {
           status: dto.status === "draft" ? "DRAFT" : "PUBLISHED",
         },
       });
+      if (operatorId) await this.logs.log(operatorId, "新增方案", dto.title.zh ?? dto.slug);
       return toDto(solution);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
@@ -57,7 +62,7 @@ export class SolutionsService {
     }
   }
 
-  async update(id: string, dto: Partial<UpsertSolutionDto>) {
+  async update(id: string, dto: Partial<UpsertSolutionDto>, operatorId?: string) {
     const exists = await this.prisma.solution.findUnique({ where: { id } });
     if (!exists) throw new NotFoundException("方案不存在");
     try {
@@ -88,7 +93,7 @@ export class SolutionsService {
     }
   }
 
-  async setStatus(id: string, status: "published" | "draft") {
+  async setStatus(id: string, status: "published" | "draft", operatorId?: string) {
     const exists = await this.prisma.solution.findUnique({ where: { id } });
     if (!exists) throw new NotFoundException("方案不存在");
     const solution = await this.prisma.solution.update({
@@ -98,10 +103,11 @@ export class SolutionsService {
     return toDto(solution);
   }
 
-  async remove(id: string) {
+  async remove(id: string, operatorId?: string) {
     const exists = await this.prisma.solution.findUnique({ where: { id } });
     if (!exists) throw new NotFoundException("方案不存在");
     await this.prisma.solution.delete({ where: { id } });
+    if (operatorId) await this.logs.log(operatorId, "删除方案", exists.slug);
     return { deleted: true };
   }
 }

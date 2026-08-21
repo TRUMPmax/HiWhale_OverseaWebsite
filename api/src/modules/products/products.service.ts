@@ -1,6 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../../common/prisma/prisma.service";
+import { OperationLogService } from "../logs/logs.module";
 import type { ListProductsDto, UpsertProductDto } from "./dto/products.dto";
 
 /** DB 行 → 前端形状（status 转小写 on/off） */
@@ -15,7 +16,10 @@ function asJson(value: unknown[] | undefined): Prisma.InputJsonValue {
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly logs: OperationLogService,
+  ) {}
 
   async list(query: ListProductsDto, publicOnly: boolean) {
     const { page = 1, pageSize = 20, category, group, search, status } = query;
@@ -57,7 +61,7 @@ export class ProductsService {
     return toDto(product);
   }
 
-  async create(dto: UpsertProductDto) {
+  async create(dto: UpsertProductDto, operatorId?: string) {
     try {
       const product = await this.prisma.product.create({
         data: {
@@ -79,6 +83,7 @@ export class ProductsService {
           status: dto.status === "off" ? "OFF" : "ON",
         },
       });
+      if (operatorId) await this.logs.log(operatorId, "新增产品", dto.model);
       return toDto(product);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
@@ -88,7 +93,7 @@ export class ProductsService {
     }
   }
 
-  async update(id: string, dto: Partial<UpsertProductDto>) {
+  async update(id: string, dto: Partial<UpsertProductDto>, operatorId?: string) {
     const exists = await this.prisma.product.findUnique({ where: { id } });
     if (!exists) throw new NotFoundException("产品不存在");
     try {
@@ -124,20 +129,23 @@ export class ProductsService {
     }
   }
 
-  async setStatus(id: string, status: "on" | "off") {
+  async setStatus(id: string, status: "on" | "off", operatorId?: string) {
     const exists = await this.prisma.product.findUnique({ where: { id } });
     if (!exists) throw new NotFoundException("产品不存在");
     const product = await this.prisma.product.update({
       where: { id },
       data: { status: status === "off" ? "OFF" : "ON" },
     });
+    if (operatorId)
+      await this.logs.log(operatorId, status === "on" ? "上架产品" : "下架产品", product.model);
     return toDto(product);
   }
 
-  async remove(id: string) {
+  async remove(id: string, operatorId?: string) {
     const exists = await this.prisma.product.findUnique({ where: { id } });
     if (!exists) throw new NotFoundException("产品不存在");
     await this.prisma.product.delete({ where: { id } });
+    if (operatorId) await this.logs.log(operatorId, "删除产品", exists.model);
     return { deleted: true };
   }
 }

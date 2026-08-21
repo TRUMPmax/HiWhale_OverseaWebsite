@@ -46,7 +46,7 @@ export class SolutionsController {
   @Post()
   create(@CurrentUser() payload: JwtPayload, @Body() dto: UpsertSolutionDto) {
     requireStaff(payload);
-    return this.solutions.create(dto);
+    return this.solutions.create(dto, payload.sub);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -57,7 +57,7 @@ export class SolutionsController {
     @Body() dto: Partial<UpsertSolutionDto>,
   ) {
     requireStaff(payload);
-    return this.solutions.update(id, dto);
+    return this.solutions.update(id, dto, payload.sub);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -68,13 +68,13 @@ export class SolutionsController {
     @Body() dto: UpdateSolutionStatusDto,
   ) {
     requireStaff(payload);
-    return this.solutions.setStatus(id, dto.status);
+    return this.solutions.setStatus(id, dto.status, payload.sub);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(":id")
   remove(@CurrentUser() payload: JwtPayload, @Param("id") id: string) {
     requireStaff(payload);
-    return this.solutions.remove(id);
+    return this.solutions.remove(id, payload.sub);
   }
 }

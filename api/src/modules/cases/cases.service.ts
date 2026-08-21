@@ -1,6 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "../../common/prisma/prisma.service";
+import { OperationLogService } from "../logs/logs.module";
 import type { UpsertCaseDto } from "./dto/cases.dto";
 
 function toDto(c: Prisma.CaseStudyGetPayload<object>) {
@@ -13,7 +14,10 @@ function asJson(value: unknown[] | undefined): Prisma.InputJsonValue {
 
 @Injectable()
 export class CasesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly logs: OperationLogService,
+  ) {}
 
   async list(publicOnly: boolean) {
     const items = await this.prisma.caseStudy.findMany({
@@ -31,7 +35,7 @@ export class CasesService {
     return toDto(item);
   }
 
-  async create(dto: UpsertCaseDto) {
+  async create(dto: UpsertCaseDto, operatorId?: string) {
     try {
       const item = await this.prisma.caseStudy.create({
         data: {
@@ -51,6 +55,7 @@ export class CasesService {
           status: dto.status === "draft" ? "DRAFT" : "PUBLISHED",
         },
       });
+      if (operatorId) await this.logs.log(operatorId, "新增案例", dto.clientName.zh ?? dto.slug);
       return toDto(item);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
@@ -60,7 +65,7 @@ export class CasesService {
     }
   }
 
-  async update(id: string, dto: Partial<UpsertCaseDto>) {
+  async update(id: string, dto: Partial<UpsertCaseDto>, operatorId?: string) {
     const exists = await this.prisma.caseStudy.findUnique({ where: { id } });
     if (!exists) throw new NotFoundException("案例不存在");
     try {
@@ -96,7 +101,7 @@ export class CasesService {
     }
   }
 
-  async setStatus(id: string, status: "published" | "draft") {
+  async setStatus(id: string, status: "published" | "draft", operatorId?: string) {
     const exists = await this.prisma.caseStudy.findUnique({ where: { id } });
     if (!exists) throw new NotFoundException("案例不存在");
     const item = await this.prisma.caseStudy.update({
@@ -106,10 +111,11 @@ export class CasesService {
     return toDto(item);
   }
 
-  async remove(id: string) {
+  async remove(id: string, operatorId?: string) {
     const exists = await this.prisma.caseStudy.findUnique({ where: { id } });
     if (!exists) throw new NotFoundException("案例不存在");
     await this.prisma.caseStudy.delete({ where: { id } });
+    if (operatorId) await this.logs.log(operatorId, "删除案例", exists.slug);
     return { deleted: true };
   }
 }

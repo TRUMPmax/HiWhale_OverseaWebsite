@@ -40,8 +40,7 @@ const EMPTY = {
 
 /** 方案 新增/编辑 弹窗表单 */
 export function SolutionFormDialog({ open, onOpenChange, initial }: SolutionFormDialogProps) {
-  const addSolution = useSolutionsStore((s) => s.addSolution);
-  const updateSolution = useSolutionsStore((s) => s.updateSolution);
+  const saveSolution = useSolutionsStore((s) => s.saveSolution);
 
   const [form, setForm] = useState(EMPTY);
 
@@ -73,7 +72,7 @@ export function SolutionFormDialog({ open, onOpenChange, initial }: SolutionForm
         : [...form.products, slug],
     );
 
-  const submit = () => {
+  const submit = async () => {
     if (!form.titleZh.trim() || !form.titleEn.trim() || !form.industry) {
       toast.error("请填写标题（中/英）并选择行业");
       return;
@@ -86,12 +85,13 @@ export function SolutionFormDialog({ open, onOpenChange, initial }: SolutionForm
       painPoints: form.painPoints.map((p) => p.trim()).filter(Boolean),
       products: form.products,
     };
-    if (initial) {
-      updateSolution(initial.id, payload);
-    } else {
-      addSolution({ id: `sol-${Date.now()}`, status: "draft", ...payload });
+    try {
+      await saveSolution(payload, initial?.id);
+      toast.success("保存成功");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "保存失败");
+      return;
     }
-    toast.success("保存成功");
     onOpenChange(false);
   };
 
