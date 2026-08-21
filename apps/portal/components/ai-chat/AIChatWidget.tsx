@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Bot, Maximize2, Minimize2, Send, Trash2, X } from "lucide-react";
+import { API_BASE, apiGet } from "@/lib/api";
 import { useAuthStore } from "@/store/auth";
 import { useChatStore } from "@/store/chat";
-import { getMockReply } from "./mock-replies";
 
 type ChatMessage = {
   id: string;
@@ -17,11 +17,11 @@ type ChatMessage = {
 const STORAGE_KEY = "hiwhale-chat";
 const QUICK_KEYS = ["quick1", "quick2", "quick3"] as const;
 
-/** AI 聊天窗：FAB + 对话窗口，仅登录用户可见；Mock 回复 + 打字机效果 */
+/** AI 聊天窗：FAB + 对话窗口，仅登录用户可见；DeepSeek SSE 真实流式回复 */
 export function AIChatWidget() {
   const t = useTranslations("chat");
-  const locale = useLocale();
   const user = useAuthStore((s) => s.user);
+  const token = useAuthStore((s) => s.token);
   const isChatOpen = useChatStore((s) => s.isChatOpen);
   const openChat = useChatStore((s) => s.openChat);
   const closeChat = useChatStore((s) => s.closeChat);
@@ -31,10 +31,14 @@ export function AIChatWidget() {
   const [mounted, setMounted] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
-  /** 打字机进行中（禁用输入） */
+  /** 流式回复进行中（禁用输入） */
   const [typing, setTyping] = useState(false);
   /** 回复前的“正在输入”指示 */
   const [awaitingReply, setAwaitingReply] = useState(false);
+  /** 当前会话 ID（API） */
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  /** 本次会话的产品上下文（AskAIButton 设置，消费后保留在会话内） */
+  const [sessionProduct, setSessionProduct] = useState<string | null>(null);
   /** 窗口放大（桌面端居中最大化） */
   const [maximized, setMaximized] = useState(false);
   /** 窗口拖动偏移（相对默认右下角锚点，仅桌面端） */
@@ -55,15 +59,44 @@ export function AIChatWidget() {
     }
   }, []);
 
-  // 持久化（保留最近 100 条）
+  // 持久化（保留最近 100 条，作为本地缓存）
   useEffect(() => {
     if (!mounted) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-100)));
   }, [messages, mounted]);
 
+  // 打开聊天窗时：若有登录 token，加载最近一次会话
+  useEffect(() => {
+    if (!isChatOpen || !token || conversationId) return;
+    apiGet<{ items: Array<{ id: string }> }>("/api/chat/conversations", token)
+      .then(async ({ items }) => {
+        const latest = items[0];
+        if (!latest) return;
+        const detail = await apiGet<{
+          items: Array<{ id: string; role: string; content: string; ts: number }>;
+        }>(`/api/chat/conversations/${latest.id}/messages`, token);
+        if (detail.items.length > 0) {
+          setConversationId(latest.id);
+          setMessages(
+            detail.items.map((m) => ({
+              id: m.id,
+              role: m.role as ChatMessage["role"],
+              content: m.content,
+              ts: m.ts,
+            })),
+          );
+        }
+      })
+      .catch(() => {
+        // API 不可用时使用本地缓存
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isChatOpen, token]);
+
   // 产品上下文：打开聊天窗时插入一条系统提示行
   useEffect(() => {
     if (isChatOpen && productContext) {
+      setSessionProduct(productContext);
       setMessages((prev) => [
         ...prev,
         {
@@ -83,9 +116,10 @@ export function AIChatWidget() {
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages, awaitingReply, isChatOpen]);
 
-  const send = (text: string) => {
+  /** 发送消息：POST /api/chat（SSE 流式，逐 token 渲染） */
+  const send = async (text: string) => {
     const content = text.trim();
-    if (!content || typing || awaitingReply) return;
+    if (!content || typing || awaitingReply || !token) return;
 
     setMessages((prev) => [
       ...prev,
@@ -94,31 +128,99 @@ export function AIChatWidget() {
     setInput("");
     setAwaitingReply(true);
 
-    const reply = getMockReply(content, locale === "zh" ? "zh" : "en");
     const replyId = `a-${Date.now()}`;
+    const appendToken = (tokenText: string) =>
+      setMessages((prev) =>
+        prev.map((m) => (m.id === replyId ? { ...m, content: m.content + tokenText } : m)),
+      );
 
-    window.setTimeout(() => {
-      setAwaitingReply(false);
-      setTyping(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          conversationId: conversationId ?? undefined,
+          message: content,
+          productModel: sessionProduct ?? undefined,
+        }),
+      });
+      if (!res.ok || !res.body) throw new Error(`http ${res.status}`);
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let started = false;
+
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const parts = buffer.split("\n\n");
+        buffer = parts.pop() ?? "";
+        for (const part of parts) {
+          const line = part.trim();
+          if (!line.startsWith("data:")) continue;
+          const data = line.slice(5).trim();
+          if (data === "[DONE]") continue;
+          try {
+            const event = JSON.parse(data) as {
+              type: string;
+              content?: string;
+              message?: string;
+              conversationId?: string;
+            };
+            if (event.type === "token" && event.content) {
+              if (!started) {
+                started = true;
+                setAwaitingReply(false);
+                setTyping(true);
+                setMessages((prev) => [
+                  ...prev,
+                  { id: replyId, role: "assistant", content: "", ts: Date.now() },
+                ]);
+              }
+              appendToken(event.content);
+            } else if (event.type === "done") {
+              if (event.conversationId) setConversationId(event.conversationId);
+            } else if (event.type === "error") {
+              if (!started) {
+                started = true;
+                setAwaitingReply(false);
+                setMessages((prev) => [
+                  ...prev,
+                  {
+                    id: replyId,
+                    role: "assistant",
+                    content: event.message ?? t("serviceUnavailable"),
+                    ts: Date.now(),
+                  },
+                ]);
+              }
+            }
+          } catch {
+            // 忽略不完整分片
+          }
+        }
+      }
+    } catch {
       setMessages((prev) => [
         ...prev,
-        { id: replyId, role: "assistant", content: "", ts: Date.now() },
+        { id: replyId, role: "assistant", content: t("serviceUnavailable"), ts: Date.now() },
       ]);
-      let index = 0;
-      const timer = window.setInterval(() => {
-        index += 15 + Math.floor(Math.random() * 10);
-        const done = index >= reply.length;
-        const slice = reply.slice(0, index);
-        setMessages((prev) => prev.map((m) => (m.id === replyId ? { ...m, content: slice } : m)));
-        if (done) {
-          window.clearInterval(timer);
-          setTyping(false);
-        }
-      }, 50);
-    }, 600);
+    } finally {
+      setAwaitingReply(false);
+      setTyping(false);
+    }
   };
 
-  const clearHistory = () => setMessages([]);
+  const clearHistory = () => {
+    setMessages([]);
+    setConversationId(null);
+    setSessionProduct(null);
+  };
 
   /** 头部拖动（仅桌面端、非最大化时；点在按钮上不触发） */
   const onHeaderPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {

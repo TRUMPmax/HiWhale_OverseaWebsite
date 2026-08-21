@@ -476,7 +476,8 @@
     "send": "发送",
     "clear": "清空记录",
     "close": "关闭",
-    "contextLine": "咨询产品：{name}"
+    "contextLine": "咨询产品：{name}",
+    "serviceUnavailable": "AI 服务暂时不可用，请稍后再试"
   },
   "dashboard": {
     "title": "我的控制台",

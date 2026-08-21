@@ -50,6 +50,16 @@ export function DashboardClient() {
   const [mounted, setMounted] = useState(false);
   const [tab, setTab] = useState<Tab>("inquiries");
   const [chatMessages, setChatMessages] = useState<StoredChatMessage[]>([]);
+  const [conversations, setConversations] = useState<
+    Array<{
+      id: string;
+      productModel: string | null;
+      updatedAt: string;
+      messageCount: number;
+      lastMessage: string;
+    }>
+  >([]);
+  const [chatApiFailed, setChatApiFailed] = useState(false);
   const [savedItems, setSavedItems] = useState<SavedItem[]>([]);
   const [inquiries, setInquiries] = useState<MockInquiry[]>(MOCK_INQUIRIES);
   const [selectedInquiry, setSelectedInquiry] = useState<MockInquiry | null>(null);
@@ -144,6 +154,15 @@ export function DashboardClient() {
       .catch(() => {
         // API 不可用时保留本地信息
       });
+  }, [token]);
+
+  // AI 会话列表：从 API 拉取（失败回退 localStorage 缓存）
+  useEffect(() => {
+    if (!token) return;
+    apiGet<{ items: typeof conversations }>("/api/chat/conversations", token)
+      .then((data) => setConversations(data.items))
+      .catch(() => setChatApiFailed(true));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   // 未挂载或未登录：渲染占位，避免闪烁/水合不一致
@@ -243,7 +262,28 @@ export function DashboardClient() {
             {/* AI 对话历史 */}
             {tab === "chat" && (
               <div>
-                {chatMessages.length === 0 ? (
+                {conversations.length > 0 ? (
+                  <div className="space-y-3">
+                    {conversations.map((c) => (
+                      <ChatHistoryViewer
+                        key={c.id}
+                        title={
+                          c.lastMessage || t("chatHistory.messagesCount", { count: c.messageCount })
+                        }
+                        subtitle={`${t("chatHistory.lastActive")}: ${new Date(c.updatedAt).toLocaleString(locale)}${c.productModel ? ` · ${c.productModel}` : ""}`}
+                        fetchMessages={async () => {
+                          const detail = await apiGet<{ items: StoredChatMessage[] }>(
+                            `/api/chat/conversations/${c.id}/messages`,
+                            token ?? undefined,
+                          );
+                          return detail.items;
+                        }}
+                      />
+                    ))}
+                  </div>
+                ) : chatApiFailed && chatMessages.length > 0 ? (
+                  <ChatHistoryViewer messages={chatMessages} />
+                ) : (
                   <div className="flex flex-col items-center gap-4 rounded-xl border border-slate-200 bg-white p-5 py-10 text-center">
                     <Bot className="text-subtle h-10 w-10" />
                     <p className="text-muted text-sm">{t("chatHistory.empty")}</p>
@@ -256,8 +296,6 @@ export function DashboardClient() {
                       {t("chatHistory.openChat")}
                     </button>
                   </div>
-                ) : (
-                  <ChatHistoryViewer messages={chatMessages} />
                 )}
               </div>
             )}

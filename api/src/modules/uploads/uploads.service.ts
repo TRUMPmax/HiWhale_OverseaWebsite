@@ -17,6 +17,17 @@ const KIND_RULES: Record<string, { mimes: string[]; maxSize: number; label: stri
     maxSize: 50 * 1024 * 1024,
     label: "3D 模型",
   },
+  doc: {
+    mimes: [
+      "application/pdf",
+      "text/markdown",
+      "text/plain",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/octet-stream",
+    ],
+    maxSize: 20 * 1024 * 1024,
+    label: "知识库文档",
+  },
 };
 
 @Injectable()
@@ -47,12 +58,14 @@ export class UploadsService implements OnModuleInit {
 
   async upload(file: Express.Multer.File, kind: string) {
     const rule = KIND_RULES[kind];
-    if (!rule) throw new BadRequestException("kind 必须为 image / spec / model");
+    if (!rule) throw new BadRequestException("kind 必须为 image / spec / model / doc");
     if (!file) throw new BadRequestException("请选择文件");
 
     const ext = file.originalname.split(".").pop()?.toLowerCase() ?? "";
     const mimeOk =
-      rule.mimes.includes(file.mimetype) || (kind === "model" && ["glb", "gltf"].includes(ext));
+      rule.mimes.includes(file.mimetype) ||
+      (kind === "model" && ["glb", "gltf"].includes(ext)) ||
+      (kind === "doc" && ["pdf", "md", "txt", "docx"].includes(ext));
     if (!mimeOk) {
       throw new BadRequestException(`${rule.label}格式不支持（${file.mimetype || ext}）`);
     }

@@ -12,35 +12,65 @@ export type StoredChatMessage = {
 };
 
 type ChatHistoryViewerProps = {
-  messages: StoredChatMessage[];
+  /** 静态消息列表（本地缓存模式） */
+  messages?: StoredChatMessage[];
+  /** 点击卡片时按需加载消息（API 模式） */
+  fetchMessages?: () => Promise<StoredChatMessage[]>;
+  /** 卡片标题/副标题覆盖（会话列表模式） */
+  title?: string;
+  subtitle?: string;
 };
 
 /** AI 对话历史：摘要卡片 → 点击打开完整会话弹窗 */
-export function ChatHistoryViewer({ messages }: ChatHistoryViewerProps) {
+export function ChatHistoryViewer({
+  messages: staticMessages,
+  fetchMessages,
+  title,
+  subtitle,
+}: ChatHistoryViewerProps) {
   const t = useTranslations("dashboard.chatHistory");
   const locale = useLocale();
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [messages, setMessages] = useState<StoredChatMessage[]>(staticMessages ?? []);
 
   const lastMessage = messages[messages.length - 1];
+
+  const openViewer = async () => {
+    if (fetchMessages) {
+      setLoading(true);
+      try {
+        setMessages(await fetchMessages());
+      } catch {
+        // 加载失败也打开（显示已有内容/空态）
+      } finally {
+        setLoading(false);
+      }
+    }
+    setOpen(true);
+  };
 
   return (
     <>
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={openViewer}
         className="flex w-full items-center gap-4 rounded-xl border border-slate-200 bg-white p-5 text-left transition-all hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg"
       >
         <span className="bg-brand-blue/10 text-brand-blue flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
           <MessageSquareText className="h-5 w-5" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="text-foreground block text-sm font-semibold">
-            {t("messagesCount", { count: messages.length })}
+          <span className="text-foreground block truncate text-sm font-semibold">
+            {title ?? t("messagesCount", { count: messages.length })}
           </span>
           <span className="text-subtle mt-0.5 block truncate text-xs">
-            {lastMessage
-              ? `${t("lastActive")}: ${new Date(lastMessage.ts).toLocaleString(locale)}`
-              : ""}
+            {loading
+              ? "…"
+              : (subtitle ??
+                (lastMessage
+                  ? `${t("lastActive")}: ${new Date(lastMessage.ts).toLocaleString(locale)}`
+                  : ""))}
           </span>
         </span>
       </button>

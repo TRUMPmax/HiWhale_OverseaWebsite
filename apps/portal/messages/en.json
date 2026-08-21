@@ -494,7 +494,8 @@
     "send": "Send",
     "clear": "Clear history",
     "close": "Close",
-    "contextLine": "About product: {name}"
+    "contextLine": "About product: {name}",
+    "serviceUnavailable": "The AI service is temporarily unavailable. Please try again later."
   },
   "dashboard": {
     "title": "My Dashboard",
