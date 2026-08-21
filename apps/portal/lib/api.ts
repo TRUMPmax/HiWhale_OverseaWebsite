@@ -37,4 +37,26 @@ export async function apiGet<T>(path: string, token?: string): Promise<T> {
   return (await res.json()) as T;
 }
 
+/** PATCH 请求（需登录的客户端调用） */
+export async function apiPatch<T>(path: string, body: unknown, token?: string): Promise<T> {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(body),
+  });
+  const data = (await res.json().catch(() => ({}))) as { message?: string | string[] };
+  if (!res.ok) {
+    const err = new Error(
+      (Array.isArray(data.message) ? data.message[0] : data.message) ??
+        `Request failed (${res.status})`,
+    ) as ApiError;
+    err.status = res.status;
+    throw err;
+  }
+  return data as T;
+}
+
 export { API_BASE };

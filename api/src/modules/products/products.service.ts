@@ -73,6 +73,9 @@ export class ProductsService {
           features: asJson(dto.features),
           scenarios: dto.scenarios ?? [],
           imageName: dto.imageName ?? `product-${dto.slug}.png`,
+          imageUrl: dto.imageUrl,
+          specUrl: dto.specUrl,
+          modelUrl: dto.modelUrl,
           status: dto.status === "off" ? "OFF" : "ON",
         },
       });
@@ -104,6 +107,9 @@ export class ProductsService {
           ...(dto.features !== undefined ? { features: asJson(dto.features) } : {}),
           ...(dto.scenarios !== undefined ? { scenarios: dto.scenarios } : {}),
           ...(dto.imageName !== undefined ? { imageName: dto.imageName } : {}),
+          ...(dto.imageUrl !== undefined ? { imageUrl: dto.imageUrl } : {}),
+          ...(dto.specUrl !== undefined ? { specUrl: dto.specUrl } : {}),
+          ...(dto.modelUrl !== undefined ? { modelUrl: dto.modelUrl } : {}),
           ...(dto.status !== undefined
             ? { status: dto.status === "off" ? ("OFF" as const) : ("ON" as const) }
             : {}),

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useProductsStore, type AdminProduct, type ProductPayload } from "@/store/products";
+import { useAdminAuthStore } from "@/store/auth";
 
 const schema = z.object({
   nameZh: z.string().min(1, "请输入中文名称"),
@@ -39,20 +41,47 @@ type ProductFormProps = {
 };
 
 const UPLOAD_SLOTS = [
-  { key: "image", icon: Upload, text: "点击或拖拽上传产品图片（占位，后端就绪后接 MinIO）" },
-  { key: "spec", icon: FileText, text: "点击或拖拽上传规格书 PDF（占位，后端就绪后接 MinIO）" },
-  {
-    key: "model3d",
-    icon: Package,
-    text: "点击或拖拽上传 3D 模型 .glb（占位，后端就绪后接 MinIO）",
-  },
-];
+  { key: "image", icon: Upload, text: "点击上传产品图片（PNG/JPG/WebP/SVG ≤5MB）" },
+  { key: "spec", icon: FileText, text: "点击上传规格书 PDF（≤20MB）" },
+  { key: "model3d", icon: Package, text: "点击上传 3D 模型 .glb/.gltf（≤50MB）" },
+] as const;
 
-/** 产品新增/编辑表单（Mock 提交 → zustand store） */
+type AssetKind = (typeof UPLOAD_SLOTS)[number]["key"];
+
+/** 产品新增/编辑表单（真实 API + MinIO 素材上传） */
 export function ProductForm({ initial }: ProductFormProps) {
   const router = useRouter();
   const addProduct = useProductsStore((s) => s.addProduct);
   const updateProduct = useProductsStore((s) => s.updateProduct);
+  /** 已上传素材 URL */
+  const [assets, setAssets] = useState<Record<AssetKind, string>>({
+    image: initial?.record.imageUrl ?? "",
+    spec: initial?.record.specUrl ?? "",
+    model3d: initial?.record.modelUrl ?? "",
+  });
+  const [uploading, setUploading] = useState<AssetKind | null>(null);
+
+  /** 上传素材到 MinIO（经 API） */
+  const uploadAsset = async (kind: AssetKind, file: File) => {
+    setUploading(kind);
+    try {
+      const token = useAdminAuthStore.getState().token;
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/uploads?kind=${kind === "model3d" ? "model" : kind}`,
+        { method: "POST", headers: token ? { Authorization: `Bearer ${token}` } : {}, body: fd },
+      );
+      const data = (await res.json().catch(() => ({}))) as { url?: string; message?: string };
+      if (!res.ok || !data.url) throw new Error(data.message ?? "上传失败");
+      setAssets((prev) => ({ ...prev, [kind]: data.url! }));
+      toast.success("上传成功");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "上传失败");
+    } finally {
+      setUploading(null);
+    }
+  };
 
   const {
     register,
@@ -109,6 +138,9 @@ export function ProductForm({ initial }: ProductFormProps) {
         .map((f) => ({ zh: f.text, en: f.text })),
       scenarios: initial?.record.scenarios ?? [],
       imageName: initial?.record.imageName ?? `product-${values.model.toLowerCase()}.png`,
+      imageUrl: assets.image || null,
+      specUrl: assets.spec || null,
+      modelUrl: assets.model3d || null,
       status: values.status ? "on" : "off",
     };
     try {
@@ -249,13 +281,36 @@ export function ProductForm({ initial }: ProductFormProps) {
         </CardHeader>
         <CardContent className="grid grid-cols-3 gap-4">
           {UPLOAD_SLOTS.map((slot) => (
-            <div
+            <label
               key={slot.key}
-              className="flex h-32 flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 p-4 text-center"
+              className="hover:border-brand-blue flex h-32 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 p-4 text-center transition-colors"
             >
+              <input
+                type="file"
+                className="hidden"
+                accept={
+                  slot.key === "image"
+                    ? "image/png,image/jpeg,image/webp,image/svg+xml"
+                    : slot.key === "spec"
+                      ? "application/pdf"
+                      : ".glb,.gltf"
+                }
+                disabled={uploading !== null}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) void uploadAsset(slot.key, file);
+                  e.target.value = "";
+                }}
+              />
               <slot.icon className="h-6 w-6 text-slate-400" />
-              <span className="text-xs text-slate-500">{slot.text}</span>
-            </div>
+              {assets[slot.key] ? (
+                <span className="break-all text-xs text-green-600">已上传 ✓</span>
+              ) : (
+                <span className="text-xs text-slate-500">
+                  {uploading === slot.key ? "上传中…" : slot.text}
+                </span>
+              )}
+            </label>
           ))}
         </CardContent>
       </Card>

@@ -135,6 +135,10 @@ model Product {
   // Industry 枚举值数组 
   scenarios   String[]
   imageName   String        @map("image_name")
+  // 已上传素材 URL（MinIO）；为空时前端显示占位块
+  imageUrl    String?       @map("image_url")
+  specUrl     String?       @map("spec_url")
+  modelUrl    String?       @map("model_url")
   status      ProductStatus @default(ON)
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")

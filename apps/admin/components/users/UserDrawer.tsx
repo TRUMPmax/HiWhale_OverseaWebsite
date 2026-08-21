@@ -2,29 +2,36 @@
 
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import { toast } from "sonner";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { MOCK_USER_INQUIRIES, type MockPortalUser } from "@/lib/mock/users";
+import { Badge } from "@/components/ui/badge";
+import type { MockPortalUser } from "@/lib/mock/users";
+import { useUsersStore } from "@/store/users";
 
 type UserDrawerProps = {
   user: MockPortalUser;
   onClose: () => void;
 };
 
-/** 用户详情抽屉：右侧滑入 */
+/** 用户详情抽屉：右侧滑入（数据来自 API） */
 export function UserDrawer({ user, onClose }: UserDrawerProps) {
   const [visible, setVisible] = useState(false);
+  const detail = useUsersStore((s) => s.details[user.id]);
+  const fetchDetail = useUsersStore((s) => s.fetchDetail);
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => setVisible(true));
+    void fetchDetail(user.id).catch(() => toast.error("加载详情失败"));
     return () => cancelAnimationFrame(raf);
-  }, []);
+  }, [user.id, fetchDetail]);
 
   const close = () => {
     setVisible(false);
     window.setTimeout(onClose, 300);
   };
 
-  const inquiries = MOCK_USER_INQUIRIES[user.id] ?? MOCK_USER_INQUIRIES.default;
+  const info = detail ?? user;
+  const inquiries = detail?.recentInquiries ?? [];
 
   return (
     <>
@@ -57,31 +64,31 @@ export function UserDrawer({ user, onClose }: UserDrawerProps) {
           <div className="flex items-center gap-3">
             <Avatar className="h-12 w-12">
               <AvatarFallback className="bg-brand-blue text-base font-bold text-white">
-                {user.name.charAt(0).toUpperCase()}
+                {info.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div>
-              <div className="font-medium text-slate-900">{user.name}</div>
-              <div className="text-xs text-slate-500">{user.email}</div>
+              <div className="font-medium text-slate-900">{info.name}</div>
+              <div className="text-xs text-slate-500">{info.email}</div>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="rounded-lg bg-slate-50 p-3">
               <div className="text-xs text-slate-500">公司</div>
-              <div className="mt-1 font-medium text-slate-900">{user.company}</div>
+              <div className="mt-1 font-medium text-slate-900">{info.company ?? "-"}</div>
             </div>
             <div className="rounded-lg bg-slate-50 p-3">
               <div className="text-xs text-slate-500">国家/地区</div>
-              <div className="mt-1 font-medium text-slate-900">{user.country}</div>
+              <div className="mt-1 font-medium text-slate-900">{info.country ?? "-"}</div>
             </div>
             <div className="rounded-lg bg-slate-50 p-3">
               <div className="text-xs text-slate-500">注册时间</div>
-              <div className="mt-1 font-medium text-slate-900">{user.registeredAt}</div>
+              <div className="mt-1 font-medium text-slate-900">{info.registeredAt}</div>
             </div>
             <div className="rounded-lg bg-slate-50 p-3">
               <div className="text-xs text-slate-500">AI 对话次数</div>
-              <div className="text-brand-blue mt-1 font-medium">{user.aiChatCount}</div>
+              <div className="text-brand-blue mt-1 font-medium">{info.aiChatCount}</div>
             </div>
           </div>
 
@@ -90,13 +97,17 @@ export function UserDrawer({ user, onClose }: UserDrawerProps) {
             <div className="mt-3 space-y-2">
               {inquiries.map((item) => (
                 <div
-                  key={item.date}
-                  className="rounded-lg border border-slate-100 p-3 text-sm text-slate-600"
+                  key={item.id}
+                  className="flex items-center gap-2 rounded-lg border border-slate-100 p-3 text-sm text-slate-600"
                 >
-                  <span className="mr-2 text-xs text-slate-400">{item.date}</span>
-                  {item.summary}
+                  <span className="text-xs text-slate-400">{item.date}</span>
+                  <span className="min-w-0 flex-1 truncate">{item.summary}</span>
+                  <Badge className="bg-blue-50 text-blue-700 hover:bg-blue-50">{item.status}</Badge>
                 </div>
               ))}
+              {inquiries.length === 0 && (
+                <p className="text-sm text-slate-400">{detail ? "暂无询盘记录" : "加载中…"}</p>
+              )}
             </div>
           </div>
         </div>

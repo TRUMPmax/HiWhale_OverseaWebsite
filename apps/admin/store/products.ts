@@ -19,6 +19,9 @@ export type AdminProduct = {
   features: Array<{ en: string; zh: string }>;
   scenarios: string[];
   imageName: string;
+  imageUrl?: string | null;
+  specUrl?: string | null;
+  modelUrl?: string | null;
   status: "on" | "off";
   createdAt: string;
 };

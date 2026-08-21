@@ -11,7 +11,7 @@ import {
   PRODUCT_CATEGORY_LABELS,
 } from "@hiwhale/shared/constants";
 import { Link, useRouter } from "@/navigation";
-import { apiGet } from "@/lib/api";
+import { apiGet, apiPatch } from "@/lib/api";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { useAuthStore } from "@/store/auth";
 import { useChatStore } from "@/store/chat";
@@ -118,6 +118,31 @@ export function DashboardClient() {
       })
       .catch(() => {
         // API 不可用时保留 Mock 展示
+      });
+  }, [token]);
+
+  // 个人资料：从 API 拉取
+  useEffect(() => {
+    if (!token) return;
+    type ApiProfile = {
+      name: string;
+      email: string;
+      company: string | null;
+      phone: string | null;
+      country: string | null;
+    };
+    apiGet<ApiProfile>("/api/users/me", token)
+      .then((me) =>
+        setProfile({
+          name: me.name,
+          email: me.email,
+          company: me.company ?? "",
+          phone: me.phone ?? "",
+          country: me.country ?? "",
+        }),
+      )
+      .catch(() => {
+        // API 不可用时保留本地信息
       });
   }, [token]);
 
@@ -291,11 +316,25 @@ export function DashboardClient() {
             {tab === "profile" && (
               <form
                 className="max-w-lg rounded-xl border border-slate-200 bg-white p-6"
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
-                  login({ name: profile.name, email: user.email });
-                  setProfileSaved(true);
-                  window.setTimeout(() => setProfileSaved(false), 3000);
+                  try {
+                    const me = await apiPatch<{ name: string; email: string }>(
+                      "/api/users/me",
+                      {
+                        name: profile.name,
+                        company: profile.company,
+                        phone: profile.phone,
+                        country: profile.country,
+                      },
+                      token ?? undefined,
+                    );
+                    login({ name: me.name, email: me.email });
+                    setProfileSaved(true);
+                    window.setTimeout(() => setProfileSaved(false), 3000);
+                  } catch {
+                    setProfileSaved(false);
+                  }
                 }}
               >
                 <div className="space-y-4">

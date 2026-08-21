@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -25,33 +25,38 @@ import {
 import { PageHeader } from "@/components/common/PageHeader";
 import { Pagination } from "@/components/common/Pagination";
 import { UserDrawer } from "@/components/users/UserDrawer";
-import { MOCK_PORTAL_USERS, type MockPortalUser } from "@/lib/mock/users";
+import type { MockPortalUser } from "@/lib/mock/users";
+import { useUsersStore } from "@/store/users";
 
 const PAGE_SIZE = 8;
 
-/** 用户管理：搜索 + 详情抽屉 + 禁用/启用 */
+/** 用户管理：搜索 + 详情抽屉 + 禁用/启用（数据来自 API） */
 export default function UsersPage() {
-  const [users, setUsers] = useState<MockPortalUser[]>(MOCK_PORTAL_USERS);
+  const users = useUsersStore((s) => s.users);
+  const loading = useUsersStore((s) => s.loading);
+  const fetchUsers = useUsersStore((s) => s.fetchUsers);
+  const toggleStatus = useUsersStore((s) => s.toggleStatus);
+
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<MockPortalUser | null>(null);
   const [pendingToggle, setPendingToggle] = useState<MockPortalUser | null>(null);
 
-  const filtered = users.filter(
-    (u) =>
-      u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.company.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase()),
-  );
-  const pageItems = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      void fetchUsers(search || undefined).catch((e) =>
+        toast.error(e instanceof Error ? e.message : "加载失败"),
+      );
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [search, fetchUsers]);
 
-  const toggleStatus = (user: MockPortalUser) => {
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === user.id ? { ...u, status: u.status === "active" ? "disabled" : "active" } : u,
-      ),
-    );
-    toast.success(user.status === "active" ? "已禁用该用户" : "已启用该用户");
+  const pageItems = users.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const handleToggle = (user: MockPortalUser) => {
+    void toggleStatus(user.id)
+      .then(() => toast.success(user.status === "active" ? "已禁用该用户" : "已启用该用户"))
+      .catch((e) => toast.error(e instanceof Error ? e.message : "操作失败"));
   };
 
   return (
@@ -130,18 +135,13 @@ export default function UsersPage() {
             {pageItems.length === 0 && (
               <TableRow>
                 <TableCell colSpan={8} className="h-32 text-center text-sm text-slate-400">
-                  暂无匹配的用户
+                  {loading ? "加载中…" : "暂无匹配的用户"}
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
-        <Pagination
-          total={filtered.length}
-          page={page}
-          pageSize={PAGE_SIZE}
-          onPageChange={setPage}
-        />
+        <Pagination total={users.length} page={page} pageSize={PAGE_SIZE} onPageChange={setPage} />
       </div>
 
       {selected && <UserDrawer user={selected} onClose={() => setSelected(null)} />}
@@ -172,7 +172,7 @@ export default function UsersPage() {
                   : "bg-brand-blue hover:bg-brand-blue/90"
               }
               onClick={() => {
-                if (pendingToggle) toggleStatus(pendingToggle);
+                if (pendingToggle) handleToggle(pendingToggle);
                 setPendingToggle(null);
               }}
             >

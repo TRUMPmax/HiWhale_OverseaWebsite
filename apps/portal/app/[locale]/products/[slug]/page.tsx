@@ -86,12 +86,21 @@ export default async function ProductDetailPage({
 
         <div className="mt-8 grid gap-10 lg:grid-cols-2">
           <Reveal>
-            <Placeholder
-              ratio="aspect-[4/3]"
-              label={`${product.name[loc]}产品主图`}
-              size="4:3 · 建议 1600×1200"
-              name={product.imageName}
-            />
+            {product.imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={product.imageUrl}
+                alt={product.name[loc]}
+                className="aspect-[4/3] w-full rounded-xl border border-slate-200 object-cover"
+              />
+            ) : (
+              <Placeholder
+                ratio="aspect-[4/3]"
+                label={`${product.name[loc]}产品主图`}
+                size="4:3 · 建议 1600×1200"
+                name={product.imageName}
+              />
+            )}
             <div className="mt-3 grid grid-cols-3 gap-3">
               {[1, 2, 3].map((i) => (
                 <Placeholder

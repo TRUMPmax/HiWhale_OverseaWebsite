@@ -31,4 +31,8 @@ export type MockProduct = {
   scenarios: Industry[];
   /** 产品实拍图素材文件名 */
   imageName: string;
+  /** 已上传素材 URL（MinIO）；为空时前端显示占位块 */
+  imageUrl?: string | null;
+  specUrl?: string | null;
+  modelUrl?: string | null;
 };
