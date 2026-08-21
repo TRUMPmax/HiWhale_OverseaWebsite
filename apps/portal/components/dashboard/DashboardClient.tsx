@@ -5,13 +5,12 @@ import { useLocale, useTranslations } from "next-intl";
 import { Bot, CheckCircle2, ChevronRight, MessageSquareText, Package, Trash2 } from "lucide-react";
 import {
   getLocalizedLabel,
-  getProductBySlug,
   INQUIRY_STATUS_LABELS,
-  MOCK_PRODUCTS,
   PRODUCT_CATEGORY_LABELS,
 } from "@hiwhale/shared/constants";
+import type { MockProduct } from "@hiwhale/shared/constants";
 import { Link, useRouter } from "@/navigation";
-import { apiGet, apiPatch } from "@/lib/api";
+import { API_BASE, apiGet, apiPatch } from "@/lib/api";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { useAuthStore } from "@/store/auth";
 import { useChatStore } from "@/store/chat";
@@ -24,6 +23,8 @@ type Tab = "inquiries" | "chat" | "saved" | "profile";
 type SavedItem = {
   slug: string;
   savedAt: string;
+  productId: string;
+  product: MockProduct;
 };
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
@@ -81,12 +82,6 @@ export function DashboardClient() {
     } catch {
       // 损坏数据忽略
     }
-    setSavedItems(
-      MOCK_PRODUCTS.slice(0, 3).map((p, i) => ({
-        slug: p.slug,
-        savedAt: new Date(Date.now() - (i + 1) * 86400000 * 3).toISOString(),
-      })),
-    );
   }, []);
 
   useEffect(() => {
@@ -156,6 +151,26 @@ export function DashboardClient() {
       });
   }, [token]);
 
+  // 收藏的产品：从 API 拉取
+  useEffect(() => {
+    if (!token) return;
+    apiGet<{ items: Array<{ productId: string; savedAt: string; product: MockProduct }> }>(
+      "/api/favorites",
+      token,
+    )
+      .then((data) =>
+        setSavedItems(
+          data.items.map((f) => ({
+            slug: f.product.slug,
+            savedAt: f.savedAt,
+            productId: f.productId,
+            product: f.product,
+          })),
+        ),
+      )
+      .catch(() => {});
+  }, [token]);
+
   // AI 会话列表：从 API 拉取（失败回退 localStorage 缓存）
   useEffect(() => {
     if (!token) return;
@@ -177,12 +192,7 @@ export function DashboardClient() {
     { key: "profile", label: t("tabs.profile") },
   ];
 
-  const savedProducts = savedItems
-    .map((item) => ({ item, product: getProductBySlug(item.slug) }))
-    .filter(
-      (entry): entry is { item: SavedItem; product: NonNullable<typeof entry.product> } =>
-        entry.product !== undefined,
-    );
+  const savedProducts = savedItems.map((item) => ({ item, product: item.product }));
 
   return (
     <section>
@@ -312,7 +322,13 @@ export function DashboardClient() {
                       type="button"
                       aria-label={t("saved.remove")}
                       onClick={() =>
-                        setSavedItems((prev) => prev.filter((s) => s.slug !== product.slug))
+                        setSavedItems((prev) => {
+                          void fetch(`${API_BASE}/api/favorites/${item.productId}`, {
+                            method: "DELETE",
+                            headers: token ? { Authorization: `Bearer ${token}` } : {},
+                          }).catch(() => {});
+                          return prev.filter((s) => s.slug !== product.slug);
+                        })
                       }
                       className="text-subtle hover:text-foreground absolute right-3 top-3 z-10 rounded-lg bg-white/80 p-1.5 transition-colors"
                     >
@@ -342,10 +358,16 @@ export function DashboardClient() {
                   </div>
                 ))}
                 {savedProducts.length === 0 && (
-                  <p className="text-muted col-span-full py-10 text-center text-sm">
+                  <div className="text-muted col-span-full py-10 text-center text-sm">
                     <Package className="mx-auto mb-3 h-8 w-8" />
-                    {t("saved.empty")}
-                  </p>
+                    <p>{t("saved.empty")}</p>
+                    <Link
+                      href="/products"
+                      className="text-brand-blue mt-3 inline-block text-sm font-medium hover:underline"
+                    >
+                      {t("saved.browse")} →
+                    </Link>
+                  </div>
                 )}
               </div>
             )}

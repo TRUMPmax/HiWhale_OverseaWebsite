@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowDown, ArrowUp, Plus, Save, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHeader } from "@/components/common/PageHeader";
+import { adminApi } from "@/lib/api";
 
 type Banner = { id: string; titleEn: string; titleZh: string; imageName: string };
 type CopyEntry = { key: string; en: string; zh: string };
@@ -68,6 +69,30 @@ export default function ContentPage() {
   const [privacy, setPrivacy] = useState(
     "本政策说明浩鲸机器人如何收集、使用与保护您的个人信息……（占位文本）",
   );
+
+  // 加载已保存内容
+  useEffect(() => {
+    const load = (key: string) =>
+      adminApi<{ value: unknown }>(`/api/settings/${key}`).then((r) => r.value);
+    load("content-banners")
+      .then((v) => v && setBanners(v as Banner[]))
+      .catch(() => {});
+    load("content-copy")
+      .then((v) => v && setCopy(v as CopyEntry[]))
+      .catch(() => {});
+    load("content-footer-links")
+      .then((v) => v && setLinks(v as FooterLink[]))
+      .catch(() => {});
+    load("content-privacy")
+      .then((v) => typeof v === "string" && setPrivacy(v))
+      .catch(() => {});
+  }, []);
+
+  const saveKey = (key: string, value: unknown) => {
+    adminApi(`/api/settings/${key}`, { method: "PUT", body: { value } })
+      .then(() => toast.success("保存成功"))
+      .catch((e) => toast.error(e instanceof Error ? e.message : "保存失败"));
+  };
 
   const moveBanner = (index: number, direction: -1 | 1) => {
     const target = index + direction;
@@ -147,7 +172,7 @@ export default function ContentPage() {
           ))}
           <Button
             className="bg-brand-blue hover:bg-brand-blue/90"
-            onClick={() => toast.success("保存成功")}
+            onClick={() => saveKey("content-banners", banners)}
           >
             <Save /> 保存
           </Button>
@@ -185,7 +210,7 @@ export default function ContentPage() {
               ))}
               <Button
                 className="bg-brand-blue hover:bg-brand-blue/90"
-                onClick={() => toast.success("保存成功")}
+                onClick={() => saveKey("content-copy", copy)}
               >
                 <Save /> 保存
               </Button>
@@ -239,7 +264,7 @@ export default function ContentPage() {
               ))}
               <Button
                 className="bg-brand-blue hover:bg-brand-blue/90"
-                onClick={() => toast.success("保存成功")}
+                onClick={() => saveKey("content-footer-links", links)}
               >
                 <Save /> 保存
               </Button>
@@ -259,7 +284,7 @@ export default function ContentPage() {
                 <Textarea rows={12} value={privacy} onChange={(e) => setPrivacy(e.target.value)} />
                 <Button
                   className="bg-brand-blue hover:bg-brand-blue/90"
-                  onClick={() => toast.success("保存成功")}
+                  onClick={() => saveKey("content-privacy", privacy)}
                 >
                   <Save /> 保存
                 </Button>

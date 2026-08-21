@@ -243,6 +243,8 @@
       "requestConsultation": "Request Consultation",
       "downloadSpec": "Download Spec Sheet",
       "askAI": "Ask AI about this product",
+      "save": "Save",
+      "saved": "Saved",
       "aiReady": "AI Assistant will be available soon. Your account is ready.",
       "dismiss": "Dismiss",
       "viewerTitle": "360° 3D Model",
@@ -529,6 +531,7 @@
       "remove": "Remove from saved",
       "view": "View Details",
       "savedAt": "Saved on {date}",
+      "browse": "Browse Products",
       "empty": "No saved products yet. Browse products and save the ones you like."
     },
     "profile": {

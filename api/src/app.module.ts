@@ -14,6 +14,8 @@ import { ChatModule } from "./modules/chat/chat.module";
 import { StaffModule } from "./modules/staff/staff.module";
 import { StatsModule } from "./modules/stats/stats.module";
 import { LogsModule } from "./modules/logs/logs.module";
+import { SettingsModule } from "./modules/settings/settings.module";
+import { FavoritesModule } from "./modules/favorites/favorites.module";
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { LogsModule } from "./modules/logs/logs.module";
     StaffModule,
     StatsModule,
     LogsModule,
+    SettingsModule,
+    FavoritesModule,
   ],
 })
 export class AppModule {}

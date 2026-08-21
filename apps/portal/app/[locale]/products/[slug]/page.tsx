@@ -19,6 +19,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Starfield } from "@/components/ui/Starfield";
 import { ProductCard } from "@/components/products/ProductCard";
 import { AskAIButton } from "@/components/products/AskAIButton";
+import { SaveButton } from "@/components/products/SaveButton";
 import {
   InterfaceShowcaseSection,
   Viewer3DSection,
@@ -155,6 +156,7 @@ export default async function ProductDetailPage({
                 {t("downloadSpec")}
               </a>
               <AskAIButton productName={product.name[loc]} />
+              {product.id && <SaveButton productId={product.id} />}
             </div>
           </Reveal>
         </div>

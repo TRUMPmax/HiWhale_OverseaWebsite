@@ -231,6 +231,8 @@
       "requestConsultation": "预约咨询",
       "downloadSpec": "下载产品规格书",
       "askAI": "咨询 AI 了解该产品",
+      "save": "收藏",
+      "saved": "已收藏",
       "aiReady": "AI 助手即将上线，您的账号已准备就绪。",
       "dismiss": "关闭",
       "viewerTitle": "360° 3D 模型",
@@ -511,6 +513,7 @@
       "remove": "取消收藏",
       "view": "查看详情",
       "savedAt": "收藏于 {date}",
+      "browse": "去逛逛产品",
       "empty": "还没有收藏的产品。去产品页逛逛，收藏感兴趣的型号。"
     },
     "profile": {

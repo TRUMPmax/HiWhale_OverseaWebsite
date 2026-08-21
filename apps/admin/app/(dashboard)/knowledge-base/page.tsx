@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FlaskConical, Pencil, Plus, RotateCcw, Send, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { MOCK_PRODUCTS } from "@hiwhale/shared/constants";
@@ -28,6 +28,8 @@ import {
 } from "@/components/ui/table";
 import { ConfirmDeleteDialog } from "@/components/common/ConfirmDeleteDialog";
 import { PageHeader } from "@/components/common/PageHeader";
+import { adminApi, API_BASE } from "@/lib/api";
+import { useAdminAuthStore } from "@/store/auth";
 
 type KbDoc = {
   id: string;
@@ -38,59 +40,20 @@ type KbDoc = {
   vectorStatus: "done" | "processing" | "failed";
 };
 
+type ApiDoc = {
+  id: string;
+  fileName: string;
+  fileType: string;
+  productModel: string | null;
+  createdAt: string;
+  vectorStatus: "DONE" | "PROCESSING" | "FAILED" | "PENDING";
+};
+
 type Faq = {
   id: string;
   question: string;
   answer: string;
 };
-
-const INITIAL_DOCS: KbDoc[] = [
-  {
-    id: "doc-1",
-    fileName: "MBV15R-产品规格书.pdf",
-    type: "PDF",
-    product: "MBV15R",
-    uploadedAt: "2026-08-15",
-    vectorStatus: "done",
-  },
-  {
-    id: "doc-2",
-    fileName: "WCS-系统对接指南.docx",
-    type: "DOCX",
-    product: "MBW-WCS",
-    uploadedAt: "2026-08-14",
-    vectorStatus: "done",
-  },
-  {
-    id: "doc-3",
-    fileName: "冷链方案白皮书.pdf",
-    type: "PDF",
-    product: "通用",
-    uploadedAt: "2026-08-12",
-    vectorStatus: "processing",
-  },
-  {
-    id: "doc-4",
-    fileName: "AMR-安全手册.pdf",
-    type: "PDF",
-    product: "MBH08L",
-    uploadedAt: "2026-08-10",
-    vectorStatus: "failed",
-  },
-];
-
-const INITIAL_FAQS: Faq[] = [
-  {
-    id: "faq-1",
-    question: "无人叉车的最小通道宽度是多少？",
-    answer: "MBV15R 最小通道宽度 1,750 mm，MBV20P 窄巷道作业最小 2,200 mm。",
-  },
-  {
-    id: "faq-2",
-    question: "设备支持哪些认证？",
-    answer: "全系列通过 CE 认证，无人叉车符合 ISO 3691-4，北美项目可选 UL 认证。",
-  },
-];
 
 const VECTOR_BADGE: Record<KbDoc["vectorStatus"], { label: string; className: string }> = {
   done: { label: "已完成", className: "bg-green-50 text-green-700 hover:bg-green-50" },
@@ -98,73 +61,110 @@ const VECTOR_BADGE: Record<KbDoc["vectorStatus"], { label: string; className: st
   failed: { label: "失败", className: "bg-red-50 text-red-600 hover:bg-red-50" },
 };
 
-/** AI 知识库：文档管理 / FAQ 管理 / 测试问答 */
+function toDoc(d: ApiDoc): KbDoc {
+  return {
+    id: d.id,
+    fileName: d.fileName,
+    type: d.fileType,
+    product: d.productModel ?? "通用",
+    uploadedAt: d.createdAt.slice(0, 10),
+    vectorStatus:
+      d.vectorStatus === "DONE" ? "done" : d.vectorStatus === "FAILED" ? "failed" : "processing",
+  };
+}
+
+/** AI 知识库：文档管理 / FAQ 管理 / 测试问答（数据来自 API） */
 export default function KnowledgeBasePage() {
-  const [docs, setDocs] = useState<KbDoc[]>(INITIAL_DOCS);
-  const [faqs, setFaqs] = useState<Faq[]>(INITIAL_FAQS);
+  const [docs, setDocs] = useState<KbDoc[]>([]);
+  const [faqs, setFaqs] = useState<Faq[]>([]);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [uploadProduct, setUploadProduct] = useState("");
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [faqDialog, setFaqDialog] = useState<{ open: boolean; editing: Faq | null }>({
     open: false,
     editing: null,
   });
   const [faqDraft, setFaqDraft] = useState({ question: "", answer: "" });
   const [pendingDeleteFaq, setPendingDeleteFaq] = useState<Faq | null>(null);
+  const [pendingDeleteDoc, setPendingDeleteDoc] = useState<KbDoc | null>(null);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
 
-  const retryVectorize = (doc: KbDoc) => {
-    setDocs((prev) =>
-      prev.map((d) => (d.id === doc.id ? { ...d, vectorStatus: "processing" } : d)),
-    );
-    toast.success("已重新提交向量化任务");
-    window.setTimeout(() => {
-      setDocs((prev) => prev.map((d) => (d.id === doc.id ? { ...d, vectorStatus: "done" } : d)));
-      toast.success(`「${doc.fileName}」向量化完成`);
-    }, 2000);
+  const fetchDocs = async () => {
+    const data = await adminApi<ApiDoc[]>("/api/knowledge/documents");
+    setDocs(data.map(toDoc));
+  };
+  const fetchFaqs = async () => {
+    setFaqs(await adminApi<Faq[]>("/api/knowledge/faqs"));
   };
 
-  const submitUpload = () => {
-    if (!uploadProduct) {
-      toast.error("请选择关联产品");
+  useEffect(() => {
+    void fetchDocs().catch((e) => toast.error(e instanceof Error ? e.message : "加载失败"));
+    void fetchFaqs().catch((e) => toast.error(e instanceof Error ? e.message : "加载失败"));
+  }, []);
+
+  const retryVectorize = (doc: KbDoc) => {
+    void doc;
+    toast.info("向量化管线将在后续阶段接入（当前文档保持处理中状态）");
+  };
+
+  const submitUpload = async () => {
+    if (!uploadFile) {
+      toast.error("请选择文档文件");
       return;
     }
-    setDocs((prev) => [
-      {
-        id: `doc-${Date.now()}`,
-        fileName: "新上传文档.pdf",
-        type: "PDF",
-        product: uploadProduct,
-        uploadedAt: new Date().toISOString().slice(0, 10),
-        vectorStatus: "processing",
-      },
-      ...prev,
-    ]);
-    toast.success("文档已上传，向量化处理中");
-    setUploadOpen(false);
-    setUploadProduct("");
+    setUploading(true);
+    try {
+      const token = useAdminAuthStore.getState().token;
+      const fd = new FormData();
+      fd.append("file", uploadFile);
+      const res = await fetch(
+        `${API_BASE}/api/knowledge/documents${uploadProduct ? `?productModel=${encodeURIComponent(uploadProduct)}` : ""}`,
+        { method: "POST", headers: token ? { Authorization: `Bearer ${token}` } : {}, body: fd },
+      );
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { message?: string };
+        throw new Error(data.message ?? "上传失败");
+      }
+      toast.success("文档已上传，向量化处理中");
+      setUploadOpen(false);
+      setUploadFile(null);
+      setUploadProduct("");
+      await fetchDocs();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "上传失败");
+    } finally {
+      setUploading(false);
+    }
   };
 
-  const submitFaq = () => {
+  const submitFaq = async () => {
     if (!faqDraft.question.trim() || !faqDraft.answer.trim()) {
       toast.error("请填写问题与答案");
       return;
     }
-    if (faqDialog.editing) {
-      setFaqs((prev) =>
-        prev.map((f) => (f.id === faqDialog.editing!.id ? { ...f, ...faqDraft } : f)),
-      );
-    } else {
-      setFaqs((prev) => [{ id: `faq-${Date.now()}`, ...faqDraft }, ...prev]);
+    try {
+      if (faqDialog.editing) {
+        await adminApi(`/api/knowledge/faqs/${faqDialog.editing.id}`, {
+          method: "PUT",
+          body: faqDraft,
+        });
+      } else {
+        await adminApi("/api/knowledge/faqs", { method: "POST", body: faqDraft });
+      }
+      toast.success("保存成功");
+      setFaqDialog({ open: false, editing: null });
+      await fetchFaqs();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "保存失败");
     }
-    toast.success("保存成功");
-    setFaqDialog({ open: false, editing: null });
   };
 
   const askQuestion = () => {
     if (!question.trim()) return;
     setAnswer(
-      "根据知识库内容：浩鲸无人叉车额定载重覆盖 1.5–2 吨，AMR 负载 800–1,200 kg，全系通过 CE / ISO 3691-4 认证。更详细信息请参考下方引用文档。",
+      "测试问答将在向量检索管线接入后可用（当前为占位提示：文档已可上传入库，检索/重排见开发指南 6.4-6.5）。",
     );
   };
 
@@ -219,9 +219,24 @@ export default function KnowledgeBasePage() {
                           <RotateCcw /> 重试
                         </Button>
                       )}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="删除文档"
+                        onClick={() => setPendingDeleteDoc(doc)}
+                      >
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
+                {docs.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={6} className="h-32 text-center text-sm text-slate-400">
+                      暂无文档
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </div>
@@ -270,6 +285,9 @@ export default function KnowledgeBasePage() {
                 </CardContent>
               </Card>
             ))}
+            {faqs.length === 0 && (
+              <p className="py-10 text-center text-sm text-slate-400">暂无 FAQ</p>
+            )}
           </div>
         </TabsContent>
 
@@ -282,6 +300,9 @@ export default function KnowledgeBasePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <p className="text-xs text-slate-400">
+                接入向量检索后可用（占位：文档入库已通，检索/重排待实现）
+              </p>
               <div className="flex gap-3">
                 <Input
                   placeholder="输入测试问题，如：无人叉车载重多少？"
@@ -299,18 +320,8 @@ export default function KnowledgeBasePage() {
               </div>
               {answer && (
                 <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-                  <div className="text-xs font-medium text-slate-500">AI 回答（Mock）</div>
+                  <div className="text-xs font-medium text-slate-500">提示</div>
                   <p className="mt-2 text-sm leading-relaxed text-slate-700">{answer}</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {["MBV15R-产品规格书.pdf", "AMR-安全手册.pdf"].map((source) => (
-                      <span
-                        key={source}
-                        className="rounded-md bg-blue-50 px-2 py-1 text-xs text-blue-700"
-                      >
-                        引用：{source}
-                      </span>
-                    ))}
-                  </div>
                 </div>
               )}
             </CardContent>
@@ -325,12 +336,18 @@ export default function KnowledgeBasePage() {
             <DialogTitle>上传文档</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="flex h-28 flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 text-center">
+            <label className="hover:border-brand-blue flex h-28 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 text-center transition-colors">
+              <input
+                type="file"
+                className="hidden"
+                accept=".pdf,.md,.txt,.docx"
+                onChange={(e) => setUploadFile(e.target.files?.[0] ?? null)}
+              />
               <Upload className="h-6 w-6 text-slate-400" />
               <span className="text-xs text-slate-500">
-                点击或拖拽上传 PDF / DOCX（占位，后端就绪后接 MinIO）
+                {uploadFile ? uploadFile.name : "点击选择 PDF / MD / TXT / DOCX 文档（≤20MB）"}
               </span>
-            </div>
+            </label>
             <div className="space-y-1.5">
               <Label>关联产品</Label>
               <select
@@ -338,8 +355,7 @@ export default function KnowledgeBasePage() {
                 value={uploadProduct}
                 onChange={(e) => setUploadProduct(e.target.value)}
               >
-                <option value="">请选择产品</option>
-                <option value="通用">通用</option>
+                <option value="">通用</option>
                 {MOCK_PRODUCTS.map((p) => (
                   <option key={p.slug} value={p.model}>
                     {p.name.zh}（{p.model}）
@@ -352,8 +368,12 @@ export default function KnowledgeBasePage() {
             <Button variant="outline" onClick={() => setUploadOpen(false)}>
               取消
             </Button>
-            <Button className="bg-brand-blue hover:bg-brand-blue/90" onClick={submitUpload}>
-              上传
+            <Button
+              className="bg-brand-blue hover:bg-brand-blue/90"
+              onClick={() => void submitUpload()}
+              disabled={uploading}
+            >
+              {uploading ? "上传中…" : "上传"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -386,7 +406,10 @@ export default function KnowledgeBasePage() {
             <Button variant="outline" onClick={() => setFaqDialog({ open: false, editing: null })}>
               取消
             </Button>
-            <Button className="bg-brand-blue hover:bg-brand-blue/90" onClick={submitFaq}>
+            <Button
+              className="bg-brand-blue hover:bg-brand-blue/90"
+              onClick={() => void submitFaq()}
+            >
               保存
             </Button>
           </DialogFooter>
@@ -399,9 +422,24 @@ export default function KnowledgeBasePage() {
         name={pendingDeleteFaq?.question ?? ""}
         onConfirm={() => {
           if (pendingDeleteFaq) {
-            setFaqs((prev) => prev.filter((f) => f.id !== pendingDeleteFaq.id));
+            void adminApi(`/api/knowledge/faqs/${pendingDeleteFaq.id}`, { method: "DELETE" })
+              .then(() => fetchFaqs())
+              .then(() => toast.success("已删除"))
+              .catch((e) => toast.error(e instanceof Error ? e.message : "删除失败"));
           }
-          toast.success("已删除");
+        }}
+      />
+      <ConfirmDeleteDialog
+        open={pendingDeleteDoc !== null}
+        onOpenChange={(open) => !open && setPendingDeleteDoc(null)}
+        name={pendingDeleteDoc?.fileName ?? ""}
+        onConfirm={() => {
+          if (pendingDeleteDoc) {
+            void adminApi(`/api/knowledge/documents/${pendingDeleteDoc.id}`, { method: "DELETE" })
+              .then(() => fetchDocs())
+              .then(() => toast.success("已删除"))
+              .catch((e) => toast.error(e instanceof Error ? e.message : "删除失败"));
+          }
         }}
       />
     </div>

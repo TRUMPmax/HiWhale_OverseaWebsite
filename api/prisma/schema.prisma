@@ -78,6 +78,7 @@ model User {
   updatedAt    DateTime   @updatedAt @map("updated_at")
 
   conversations ChatConversation[]
+  favorites     Favorite[]
 
   @@map("users")
 }
@@ -143,9 +144,35 @@ model Product {
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
 
+  favorites   Favorite[]
+
   @@index([category])
   @@index([group])
   @@map("products")
+}
+
+// ---------- 站点设置与收藏 ----------
+
+// 站点设置（KV 存储：ai-settings / content-* 等）
+model SiteSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("site_settings")
+}
+
+// 门户用户收藏的产品
+model Favorite {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String   @map("product_id") @db.Uuid
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([userId, productId])
+  @@map("favorites")
 }
 
 model Solution {

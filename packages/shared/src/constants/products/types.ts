@@ -15,6 +15,8 @@ export type MockSpecGroup = {
 
 /** Stage 4 产品详情页使用的 Mock 产品类型（后续由数据库 Product 替换） */
 export type MockProduct = {
+  /** 数据库 ID（API 数据存在；内置 Mock 无） */
+  id?: string;
   slug: string;
   model: string;
   category: ProductCategory;

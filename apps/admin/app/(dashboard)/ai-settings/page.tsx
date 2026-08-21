@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff, Save } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHeader } from "@/components/common/PageHeader";
+import { adminApi } from "@/lib/api";
 
 const DEFAULT_PROMPT =
   "你是浩鲸机器人（HiWhale Robotics）门户的 AI 销售助手。请用简洁专业的语言回答客户关于智能仓储、AGV/AMR 产品、行业方案的问题。涉及价格时引导客户提交询盘。不要编造未提供的参数。";
@@ -30,6 +31,41 @@ export default function AiSettingsPage() {
   const [dailyLimit, setDailyLimit] = useState("2000");
   const [budget, setBudget] = useState("500");
   const [fallback, setFallback] = useState("human");
+
+  // 加载已保存设置
+  useEffect(() => {
+    adminApi<{ value: Record<string, string> | null }>("/api/settings/ai-settings")
+      .then(({ value }) => {
+        if (!value) return;
+        if (value.model) setModel(value.model);
+        if (value.apiKey) setApiKey(value.apiKey);
+        if (value.systemPrompt) setPrompt(value.systemPrompt);
+        if (value.ratePerMin) setRateLimit(value.ratePerMin);
+        if (value.dailyLimit) setDailyLimit(value.dailyLimit);
+        if (value.monthlyBudget) setBudget(value.monthlyBudget);
+        if (value.fallback) setFallback(value.fallback);
+      })
+      .catch(() => {});
+  }, []);
+
+  const save = () => {
+    adminApi("/api/settings/ai-settings", {
+      method: "PUT",
+      body: {
+        value: {
+          model,
+          apiKey,
+          systemPrompt: prompt,
+          ratePerMin: rateLimit,
+          dailyLimit,
+          monthlyBudget: budget,
+          fallback,
+        },
+      },
+    })
+      .then(() => toast.success("设置已保存"))
+      .catch((e) => toast.error(e instanceof Error ? e.message : "保存失败"));
+  };
 
   return (
     <div className="space-y-6">
@@ -137,10 +173,7 @@ export default function AiSettingsPage() {
       </Card>
 
       <div>
-        <Button
-          className="bg-brand-blue hover:bg-brand-blue/90"
-          onClick={() => toast.success("设置已保存")}
-        >
+        <Button className="bg-brand-blue hover:bg-brand-blue/90" onClick={save}>
           <Save /> 保存设置
         </Button>
       </div>
