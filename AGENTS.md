@@ -13,8 +13,10 @@
 
 ## 常用命令（仓库根目录）
 
-- 开发：`pnpm dev:portal` / `pnpm dev:admin`
+- **一键启动（推荐）**：双击根目录 `启动开发环境.bat`，或 `pnpm dev:up`(= `scripts/dev-up.sh` 基础设施 + `pnpm dev:all` 三个服务）
+- 单独开发：`pnpm dev:portal` / `pnpm dev:admin` / `pnpm dev:api`；基础设施单独起：`pnpm dev:setup`
 - 校验：`pnpm format` + `pnpm lint` + `pnpm type-check`（**dev server 运行期间禁止 `pnpm build`**——会清空 .next 导致 dev server 500）
+- 数据库：`pnpm db:migrate` / `pnpm db:seed`
 - 部署：`bash deploy.sh`（需 Docker daemon）
 
 ## 关键约定

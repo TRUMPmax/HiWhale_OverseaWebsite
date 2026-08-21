@@ -27,7 +27,9 @@
     "db:seed": "pnpm --filter=@hiwhale/api db:seed",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
-    "docker:logs": "docker compose logs -f"
+    "docker:logs": "docker compose logs -f",
+    "dev:setup": "bash scripts/dev-up.sh",
+    "dev:up": "bash scripts/dev-up.sh && turbo run dev"
   },
   "devDependencies": {
     "eslint-config-prettier": "^10.1.8",
