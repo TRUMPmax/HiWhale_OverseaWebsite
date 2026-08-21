@@ -1,0 +1,547 @@
+{
+  "metadata": {
+    "title": "HiWhale Robotics",
+    "description": "Intelligent warehousing and material handling solutions"
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "solutions": "Solutions",
+    "cases": "Cases",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "common": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "language": "Language",
+    "english": "English",
+    "chinese": "中文",
+    "toggleMenu": "Toggle menu"
+  },
+  "footer": {
+    "company": "Company",
+    "products": "Products",
+    "solutions": "Solutions",
+    "contact": "Contact",
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "sitemap": "Sitemap",
+    "cookiePolicy": "Cookie Policy",
+    "icp": "沪ICP备XXXXXXXX号（备案号占位，上线前替换）",
+    "copyright": "© {year} HiWhale Robotics (Qingdao) Co., Ltd. All rights reserved.",
+    "tagline": "Intelligent warehousing and material handling solutions for global customers.",
+    "solutionsEcommerce": "E-commerce",
+    "solutionsAutomotive": "Automotive",
+    "solutions3pl": "3PL",
+    "solutionsColdChain": "Cold Chain",
+    "contactEmail": "mia@gdhjtech.com",
+    "contactPhone": "+86 176-8558-8160",
+    "contactAddress": "Laoshan District, Qingdao, Shandong, China"
+  },
+  "home": {
+    "hero": {
+      "badge": "Smart Warehousing · Material Handling · Solution Integrator",
+      "title": "From Equipment to System, One Integrated Solution",
+      "subtitle": "HiWhale Robotics delivers end-to-end intelligent warehousing and material handling — AGV forklifts, AMRs, robotic arms, gantry cranes and scheduling software, orchestrated as one system.",
+      "ctaPrimary": "Explore Products",
+      "ctaSecondary": "Request a Consultation",
+      "placeholder": {
+        "label": "主视觉图：全品类产品家族合影（AGV/AMR/叉车/机械臂/龙门吊/软件界面）",
+        "size": "16:9 · 建议 1920×1080"
+      }
+    },
+    "ecosystem": {
+      "title": "Our Product Ecosystem",
+      "subtitle": "A full-category product family covering every step of material handling.",
+      "explore": "Explore",
+      "imageSize": "4:3 · 建议 1200×900",
+      "items": {
+        "FORKLIFT": {
+          "image": "叉车产品组合图（有人叉车 + 无人叉车 AGV）",
+          "description": "Manned forklifts and AGV forklifts for every pallet handling task."
+        },
+        "MOBILE_ROBOT": {
+          "image": "移动机器人组合图（RGV + AGV + AMR）",
+          "description": "RGVs, AGVs and AMRs for flexible in-plant material flow."
+        },
+        "ROBOTIC_ARM": {
+          "image": "机械臂工作场景图（码垛/拆垛工位）",
+          "description": "Robotic arms for palletizing, depalletizing and precision handling."
+        },
+        "GANTRY_CRANE": {
+          "image": "龙门吊/门式起重机场景图（堆场或港口）",
+          "description": "Gantry crane systems for heavy-duty yard and port container handling."
+        },
+        "SOFTWARE": {
+          "image": "软件系统界面拼图（WCS 调度地图 + IWMS 库存看板）",
+          "description": "WCS scheduler and IWMS platform — the brain of the warehouse."
+        }
+      }
+    },
+    "integration": {
+      "title": "One System, Three Layers",
+      "subtitle": "We are not an equipment vendor — we integrate hardware, software and industry know-how into turnkey solutions.",
+      "imageSize": "4:3 · 建议 1200×900",
+      "layers": {
+        "equipment": {
+          "title": "Equipment Layer",
+          "image": "设备层示意图：多品类设备组合线稿/渲染图",
+          "description": "A full product family: AGV forklifts, AMRs, robotic arms, gantry cranes and manned forklifts.",
+          "points": [
+            "Full-category hardware lineup",
+            "Unified communication protocol",
+            "CE / ISO certified equipment"
+          ]
+        },
+        "system": {
+          "title": "System Layer",
+          "image": "系统层示意图：调度软件连接多设备拓扑图",
+          "description": "WCS/WES scheduling software connects every device into one orchestrated fleet.",
+          "points": [
+            "Multi-device traffic orchestration",
+            "Real-time monitoring & dashboards",
+            "Open API for WMS / ERP / MES"
+          ]
+        },
+        "solution": {
+          "title": "Solution Layer",
+          "image": "方案层示意图：行业整仓方案鸟瞰效果图",
+          "description": "Industry-specific turnkey solutions designed around your throughput and layout.",
+          "points": [
+            "Custom layout & simulation",
+            "End-to-end delivery & commissioning",
+            "24/7 global support"
+          ]
+        }
+      }
+    },
+    "industries": {
+      "title": "Solutions by Industry",
+      "subtitle": "Proven solutions for the industries that move the world.",
+      "viewSolution": "View Solution",
+      "imageSize": "16:9 · 建议 1600×900",
+      "items": {
+        "E_COMMERCE": {
+          "image": "电商仓场景图：高位货架 + AMR 分拣作业",
+          "description": "High-throughput sortation and goods-to-person fulfillment for e-commerce warehouses.",
+          "painPoint": "Peak order surges"
+        },
+        "AUTOMOTIVE": {
+          "image": "汽车工厂场景图：产线边 AGV 配送",
+          "description": "Just-in-sequence line-side delivery for automotive manufacturing plants.",
+          "painPoint": "Strict takt times"
+        },
+        "THIRD_PARTY_LOGISTICS": {
+          "image": "第三方物流仓场景图：多客户多 SKU 混合作业",
+          "description": "Flexible automation that adapts to multi-client, multi-SKU 3PL operations.",
+          "painPoint": "Variable SKU profiles"
+        },
+        "FOOD_COLD_CHAIN": {
+          "image": "冷链仓场景图：低温环境 AGV 作业（冷雾氛围）",
+          "description": "Cold-rated robots and full traceability for food and cold chain storage.",
+          "painPoint": "-25°C operation"
+        },
+        "PHARMACEUTICAL": {
+          "image": "医药仓场景图：洁净环境 + 批次追溯作业",
+          "description": "GMP-compliant handling with full batch traceability for pharma logistics.",
+          "painPoint": "Compliance & traceability"
+        },
+        "PORT": {
+          "image": "港口场景图：自动化集装箱堆场 + 龙门吊",
+          "description": "Automated container handling and yard scheduling for ports and terminals.",
+          "painPoint": "Heavy-duty 24/7 ops"
+        }
+      }
+    },
+    "viewer3d": {
+      "title": "Interactive 3D Product Preview",
+      "subtitle": "Rotate, zoom and explore our equipment from every angle.",
+      "resetView": "Reset View",
+      "productName": "Counterbalanced AGV Forklift",
+      "productDescription": "LiDAR SLAM navigation, 1.5t load capacity, designed for automated pallet transport and stacking.",
+      "viewFullSpecs": "View Full Specs",
+      "requestConsultation": "Request a Consultation",
+      "placeholder": {
+        "label": "3D 模型查看器（React Three Fiber）：拖拽旋转 / 滚轮缩放 / 自动旋转 / 型号切换",
+        "size": "1:1 · 模型格式 GLB/GLTF，单模型 ≤10MB"
+      },
+      "specs": {
+        "loadCapacity": { "label": "Load Capacity", "value": "1,500 kg" },
+        "liftHeight": { "label": "Lift Height", "value": "3,000 mm" },
+        "navigation": { "label": "Navigation", "value": "LiDAR SLAM" },
+        "battery": { "label": "Battery", "value": "Li-ion 48V / 200Ah" }
+      }
+    },
+    "video": {
+      "title": "See HiWhale in Action",
+      "subtitle": "Watch how our solutions run in real warehouses around the world.",
+      "play": "Play video",
+      "placeholder": {
+        "label": "企业宣传视频（客户案例实拍 + 产品混剪）",
+        "size": "16:9 · 1920×1080 · MP4 + WebM 双格式"
+      }
+    },
+    "stats": {
+      "title": "Proven Results, Global Scale",
+      "subtitle": "Numbers that speak for our delivery capability.",
+      "clientsTitle": "Trusted by Industry Leaders",
+      "items": {
+        "projects": { "value": "500+", "label": "Projects Delivered" },
+        "countries": { "value": "30+", "label": "Countries Served" },
+        "uptime": { "value": "99.9%", "label": "System Uptime" },
+        "pallets": { "value": "50M+", "label": "Pallets Handled / Year" }
+      },
+      "clientLogo": {
+        "label": "客户 Logo（默认灰度，hover 恢复彩色）",
+        "size": "2:1 · 建议 240×120，透明底 PNG"
+      }
+    },
+    "certifications": {
+      "title": "Globally Certified, Trusted Worldwide",
+      "subtitle": "Our products meet the strictest international safety and quality standards.",
+      "imageSize": "1:1 · 建议 200×200，透明底 PNG",
+      "items": {
+        "ce": { "image": "CE 认证标志", "name": "CE" },
+        "iso9001": { "image": "ISO 9001 质量管理体系认证标志", "name": "ISO 9001" },
+        "iso3691": { "image": "ISO 3691-4 无人叉车安全标准标志", "name": "ISO 3691-4" },
+        "iso13849": { "image": "ISO 13849 功能安全认证标志", "name": "ISO 13849" },
+        "ul": { "image": "UL 认证标志", "name": "UL" }
+      }
+    },
+    "cta": {
+      "title": "Ready to Transform Your Warehouse?",
+      "subtitle": "Tell us about your project — our solution engineers will respond within 24 hours.",
+      "primary": "Request a Consultation",
+      "secondary": "Explore Products"
+    },
+    "narrative": {
+      "scrollHint": "Scroll to explore",
+      "dataTitle": "From Equipment to System",
+      "dataText": "We integrate every piece of equipment into one orchestrated system — so your warehouse runs as a single organism, not a collection of machines.",
+      "supportLabel": "Global Support",
+      "curtainTagline": "Intelligent Warehousing · Material Handling · Solution Integrator",
+      "curtainCta": "Discover Our Solutions"
+    }
+  },
+  "products": {
+    "banner": {
+      "title": "Our Products",
+      "subtitle": "A full-category lineup of intelligent warehousing and material handling equipment — engineered to work as one system."
+    },
+    "filters": {
+      "all": "All",
+      "allInGroup": "All {group}"
+    },
+    "viewDetails": "View Details",
+    "detail": {
+      "breadcrumbHome": "Home",
+      "breadcrumbProducts": "Products",
+      "quickSpecs": "Key Specifications",
+      "requestConsultation": "Request Consultation",
+      "downloadSpec": "Download Spec Sheet",
+      "askAI": "Ask AI about this product",
+      "save": "Save",
+      "saved": "Saved",
+      "aiReady": "AI Assistant will be available soon. Your account is ready.",
+      "dismiss": "Dismiss",
+      "viewerTitle": "360° 3D Model",
+      "viewerNote": "Drag to rotate, scroll to zoom. The interactive 3D viewer will be enabled here once the GLB model for this product is uploaded.",
+      "resetView": "Reset View",
+      "specsTitle": "Technical Specifications",
+      "featuresTitle": "Key Features",
+      "scenariosTitle": "Applicable Industries",
+      "relatedTitle": "Related Products",
+      "interface": {
+        "title": "Interface Showcase",
+        "subtitle": "A glimpse of the platform's core screens"
+      }
+    },
+    "cta": {
+      "title": "Not sure which model fits your warehouse?",
+      "subtitle": "Tell us about your throughput and layout — our solution engineers will recommend the right configuration within 24 hours.",
+      "button": "Request a Consultation"
+    }
+  },
+  "auth": {
+    "loginTab": "Login",
+    "registerTab": "Register",
+    "loginTitle": "Welcome back",
+    "registerTitle": "Create your account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "name": "Full Name",
+    "namePlaceholder": "John Smith",
+    "company": "Company",
+    "companyPlaceholder": "Your company",
+    "email": "Email",
+    "emailPlaceholder": "you@company.com",
+    "password": "Password",
+    "passwordPlaceholder": "At least 8 characters",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Repeat your password",
+    "terms": "I agree to the Terms of Service and Privacy Policy",
+    "submitLogin": "Sign In",
+    "submitRegister": "Create Account",
+    "submitting": "Please wait…",
+    "code": "Email Verification Code",
+    "codePlaceholder": "6-digit code",
+    "sendCode": "Send Code",
+    "resendIn": "Resend in {s}s",
+    "codeSentDemo": "Verification code sent to your email (demo mode: {code})",
+    "close": "Close",
+    "errors": {
+      "emailInvalid": "Please enter a valid email address",
+      "passwordMin": "Password must be at least 8 characters",
+      "passwordMismatch": "Passwords do not match",
+      "nameRequired": "Please enter your name",
+      "companyRequired": "Please enter your company",
+      "termsRequired": "You must agree to the terms",
+      "codeInvalid": "Please enter the 6-digit verification code",
+      "codeNotSent": "Please request a verification code first",
+      "requestFailed": "Request failed, please try again",
+      "codeMismatch": "Incorrect code, please try again"
+    }
+  },
+  "solutions": {
+    "banner": {
+      "title": "Solutions by Industry",
+      "subtitle": "Turnkey intelligent warehousing and material handling solutions, proven in the industries that move the world."
+    },
+    "viewSolution": "View Solution",
+    "detail": {
+      "breadcrumbHome": "Home",
+      "breadcrumbSolutions": "Solutions",
+      "painPointsTitle": "Industry Pain Points",
+      "solutionTitle": "Our Solution",
+      "equipmentTitle": "Equipment Combination",
+      "processTitle": "Deployment Process",
+      "resultsTitle": "Proven Results",
+      "relatedProductsTitle": "Related Products"
+    },
+    "cta": {
+      "title": "Need a solution built around your operation?",
+      "subtitle": "Tell us your industry and throughput goals — our solution engineers will design a tailored proposal.",
+      "button": "Request a Consultation"
+    }
+  },
+  "cases": {
+    "banner": {
+      "title": "Customer Cases",
+      "subtitle": "Real projects, measurable results — see how HiWhale solutions perform in production."
+    },
+    "filters": {
+      "all": "All"
+    },
+    "readCase": "Read Case",
+    "detail": {
+      "breadcrumbHome": "Home",
+      "breadcrumbCases": "Cases",
+      "backgroundTitle": "Background",
+      "challengeTitle": "The Challenge",
+      "solutionTitle": "The Solution",
+      "equipmentTitle": "Equipment Deployed",
+      "durationLabel": "Delivery Timeline",
+      "resultsTitle": "Results",
+      "relatedProductsTitle": "Related Products"
+    },
+    "cta": {
+      "title": "Want results like these?",
+      "subtitle": "Every project starts with a conversation. Tell us about your warehouse today.",
+      "button": "Request a Consultation"
+    }
+  },
+  "about": {
+    "mission": {
+      "title": "About HiWhale Robotics",
+      "text": "Our mission: make every warehouse run as one intelligent organism — equipment, software and people orchestrated together, anywhere in the world."
+    },
+    "positioning": {
+      "title": "A Solution Integrator with In-House Software & Hardware",
+      "text": "HiWhale develops its own Orca-series iWMS intelligent warehouse management system and Blue Whale-series intelligent warehousing equipment, while integrating top-tier hardware from industry-leading manufacturers — delivering tailor-made, rapidly deployable end-to-end smart factory solutions for every business scenario.",
+      "text2": "That means one contract, one system architecture and one team responsible for your throughput target, from the first site survey to 24/7 operations."
+    },
+    "milestones": {
+      "title": "Our Journey",
+      "items": {
+        "m2017": {
+          "year": "2017",
+          "event": "Guangdong Haojing Technology Co., Ltd. founded in Shenzhen, Greater Bay Area"
+        },
+        "m2018": { "year": "2018", "event": "First AGV forklift project delivered and accepted" },
+        "m2020": { "year": "2020", "event": "HiWhale WCS scheduling platform launched" },
+        "m2022": {
+          "year": "2022",
+          "event": "Overseas expansion begins — first projects in Europe and Southeast Asia"
+        },
+        "m2024": { "year": "2024", "event": "500+ projects delivered across 30+ countries" },
+        "m2026": { "year": "2026", "event": "HiWhale global brand and IWMS platform released" }
+      }
+    },
+    "presence": {
+      "title": "Global Presence",
+      "subtitle": "Three delivery bases — Shenzhen, Suzhou and Qingdao — serving customers worldwide.",
+      "locations": {
+        "shenzhen": "Shenzhen HQ",
+        "suzhou": "Suzhou",
+        "qingdao": "Qingdao",
+        "overseas": "Overseas Markets"
+      }
+    },
+    "rd": {
+      "title": "R&D Strength",
+      "text": "More than half of our team works in R&D — navigation algorithms, fleet scheduling and industrial software. Our in-house test factory runs every configuration before it ships.",
+      "stats": {
+        "engineers": "R&D Engineers",
+        "patents": "Patents",
+        "countries": "Countries Served"
+      }
+    },
+    "partners": {
+      "title": "Partners & Certifications",
+      "certsTitle": "Certifications"
+    },
+    "cta": {
+      "title": "Let's build your next warehouse together",
+      "subtitle": "Talk to our solution engineers about your project.",
+      "button": "Request a Consultation"
+    }
+  },
+  "contact": {
+    "banner": {
+      "title": "Contact Us",
+      "subtitle": "Tell us about your project — our solution engineers respond within 24 hours."
+    },
+    "info": {
+      "title": "Get in Touch",
+      "email": "Email",
+      "emailValue": "mia@gdhjtech.com",
+      "phone": "Phone",
+      "phoneValue": "+86 176-8558-8160",
+      "address": "Address",
+      "addressValue": "13th Floor, Building C, Innovation Park, Keyuanwei 1st Road, Laoshan District, Qingdao, China",
+      "whatsapp": "WhatsApp",
+      "whatsappValue": "+86 176-8558-8160",
+      "linkedin": "LinkedIn",
+      "linkedinValue": "HiWhale Robotics"
+    },
+    "form": {
+      "title": "Tell Us About Your Project",
+      "name": "Full Name",
+      "namePlaceholder": "John Smith",
+      "company": "Company",
+      "companyPlaceholder": "Your company",
+      "email": "Email",
+      "emailPlaceholder": "you@company.com",
+      "phone": "Phone (optional)",
+      "phonePlaceholder": "+1 555 000 0000",
+      "country": "Country",
+      "countryPlaceholder": "Select your country",
+      "interest": "Product Interest",
+      "description": "Project Description",
+      "descriptionPlaceholder": "Warehouse size, SKU count, daily order volume, goals…",
+      "privacy": "I agree to the ",
+      "privacyLink": "Privacy Policy",
+      "submit": "Submit Inquiry",
+      "submitting": "Submitting…",
+      "successTitle": "Inquiry Received",
+      "successText": "Thank you for reaching out. A HiWhale solution engineer will contact you within 24 hours.",
+      "submitAnother": "Submit Another",
+      "countries": [
+        "United States",
+        "Canada",
+        "Mexico",
+        "Brazil",
+        "United Kingdom",
+        "Germany",
+        "France",
+        "Netherlands",
+        "Spain",
+        "Italy",
+        "Poland",
+        "Turkey",
+        "United Arab Emirates",
+        "Saudi Arabia",
+        "Singapore",
+        "Malaysia",
+        "Indonesia",
+        "Vietnam",
+        "Thailand",
+        "Japan",
+        "South Korea",
+        "Australia"
+      ],
+      "errors": {
+        "required": "This field is required",
+        "emailInvalid": "Please enter a valid email address",
+        "countryRequired": "Please select your country",
+        "descriptionMin": "Please describe your project in at least 20 characters",
+        "privacyRequired": "You must agree to the Privacy Policy",
+        "submitFailed": "Submission failed, please try again later"
+      }
+    }
+  },
+  "chat": {
+    "title": "AI Assistant",
+    "online": "Online",
+    "maximize": "Maximize window",
+    "minimize": "Restore window",
+    "welcome": "Hi! I'm the HiWhale AI assistant. Ask me about products, certifications or solution selection — or pick a quick question below.",
+    "quick1": "What load capacity do your AGV forklifts have?",
+    "quick2": "What certifications do your products carry?",
+    "quick3": "Can you recommend a solution for my warehouse?",
+    "inputPlaceholder": "Type your question…",
+    "send": "Send",
+    "clear": "Clear history",
+    "close": "Close",
+    "contextLine": "About product: {name}",
+    "serviceUnavailable": "The AI service is temporarily unavailable. Please try again later."
+  },
+  "dashboard": {
+    "title": "My Dashboard",
+    "tabs": {
+      "inquiries": "My Inquiries",
+      "chat": "AI Chat History",
+      "saved": "Saved Products",
+      "profile": "Profile"
+    },
+    "chatHistory": {
+      "empty": "No conversations yet. Ask the AI assistant anything about our products.",
+      "openChat": "Open AI Chat",
+      "you": "You",
+      "assistant": "AI Assistant",
+      "viewTitle": "Conversation",
+      "messagesCount": "{count} messages",
+      "lastActive": "Last active",
+      "close": "Close"
+    },
+    "inquiries": {
+      "detailTitle": "Inquiry Detail",
+      "submittedLabel": "Submitted",
+      "requirementsLabel": "Requirements",
+      "followUpTitle": "Follow-up Records",
+      "addNotePlaceholder": "Add a follow-up note…",
+      "addNoteSubmit": "Add Note",
+      "localNote": "Notes added here are only visible to you",
+      "close": "Close"
+    },
+    "saved": {
+      "remove": "Remove from saved",
+      "view": "View Details",
+      "savedAt": "Saved on {date}",
+      "browse": "Browse Products",
+      "empty": "No saved products yet. Browse products and save the ones you like."
+    },
+    "profile": {
+      "name": "Full Name",
+      "company": "Company",
+      "email": "Email",
+      "phone": "Phone",
+      "country": "Country",
+      "save": "Save Changes",
+      "saved": "Profile saved."
+    }
+  }
+}

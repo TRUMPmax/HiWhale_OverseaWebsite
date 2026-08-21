@@ -1,0 +1,529 @@
+{
+  "metadata": {
+    "title": "浩鲸机器人",
+    "description": "智能仓储与货物转运解决方案"
+  },
+  "nav": {
+    "home": "首页",
+    "products": "产品",
+    "solutions": "方案",
+    "cases": "案例",
+    "about": "关于我们",
+    "contact": "联系我们"
+  },
+  "common": {
+    "login": "登录",
+    "signup": "注册",
+    "logout": "退出登录",
+    "dashboard": "控制台",
+    "language": "语言",
+    "english": "English",
+    "chinese": "中文",
+    "toggleMenu": "切换菜单"
+  },
+  "footer": {
+    "company": "公司",
+    "products": "产品",
+    "solutions": "方案",
+    "contact": "联系方式",
+    "privacyPolicy": "隐私政策",
+    "terms": "服务条款",
+    "sitemap": "网站地图",
+    "cookiePolicy": "Cookie 政策",
+    "icp": "沪ICP备XXXXXXXX号（备案号占位，上线前替换）",
+    "copyright": "© {year} 浩鲸机器人（青岛）有限公司。保留所有权利。",
+    "tagline": "为全球客户提供智能仓储与货物转运解决方案。",
+    "solutionsEcommerce": "电商",
+    "solutionsAutomotive": "汽车",
+    "solutions3pl": "第三方物流",
+    "solutionsColdChain": "冷链",
+    "contactEmail": "mia@gdhjtech.com",
+    "contactPhone": "+86 176-8558-8160",
+    "contactAddress": "山东省青岛市崂山区中韩街道科苑纬一路创新园二期C座"
+  },
+  "home": {
+    "hero": {
+      "badge": "智能仓储 · 货物转运 · 方案集成商",
+      "title": "从设备到系统，一体化解决方案",
+      "subtitle": "浩鲸机器人提供端到端智能仓储与货物转运方案——无人叉车 AGV、AMR、机械臂、龙门吊与调度软件，作为一个系统统一调度。",
+      "ctaPrimary": "浏览产品",
+      "ctaSecondary": "预约方案咨询",
+      "placeholder": {
+        "label": "主视觉图：全品类产品家族合影（AGV/AMR/叉车/机械臂/龙门吊/软件界面）",
+        "size": "16:9 · 建议 1920×1080"
+      }
+    },
+    "ecosystem": {
+      "title": "我们的产品生态",
+      "subtitle": "全品类产品家族，覆盖货物转运的每一个环节。",
+      "explore": "了解更多",
+      "imageSize": "4:3 · 建议 1200×900",
+      "items": {
+        "FORKLIFT": {
+          "image": "叉车产品组合图（有人叉车 + 无人叉车 AGV）",
+          "description": "有人叉车 · 无人叉车，覆盖各类托盘搬运任务。"
+        },
+        "MOBILE_ROBOT": {
+          "image": "移动机器人组合图（RGV + AGV + AMR）",
+          "description": "RGV · AGV · AMR，构建柔性厂内物流。"
+        },
+        "ROBOTIC_ARM": {
+          "image": "机械臂工作场景图（码垛/拆垛工位）",
+          "description": "机械臂，胜任码垛、拆垛与精密搬运。"
+        },
+        "GANTRY_CRANE": {
+          "image": "龙门吊/门式起重机场景图（堆场或港口）",
+          "description": "龙门吊，面向堆场与港口的重载作业。"
+        },
+        "SOFTWARE": {
+          "image": "软件系统界面拼图（WCS 调度地图 + IWMS 库存看板）",
+          "description": "调度系统 WCS · 仓储管理系统 IWMS，仓库的智慧大脑。"
+        }
+      }
+    },
+    "integration": {
+      "title": "一个系统，三层能力",
+      "subtitle": "我们不是设备制造商——我们把硬件、软件与行业经验集成交钥匙方案。",
+      "imageSize": "4:3 · 建议 1200×900",
+      "layers": {
+        "equipment": {
+          "title": "设备层",
+          "image": "设备层示意图：多品类设备组合线稿/渲染图",
+          "description": "全品类产品家族：无人叉车 AGV、AMR、机械臂、龙门吊与有人叉车。",
+          "points": ["全品类硬件阵容", "统一通信协议", "CE / ISO 认证设备"]
+        },
+        "system": {
+          "title": "系统层",
+          "image": "系统层示意图：调度软件连接多设备拓扑图",
+          "description": "WCS/WES 调度软件将每台设备连接成一支统一调度的车队。",
+          "points": ["多设备交通管制", "实时监控与数据看板", "开放 API 对接 WMS / ERP / MES"]
+        },
+        "solution": {
+          "title": "方案层",
+          "image": "方案层示意图：行业整仓方案鸟瞰效果图",
+          "description": "围绕你的吞吐量和场地布局设计的行业交钥匙方案。",
+          "points": ["定制化布局与仿真", "端到端交付与调试", "7×24 全球支持"]
+        }
+      }
+    },
+    "industries": {
+      "title": "行业解决方案",
+      "subtitle": "为驱动世界的行业提供经过验证的方案。",
+      "viewSolution": "查看方案",
+      "imageSize": "16:9 · 建议 1600×900",
+      "items": {
+        "E_COMMERCE": {
+          "image": "电商仓场景图：高位货架 + AMR 分拣作业",
+          "description": "面向电商仓的高吞吐分拣与货到人履约方案。",
+          "painPoint": "大促订单峰值"
+        },
+        "AUTOMOTIVE": {
+          "image": "汽车工厂场景图：产线边 AGV 配送",
+          "description": "面向汽车制造工厂的顺序化产线边配送方案。",
+          "painPoint": "严格节拍要求"
+        },
+        "THIRD_PARTY_LOGISTICS": {
+          "image": "第三方物流仓场景图：多客户多 SKU 混合作业",
+          "description": "灵活适配多客户、多 SKU 的 3PL 自动化方案。",
+          "painPoint": "SKU 结构多变"
+        },
+        "FOOD_COLD_CHAIN": {
+          "image": "冷链仓场景图：低温环境 AGV 作业（冷雾氛围）",
+          "description": "耐低温机器人与全程追溯，服务食品冷链仓储。",
+          "painPoint": "-25°C 低温作业"
+        },
+        "PHARMACEUTICAL": {
+          "image": "医药仓场景图：洁净环境 + 批次追溯作业",
+          "description": "符合 GMP 规范的搬运与全流程批次追溯。",
+          "painPoint": "合规与追溯"
+        },
+        "PORT": {
+          "image": "港口场景图：自动化集装箱堆场 + 龙门吊",
+          "description": "面向港口与场站的自动化集装箱搬运与堆场调度。",
+          "painPoint": "重型 7×24 作业"
+        }
+      }
+    },
+    "viewer3d": {
+      "title": "3D 产品交互预览",
+      "subtitle": "旋转、缩放，从每一个角度了解我们的设备。",
+      "resetView": "重置视角",
+      "productName": "平衡重式 AGV 叉车",
+      "productDescription": "激光 SLAM 导航，1.5 吨载重，为自动化托盘搬运与堆垛而设计。",
+      "viewFullSpecs": "查看完整参数",
+      "requestConsultation": "预约方案咨询",
+      "placeholder": {
+        "label": "3D 模型查看器（React Three Fiber）：拖拽旋转 / 滚轮缩放 / 自动旋转 / 型号切换",
+        "size": "1:1 · 模型格式 GLB/GLTF，单模型 ≤10MB"
+      },
+      "specs": {
+        "loadCapacity": { "label": "额定载重", "value": "1,500 kg" },
+        "liftHeight": { "label": "起升高度", "value": "3,000 mm" },
+        "navigation": { "label": "导航方式", "value": "激光 SLAM" },
+        "battery": { "label": "电池", "value": "锂电 48V / 200Ah" }
+      }
+    },
+    "video": {
+      "title": "见证浩鲸的实战表现",
+      "subtitle": "观看我们的方案在全球真实仓库中的运行表现。",
+      "play": "播放视频",
+      "placeholder": {
+        "label": "企业宣传视频（客户案例实拍 + 产品混剪）",
+        "size": "16:9 · 1920×1080 · MP4 + WebM 双格式"
+      }
+    },
+    "stats": {
+      "title": "经过验证的全球交付能力",
+      "subtitle": "用数字说话。",
+      "clientsTitle": "深受行业领导者信赖",
+      "items": {
+        "projects": { "value": "500+", "label": "交付项目" },
+        "countries": { "value": "30+", "label": "服务国家" },
+        "uptime": { "value": "99.9%", "label": "系统可用性" },
+        "pallets": { "value": "50M+", "label": "年处理托盘数" }
+      },
+      "clientLogo": {
+        "label": "客户 Logo（默认灰度，hover 恢复彩色）",
+        "size": "2:1 · 建议 240×120，透明底 PNG"
+      }
+    },
+    "certifications": {
+      "title": "全球认证，值得信赖",
+      "subtitle": "我们的产品符合最严格的国际安全与质量标准。",
+      "imageSize": "1:1 · 建议 200×200，透明底 PNG",
+      "items": {
+        "ce": { "image": "CE 认证标志", "name": "CE" },
+        "iso9001": { "image": "ISO 9001 质量管理体系认证标志", "name": "ISO 9001" },
+        "iso3691": { "image": "ISO 3691-4 无人叉车安全标准标志", "name": "ISO 3691-4" },
+        "iso13849": { "image": "ISO 13849 功能安全认证标志", "name": "ISO 13849" },
+        "ul": { "image": "UL 认证标志", "name": "UL" }
+      }
+    },
+    "cta": {
+      "title": "准备好改造你的仓库了吗？",
+      "subtitle": "告诉我们你的项目需求——方案工程师将在 24 小时内回复。",
+      "primary": "预约方案咨询",
+      "secondary": "浏览产品"
+    },
+    "narrative": {
+      "scrollHint": "滚动探索",
+      "dataTitle": "从设备到系统",
+      "dataText": "我们把每一台设备集成为一个统一调度的系统——让你的仓库像一个有机整体一样运转，而不是一堆孤立的机器。",
+      "supportLabel": "全球支持",
+      "curtainTagline": "智能仓储 · 货物转运 · 方案集成商",
+      "curtainCta": "探索我们的方案"
+    }
+  },
+  "products": {
+    "banner": {
+      "title": "产品中心",
+      "subtitle": "覆盖智能仓储与货物转运全场景的全品类产品矩阵，为一体化系统而生。"
+    },
+    "filters": {
+      "all": "全部",
+      "allInGroup": "全部{group}"
+    },
+    "viewDetails": "查看详情",
+    "detail": {
+      "breadcrumbHome": "首页",
+      "breadcrumbProducts": "产品",
+      "quickSpecs": "核心参数",
+      "requestConsultation": "预约咨询",
+      "downloadSpec": "下载产品规格书",
+      "askAI": "咨询 AI 了解该产品",
+      "save": "收藏",
+      "saved": "已收藏",
+      "aiReady": "AI 助手即将上线，您的账号已准备就绪。",
+      "dismiss": "关闭",
+      "viewerTitle": "360° 3D 模型",
+      "viewerNote": "拖拽旋转，滚轮缩放。上传该产品的 GLB 模型后，交互式 3D 查看器将在此启用。",
+      "resetView": "重置视角",
+      "specsTitle": "技术规格",
+      "featuresTitle": "核心特性",
+      "scenariosTitle": "适用行业",
+      "relatedTitle": "相关产品",
+      "interface": {
+        "title": "界面展示",
+        "subtitle": "平台核心界面一览"
+      }
+    },
+    "cta": {
+      "title": "不确定哪款型号适合您的仓库？",
+      "subtitle": "告诉我们您的吞吐量与场地布局，方案工程师将在 24 小时内为您推荐合适的配置。",
+      "button": "预约咨询"
+    }
+  },
+  "auth": {
+    "loginTab": "登录",
+    "registerTab": "注册",
+    "loginTitle": "欢迎回来",
+    "registerTitle": "创建账号",
+    "noAccount": "还没有账号？",
+    "hasAccount": "已有账号？",
+    "name": "姓名",
+    "namePlaceholder": "张三",
+    "company": "公司",
+    "companyPlaceholder": "您的公司",
+    "email": "邮箱",
+    "emailPlaceholder": "you@company.com",
+    "password": "密码",
+    "passwordPlaceholder": "至少 8 位字符",
+    "confirmPassword": "确认密码",
+    "confirmPasswordPlaceholder": "再次输入密码",
+    "terms": "我已阅读并同意服务条款与隐私政策",
+    "submitLogin": "登录",
+    "submitRegister": "创建账号",
+    "submitting": "请稍候…",
+    "code": "邮箱验证码",
+    "codePlaceholder": "6 位数字验证码",
+    "sendCode": "发送验证码",
+    "resendIn": "重新发送 ({s}s)",
+    "codeSentDemo": "验证码已发送至您的邮箱（演示模式：{code}）",
+    "close": "关闭",
+    "errors": {
+      "emailInvalid": "请输入有效的邮箱地址",
+      "passwordMin": "密码至少 8 位字符",
+      "passwordMismatch": "两次输入的密码不一致",
+      "nameRequired": "请输入您的姓名",
+      "companyRequired": "请输入您的公司",
+      "termsRequired": "请先同意服务条款",
+      "codeInvalid": "请输入 6 位数字验证码",
+      "codeNotSent": "请先获取邮箱验证码",
+      "requestFailed": "请求失败，请稍后重试",
+      "codeMismatch": "验证码不正确，请重新输入"
+    }
+  },
+  "solutions": {
+    "banner": {
+      "title": "行业解决方案",
+      "subtitle": "面向全球各行业的整仓智能化交钥匙方案，久经实战验证。"
+    },
+    "viewSolution": "查看方案",
+    "detail": {
+      "breadcrumbHome": "首页",
+      "breadcrumbSolutions": "方案",
+      "painPointsTitle": "行业痛点",
+      "solutionTitle": "我们的方案",
+      "equipmentTitle": "设备组合",
+      "processTitle": "部署流程",
+      "resultsTitle": "项目成效",
+      "relatedProductsTitle": "相关产品"
+    },
+    "cta": {
+      "title": "需要为您量身定制的方案？",
+      "subtitle": "告诉我们您的行业与吞吐目标，方案工程师将为您设计专属方案。",
+      "button": "预约咨询"
+    }
+  },
+  "cases": {
+    "banner": {
+      "title": "客户案例",
+      "subtitle": "真实项目，可量化的成效——看浩鲸方案如何在生产现场落地。"
+    },
+    "filters": {
+      "all": "全部"
+    },
+    "readCase": "查看案例",
+    "detail": {
+      "breadcrumbHome": "首页",
+      "breadcrumbCases": "案例",
+      "backgroundTitle": "项目背景",
+      "challengeTitle": "挑战",
+      "solutionTitle": "解决方案",
+      "equipmentTitle": "投入设备",
+      "durationLabel": "交付周期",
+      "resultsTitle": "项目成效",
+      "relatedProductsTitle": "相关产品"
+    },
+    "cta": {
+      "title": "想获得同样的成效？",
+      "subtitle": "每个项目都始于一次对话，今天就和我们聊聊您的仓库。",
+      "button": "预约咨询"
+    }
+  },
+  "about": {
+    "mission": {
+      "title": "关于浩鲸机器人",
+      "text": "我们的使命：让每一个仓库都像一个智能有机体一样运转——设备、软件与人协同如一，遍及全球。"
+    },
+    "positioning": {
+      "title": "软硬件自研的方案集成商",
+      "text": "浩鲸自主研发虎鲸系列 iWMS 智能仓储管理系统与蓝鲸系列智能仓储设备，同时高度集成行业顶尖硬件厂商的各型智能物流装备，根据不同业务场景为客户量身定制可快速落地的全链路智能工厂解决方案。",
+      "text2": "这意味着一份合同、一套系统架构、一支对您的吞吐目标负责的团队，从首次现场勘测到 24/7 运营。"
+    },
+    "milestones": {
+      "title": "发展历程",
+      "items": {
+        "m2017": { "year": "2017", "event": "广东浩鲸科技有限公司在粤港澳大湾区深圳成立" },
+        "m2018": { "year": "2018", "event": "交付首个无人叉车 AGV 项目并通过验收" },
+        "m2020": { "year": "2020", "event": "浩鲸 WCS 调度软件平台发布" },
+        "m2022": { "year": "2022", "event": "开启海外拓展，首批项目落地欧洲与东南亚" },
+        "m2024": { "year": "2024", "event": "累计交付 500+ 项目，覆盖 30+ 国家" },
+        "m2026": { "year": "2026", "event": "浩鲸全球品牌与 IWMS 平台发布" }
+      }
+    },
+    "presence": {
+      "title": "全球布局",
+      "subtitle": "总部位于深圳，设有深圳、苏州、青岛三大交付中心，服务全球客户。",
+      "locations": {
+        "shenzhen": "深圳总部",
+        "suzhou": "苏州基地",
+        "qingdao": "青岛基地",
+        "overseas": "海外市场"
+      }
+    },
+    "rd": {
+      "title": "研发实力",
+      "text": "超过一半的员工从事研发工作——导航算法、集群调度与工业软件。自有测试工厂确保每一套配置发货前都经过实测。",
+      "stats": {
+        "engineers": "研发工程师",
+        "patents": "专利",
+        "countries": "服务国家"
+      }
+    },
+    "partners": {
+      "title": "合作伙伴与认证",
+      "certsTitle": "资质认证"
+    },
+    "cta": {
+      "title": "让我们一起建设您的下一座仓库",
+      "subtitle": "与我们的方案工程师聊聊您的项目。",
+      "button": "预约咨询"
+    }
+  },
+  "contact": {
+    "banner": {
+      "title": "联系我们",
+      "subtitle": "告诉我们您的项目——方案工程师将在 24 小时内回复。"
+    },
+    "info": {
+      "title": "联系方式",
+      "email": "邮箱",
+      "emailValue": "mia@gdhjtech.com",
+      "phone": "电话",
+      "phoneValue": "+86 176-8558-8160",
+      "address": "地址",
+      "addressValue": "山东省青岛市崂山区中韩街道科苑纬一路创新园二期C座13楼",
+      "whatsapp": "WhatsApp",
+      "whatsappValue": "+86 176-8558-8160",
+      "linkedin": "LinkedIn",
+      "linkedinValue": "HiWhale Robotics"
+    },
+    "form": {
+      "title": "告诉我们您的项目",
+      "name": "姓名",
+      "namePlaceholder": "张三",
+      "company": "公司",
+      "companyPlaceholder": "您的公司",
+      "email": "邮箱",
+      "emailPlaceholder": "you@company.com",
+      "phone": "电话（选填）",
+      "phonePlaceholder": "+86 138 0000 0000",
+      "country": "国家/地区",
+      "countryPlaceholder": "请选择国家/地区",
+      "interest": "意向产品",
+      "description": "项目描述",
+      "descriptionPlaceholder": "仓库面积、SKU 数量、日订单量、目标……",
+      "privacy": "我已阅读并同意",
+      "privacyLink": "《隐私政策》",
+      "submit": "提交询盘",
+      "submitting": "提交中…",
+      "successTitle": "询盘已收到",
+      "successText": "感谢您的垂询，浩鲸方案工程师将在 24 小时内与您联系。",
+      "submitAnother": "再提交一条",
+      "countries": [
+        "美国",
+        "加拿大",
+        "墨西哥",
+        "巴西",
+        "英国",
+        "德国",
+        "法国",
+        "荷兰",
+        "西班牙",
+        "意大利",
+        "波兰",
+        "土耳其",
+        "阿联酋",
+        "沙特阿拉伯",
+        "新加坡",
+        "马来西亚",
+        "印度尼西亚",
+        "越南",
+        "泰国",
+        "日本",
+        "韩国",
+        "澳大利亚"
+      ],
+      "errors": {
+        "required": "此字段为必填项",
+        "emailInvalid": "请输入有效的邮箱地址",
+        "countryRequired": "请选择国家/地区",
+        "descriptionMin": "请用至少 20 个字符描述您的项目",
+        "privacyRequired": "请先同意隐私政策",
+        "submitFailed": "提交失败，请稍后重试"
+      }
+    }
+  },
+  "chat": {
+    "title": "AI 助手",
+    "online": "在线",
+    "maximize": "放大窗口",
+    "minimize": "还原窗口",
+    "welcome": "您好！我是浩鲸 AI 助手。可以问我产品参数、认证或方案选型的问题，也可以点击下方快捷问题。",
+    "quick1": "你们的无人叉车最大载重是多少？",
+    "quick2": "你们的产品有哪些认证？",
+    "quick3": "能帮我推荐一套仓储方案吗？",
+    "inputPlaceholder": "输入您的问题…",
+    "send": "发送",
+    "clear": "清空记录",
+    "close": "关闭",
+    "contextLine": "咨询产品：{name}",
+    "serviceUnavailable": "AI 服务暂时不可用，请稍后再试"
+  },
+  "dashboard": {
+    "title": "我的控制台",
+    "tabs": {
+      "inquiries": "我的询盘",
+      "chat": "AI 对话记录",
+      "saved": "收藏的产品",
+      "profile": "个人资料"
+    },
+    "chatHistory": {
+      "empty": "暂无对话记录。向 AI 助手提问任何产品问题吧。",
+      "openChat": "打开 AI 对话",
+      "you": "我",
+      "assistant": "AI 助手",
+      "viewTitle": "对话详情",
+      "messagesCount": "{count} 条消息",
+      "lastActive": "最近活跃",
+      "close": "关闭"
+    },
+    "inquiries": {
+      "detailTitle": "询盘详情",
+      "submittedLabel": "提交时间",
+      "requirementsLabel": "需求详情",
+      "followUpTitle": "跟进记录",
+      "addNotePlaceholder": "添加一条跟进记录…",
+      "addNoteSubmit": "添加记录",
+      "localNote": "此处添加的备注仅自己可见",
+      "close": "关闭"
+    },
+    "saved": {
+      "remove": "取消收藏",
+      "view": "查看详情",
+      "savedAt": "收藏于 {date}",
+      "browse": "去逛逛产品",
+      "empty": "还没有收藏的产品。去产品页逛逛，收藏感兴趣的型号。"
+    },
+    "profile": {
+      "name": "姓名",
+      "company": "公司",
+      "email": "邮箱",
+      "phone": "电话",
+      "country": "国家/地区",
+      "save": "保存修改",
+      "saved": "资料已保存。"
+    }
+  }
+}

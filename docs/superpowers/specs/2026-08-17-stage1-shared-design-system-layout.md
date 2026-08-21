@@ -7,6 +7,7 @@
 ## 1. 上下文
 
 上一阶段（Stage 0）已完成：
+
 - Monorepo 骨架：`apps/portal`、`apps/admin`、`packages/shared`
 - 根目录 ESLint / Prettier / Turbo 配置
 - `@hiwhale/shared` 已具备最小 placeholder 导出和 tsup 构建
@@ -42,19 +43,20 @@ hiwhale-platform/
 
 ## 3. 技术选型
 
-| 项 | 选型 | 说明 |
-|---|---|---|
-| 国际化 | next-intl | App Router 官方推荐方案，URL 前缀 `/en/` `/zh/` |
-| 字体 | next/font | Space Grotesk + Inter + Noto Sans SC |
-| HTTP Client | axios | shared/api/client.ts |
-| 图标 | lucide-react | 禁止 emoji |
-| 样式 | Tailwind CSS v3 | 扩展品牌色 |
+| 项          | 选型            | 说明                                            |
+| ----------- | --------------- | ----------------------------------------------- |
+| 国际化      | next-intl       | App Router 官方推荐方案，URL 前缀 `/en/` `/zh/` |
+| 字体        | next/font       | Space Grotesk + Inter + Noto Sans SC            |
+| HTTP Client | axios           | shared/api/client.ts                            |
+| 图标        | lucide-react    | 禁止 emoji                                      |
+| 样式        | Tailwind CSS v3 | 扩展品牌色                                      |
 
 ## 4. 实现要点
 
 ### 4.1 Shared 常量
 
 定义以下枚举，并附带中英文显示名称的映射对象：
+
 - `ProductCategory`：AGV_FORKLIFT / AMR / MANNED_FORKLIFT / ROBOTIC_ARM / GANTRY_CRANE / SYSTEM_SOFTWARE
 - `Industry`：E_COMMERCE / AUTOMOTIVE / THIRD_PARTY_LOGISTICS / FOOD_COLD_CHAIN / PHARMACEUTICAL / PORT
 - `UserRole`：SUPER_ADMIN / SALES / PRODUCT_TECH / OPERATIONS
@@ -63,6 +65,7 @@ hiwhale-platform/
 ### 4.2 Shared 类型
 
 定义核心业务类型：
+
 - `Product`：id, slug, name, category, model, specs, images, description, features
 - `Solution`：id, slug, industry, title, description, painPoints, process, results, relatedProducts
 - `CaseStudy`：id, slug, clientName, industry, background, challenge, solution, results, testimonial
@@ -96,6 +99,7 @@ hiwhale-platform/
 ### 4.6 Portal 设计 Token
 
 `globals.css` 定义 CSS 变量：
+
 - `--brand-navy: #0A2540`
 - `--brand-blue: #1A56DB`
 - `--brand-light-blue: #E8F0FE`
@@ -106,15 +110,18 @@ hiwhale-platform/
 - `--border: #E2E8F0`
 
 Tailwind 扩展：
+
 - `colors.brand.navy`, `colors.brand.blue`, `colors.brand.light`
 - `colors.background`, `colors.foreground`
 
 中文覆盖：
+
 - `[lang="zh"] h1 { font-size: ... }` 等
 
 ### 4.7 布局组件
 
 **Navbar**
+
 - 固定顶部，默认透明
 - 滚动超过阈值后：白色背景 + `backdrop-blur-md` + 高度收缩 + 阴影
 - Logo（文字 Logo）
@@ -123,11 +130,13 @@ Tailwind 扩展：
 - 登录按钮
 
 **Footer**
+
 - 深蓝背景 `#0A2540`
 - 公司信息、产品分类、方案、联系方式、隐私政策链接
 - 分栏布局，响应式
 
 **Placeholder**
+
 - props: `label`, `format`, `size`, `description`
 - 浅灰虚线边框，居中文字，显示格式/尺寸
 
