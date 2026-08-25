@@ -77,7 +77,7 @@
 
 ### 三、部署适配（Docker 共享卷）
 
-- `docker-compose.yml`：新增命名卷 `portal-images`；portal 容器挂载到 `public/images`，api 容器挂载到约定路径并设置 `PORTAL_PUBLIC_DIR` 环境变量。
+- `docker-compose.yml`：新增命名卷 `portal_images`；portal 容器挂载到 `public/images`，api 容器挂载到约定路径并设置 `PORTAL_PUBLIC_DIR` 环境变量。
 - `deploy.sh`、`docker/api.Dockerfile`（如需）、`AGENTS.md` 同步更新。
 
 ## 错误处理总览
