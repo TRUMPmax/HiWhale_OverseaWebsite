@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,13 +17,7 @@ import {
 import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { toast } from "sonner";
-import {
-  getGroupOfCategory,
-  getLocalizedLabel,
-  PRODUCT_CATEGORY_GROUPS,
-  PRODUCT_CATEGORY_LABELS,
-  PRODUCT_GROUP_LABELS,
-} from "@hiwhale/shared/constants";
+import { getGroupOfCategory } from "@hiwhale/shared/constants";
 import type { ProductCategory } from "@hiwhale/shared/constants";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useProductsStore, type AdminProduct, type ProductPayload } from "@/store/products";
+import { fetchAdminTaxonomy, STATIC_ADMIN_TAXONOMY, type TaxonomyGroup } from "@/lib/taxonomy";
 import { useAdminAuthStore } from "@/store/auth";
 
 const schema = z.object({
@@ -111,6 +106,13 @@ export function ProductForm({ initial }: ProductFormProps) {
   const [spec, setSpec] = useState(initial?.record.specUrl ?? "");
   const [model3d, setModel3d] = useState(initial?.record.modelUrl ?? "");
   const [uploading, setUploading] = useState<"image" | "spec" | "model3d" | null>(null);
+  /** 分类体系：优先 API（DB 实体），失败回退静态常量 */
+  const [taxonomy, setTaxonomy] = useState<TaxonomyGroup[]>(STATIC_ADMIN_TAXONOMY);
+  useEffect(() => {
+    void fetchAdminTaxonomy()
+      .then(setTaxonomy)
+      .catch(() => {});
+  }, []);
 
   /** 拖拽传感器：5px 激活距离（避免误触删除按钮与普通点击） */
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
@@ -293,11 +295,11 @@ export function ProductForm({ initial }: ProductFormProps) {
               {...register("category")}
             >
               <option value="">请选择品类</option>
-              {PRODUCT_CATEGORY_GROUPS.map(({ group, categories }) => (
-                <optgroup key={group} label={getLocalizedLabel(PRODUCT_GROUP_LABELS, group, "zh")}>
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {getLocalizedLabel(PRODUCT_CATEGORY_LABELS, category, "zh")}
+              {taxonomy.map((group) => (
+                <optgroup key={group.key} label={group.nameJson.zh}>
+                  {group.categories.map((category) => (
+                    <option key={category.key} value={category.key}>
+                      {category.nameJson.zh}
                     </option>
                   ))}
                 </optgroup>

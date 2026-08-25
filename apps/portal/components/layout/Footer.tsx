@@ -3,11 +3,9 @@
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/navigation";
 import { BrandName } from "@/components/ui/BrandName";
-import {
-  getLocalizedLabel,
-  PRODUCT_CATEGORY_LABELS,
-  ProductCategory,
-} from "@hiwhale/shared/constants";
+import { useEffect, useState } from "react";
+import { API_BASE } from "@/lib/api";
+import { STATIC_TAXONOMY, taxonomyLabel, type TaxonomyGroup } from "@/lib/taxonomy";
 
 /** 页脚：深蓝背景，公司/产品/方案/联系方式 */
 export function Footer() {
@@ -15,7 +13,16 @@ export function Footer() {
   const locale = useLocale();
   const currentYear = new Date().getFullYear();
 
-  const productCategories = Object.values(ProductCategory);
+  // 产品分类体系：优先 API（DB 实体），失败回退静态常量
+  const [taxonomy, setTaxonomy] = useState<TaxonomyGroup[]>(STATIC_TAXONOMY);
+  useEffect(() => {
+    fetch(`${API_BASE}/api/taxonomy`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data: TaxonomyGroup[]) => {
+        if (Array.isArray(data) && data.length > 0) setTaxonomy(data);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <footer className="bg-brand-navy text-white">
@@ -33,16 +40,18 @@ export function Footer() {
               {t("products")}
             </h4>
             <ul className="mt-4 space-y-2">
-              {productCategories.map((category) => (
-                <li key={category}>
-                  <Link
-                    href={`/products?category=${category}`}
-                    className="text-sm text-white/70 transition-colors hover:text-white"
-                  >
-                    {getLocalizedLabel(PRODUCT_CATEGORY_LABELS, category, locale)}
-                  </Link>
-                </li>
-              ))}
+              {taxonomy.flatMap((group) =>
+                group.categories.map((category) => (
+                  <li key={category.key}>
+                    <Link
+                      href={`/products?category=${category.key}`}
+                      className="text-sm text-white/70 transition-colors hover:text-white"
+                    >
+                      {taxonomyLabel(taxonomy, category.key, locale)}
+                    </Link>
+                  </li>
+                )),
+              )}
             </ul>
           </div>
 

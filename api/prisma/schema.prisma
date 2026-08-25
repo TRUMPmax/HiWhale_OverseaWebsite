@@ -155,6 +155,34 @@ model Product {
 
 // ---------- 站点设置与收藏 ----------
 
+// 产品大类（一级分类，DB 驱动；代码内枚举为种子与回退）
+model ProductGroupEntity {
+  id        String   @id @default(uuid()) @db.Uuid
+  key       String   @unique
+  nameJson  Json     @map("name_json")
+  sort      Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  categories ProductCategoryEntity[]
+
+  @@map("product_groups")
+}
+
+// 产品品类（二级分类）
+model ProductCategoryEntity {
+  id        String   @id @default(uuid()) @db.Uuid
+  key       String   @unique
+  groupId   String   @map("group_id") @db.Uuid
+  group     ProductGroupEntity @relation(fields: [groupId], references: [id], onDelete: Restrict)
+  nameJson  Json     @map("name_json")
+  sort      Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("product_categories")
+}
+
 // 站点设置（KV 存储：ai-settings / content-* 等）
 model SiteSetting {
   key       String   @id

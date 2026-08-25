@@ -8,14 +8,17 @@ import { VideoShowcase } from "@/components/home/VideoShowcase";
 import { StatsAndClients } from "@/components/home/StatsAndClients";
 import { Certifications } from "@/components/home/Certifications";
 import { CTASection } from "@/components/home/CTASection";
+import { fetchTaxonomy } from "@/lib/taxonomy";
 
 /** 首页：滚轮叙事 Hero（桌面）/ 静态 Hero（移动）+ 8 个静态功能分区 */
-export default function HomePage() {
+export default async function HomePage() {
+  const taxonomy = await fetchTaxonomy();
+
   return (
     <>
-      <HeroNarrative />
+      <HeroNarrative taxonomy={taxonomy} />
       <Hero />
-      <ProductEcosystem />
+      <ProductEcosystem taxonomy={taxonomy} />
       <SolutionIntegration />
       <IndustrySolutions />
       <ProductViewer3D />

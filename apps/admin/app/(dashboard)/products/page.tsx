@@ -4,11 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Image as ImageIcon, Plus, Search } from "lucide-react";
 import { toast } from "sonner";
-import {
-  getLocalizedLabel,
-  PRODUCT_CATEGORY_LABELS,
-  ProductCategory,
-} from "@hiwhale/shared/constants";
+import { getLocalizedLabel, PRODUCT_CATEGORY_LABELS } from "@hiwhale/shared/constants";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,6 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useProductsStore, type AdminProduct } from "@/store/products";
+import { fetchAdminTaxonomy, STATIC_ADMIN_TAXONOMY, type TaxonomyGroup } from "@/lib/taxonomy";
 
 const PAGE_SIZE = 8;
 
@@ -51,6 +48,13 @@ export default function ProductsPage() {
   const [category, setCategory] = useState<string>("all");
   const [page, setPage] = useState(1);
   const [pendingDelete, setPendingDelete] = useState<AdminProduct | null>(null);
+  /** 分类体系：优先 API（DB 实体），失败回退静态常量 */
+  const [taxonomy, setTaxonomy] = useState<TaxonomyGroup[]>(STATIC_ADMIN_TAXONOMY);
+  useEffect(() => {
+    void fetchAdminTaxonomy()
+      .then(setTaxonomy)
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     void fetchProducts().catch((e) => toast.error(e instanceof Error ? e.message : "加载失败"));
@@ -95,11 +99,13 @@ export default function ProductsPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">全部品类</SelectItem>
-            {Object.values(ProductCategory).map((c) => (
-              <SelectItem key={c} value={c}>
-                {getLocalizedLabel(PRODUCT_CATEGORY_LABELS, c, "zh")}
-              </SelectItem>
-            ))}
+            {taxonomy
+              .flatMap((g) => g.categories)
+              .map((c) => (
+                <SelectItem key={c.key} value={c.key}>
+                  {c.nameJson.zh}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
         <Link href="/products/new" className="ml-auto">

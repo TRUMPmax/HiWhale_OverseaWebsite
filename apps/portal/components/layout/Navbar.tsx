@@ -7,12 +7,8 @@ import { ChevronDown, Menu, X, User } from "lucide-react";
 import { BrandName } from "@/components/ui/BrandName";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { useAuthStore } from "@/store/auth";
-import {
-  getLocalizedLabel,
-  PRODUCT_CATEGORY_GROUPS,
-  PRODUCT_CATEGORY_LABELS,
-  PRODUCT_GROUP_LABELS,
-} from "@hiwhale/shared/constants";
+import { API_BASE } from "@/lib/api";
+import { STATIC_TAXONOMY, taxonomyLabel, type TaxonomyGroup } from "@/lib/taxonomy";
 
 /** 顶部导航栏：滚动变白 + 模糊 + 高度收缩；产品项带两级下拉（桌面端） */
 export function Navbar() {
@@ -28,6 +24,17 @@ export function Navbar() {
   const logout = useAuthStore((s) => s.logout);
 
   useEffect(() => setMounted(true), []);
+
+  // 产品分类体系：优先 API（DB 实体），失败回退静态常量
+  const [taxonomy, setTaxonomy] = useState<TaxonomyGroup[]>(STATIC_TAXONOMY);
+  useEffect(() => {
+    fetch(`${API_BASE}/api/taxonomy`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data: TaxonomyGroup[]) => {
+        if (Array.isArray(data) && data.length > 0) setTaxonomy(data);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 16);
@@ -71,25 +78,25 @@ export function Navbar() {
                 {/* 两级产品下拉：大类 + 品类 */}
                 <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 translate-y-2 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
                   <div className="w-[30rem] rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
-                    {PRODUCT_CATEGORY_GROUPS.map(({ group, categories }) => (
+                    {taxonomy.map((group) => (
                       <div
-                        key={group}
+                        key={group.key}
                         className="flex items-center gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-slate-50"
                       >
                         <Link
-                          href={`/products?group=${group}`}
+                          href={`/products?group=${group.key}`}
                           className="text-foreground hover:text-brand-blue w-32 shrink-0 text-sm font-semibold"
                         >
-                          {getLocalizedLabel(PRODUCT_GROUP_LABELS, group, locale)}
+                          {taxonomyLabel(taxonomy, group.key, locale)}
                         </Link>
                         <div className="flex flex-wrap gap-x-3 gap-y-1">
-                          {categories.map((category) => (
+                          {group.categories.map((category) => (
                             <Link
-                              key={category}
-                              href={`/products?category=${category}`}
+                              key={category.key}
+                              href={`/products?category=${category.key}`}
                               className="text-muted hover:text-brand-blue text-sm"
                             >
-                              {getLocalizedLabel(PRODUCT_CATEGORY_LABELS, category, locale)}
+                              {taxonomyLabel(taxonomy, category.key, locale)}
                             </Link>
                           ))}
                         </div>
@@ -199,14 +206,14 @@ export function Navbar() {
                 {/* 移动端：产品大类缩进列表 */}
                 {item.href === "/products" && (
                   <div className="flex flex-col gap-3 border-l-2 border-slate-100 pl-4">
-                    {PRODUCT_CATEGORY_GROUPS.map(({ group }) => (
+                    {taxonomy.map((group) => (
                       <Link
-                        key={group}
-                        href={`/products?group=${group}`}
+                        key={group.key}
+                        href={`/products?group=${group.key}`}
                         className="text-muted text-sm"
                         onClick={() => setMobileOpen(false)}
                       >
-                        {getLocalizedLabel(PRODUCT_GROUP_LABELS, group, locale)}
+                        {taxonomyLabel(taxonomy, group.key, locale)}
                       </Link>
                     ))}
                   </div>

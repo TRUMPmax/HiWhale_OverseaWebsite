@@ -3,44 +3,40 @@
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/navigation";
-import {
-  getGroupOfCategory,
-  getLocalizedLabel,
-  PRODUCT_CATEGORY_GROUPS,
-  PRODUCT_CATEGORY_LABELS,
-  PRODUCT_GROUP_LABELS,
-  ProductCategory,
-  ProductGroup,
-} from "@hiwhale/shared/constants";
 import type { MockProduct } from "@hiwhale/shared/constants";
+import { categoryGroupMap, taxonomyLabel, type TaxonomyGroup } from "@/lib/taxonomy";
 import { ProductCard } from "./ProductCard";
-
-const GROUP_VALUES = Object.values(ProductGroup) as string[];
-const CATEGORY_VALUES = Object.values(ProductCategory) as string[];
 
 /**
  * 产品列表：两级筛选（大类 → 品类），筛选状态存于 URL（?group= / ?category=），
  * 通过 router.replace(scroll:false) 更新，链接可分享且渲染平滑。
- * 数据由服务端页面传入（API 实时数据，失败时回退 Mock）。
+ * 数据与分类体系均由服务端页面传入（API 实时数据，失败时回退静态常量）。
  */
-export function ProductsBrowser({ products }: { products: MockProduct[] }) {
+export function ProductsBrowser({
+  products,
+  taxonomy,
+}: {
+  products: MockProduct[];
+  taxonomy: TaxonomyGroup[];
+}) {
   const locale = useLocale();
   const t = useTranslations("products");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const groupKeys = taxonomy.map((g) => g.key);
+  const catGroup = categoryGroupMap(taxonomy);
+
   const categoryParam = searchParams.get("category") ?? "";
   const groupParam = searchParams.get("group") ?? "";
 
-  const activeCategory = CATEGORY_VALUES.includes(categoryParam)
-    ? (categoryParam as ProductCategory)
-    : null;
+  const activeCategory = catGroup.has(categoryParam) ? categoryParam : null;
   // category 隐含其所属大类
-  const activeGroup: ProductGroup | "all" = activeCategory
-    ? getGroupOfCategory(activeCategory)
-    : GROUP_VALUES.includes(groupParam)
-      ? (groupParam as ProductGroup)
+  const activeGroup: string = activeCategory
+    ? (catGroup.get(activeCategory) ?? "all")
+    : groupKeys.includes(groupParam)
+      ? groupParam
       : "all";
 
   const setParams = (params: Record<string, string>) => {
@@ -51,13 +47,11 @@ export function ProductsBrowser({ products }: { products: MockProduct[] }) {
   const filtered = activeCategory
     ? products.filter((p) => p.category === activeCategory)
     : activeGroup !== "all"
-      ? products.filter((p) => getGroupOfCategory(p.category) === activeGroup)
+      ? products.filter((p) => catGroup.get(p.category) === activeGroup)
       : products;
 
   const subcategories =
-    activeGroup === "all"
-      ? []
-      : (PRODUCT_CATEGORY_GROUPS.find((g) => g.group === activeGroup)?.categories ?? []);
+    activeGroup === "all" ? [] : (taxonomy.find((g) => g.key === activeGroup)?.categories ?? []);
 
   const groupTabClass = (selected: boolean) =>
     `shrink-0 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
@@ -86,14 +80,14 @@ export function ProductsBrowser({ products }: { products: MockProduct[] }) {
             >
               {t("filters.all")}
             </button>
-            {PRODUCT_CATEGORY_GROUPS.map(({ group }) => (
+            {taxonomy.map((group) => (
               <button
-                key={group}
+                key={group.key}
                 type="button"
-                onClick={() => setParams({ group })}
-                className={groupTabClass(activeGroup === group)}
+                onClick={() => setParams({ group: group.key })}
+                className={groupTabClass(activeGroup === group.key)}
               >
-                {getLocalizedLabel(PRODUCT_GROUP_LABELS, group, locale)}
+                {taxonomyLabel(taxonomy, group.key, locale)}
               </button>
             ))}
           </div>
@@ -109,17 +103,17 @@ export function ProductsBrowser({ products }: { products: MockProduct[] }) {
                 className={chipClass(!activeCategory)}
               >
                 {t("filters.allInGroup", {
-                  group: getLocalizedLabel(PRODUCT_GROUP_LABELS, activeGroup, locale),
+                  group: taxonomyLabel(taxonomy, activeGroup, locale) ?? activeGroup,
                 })}
               </button>
               {subcategories.map((category) => (
                 <button
-                  key={category}
+                  key={category.key}
                   type="button"
-                  onClick={() => setParams({ category })}
-                  className={chipClass(activeCategory === category)}
+                  onClick={() => setParams({ category: category.key })}
+                  className={chipClass(activeCategory === category.key)}
                 >
-                  {getLocalizedLabel(PRODUCT_CATEGORY_LABELS, category, locale)}
+                  {taxonomyLabel(taxonomy, category.key, locale)}
                 </button>
               ))}
             </div>

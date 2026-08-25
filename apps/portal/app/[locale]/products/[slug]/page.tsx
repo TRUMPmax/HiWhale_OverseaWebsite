@@ -13,6 +13,7 @@ import {
 } from "@hiwhale/shared/constants";
 import type { MockProduct } from "@hiwhale/shared/constants";
 import { fetchProduct, fetchProducts } from "@/lib/content";
+import { categoryGroupMap, fetchTaxonomy, taxonomyLabel } from "@/lib/taxonomy";
 import { Link } from "@/navigation";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
@@ -53,15 +54,19 @@ export default async function ProductDetailPage({
   params: { locale: string; slug: string };
 }) {
   setRequestLocale(locale);
-  const product = await fetchProduct(slug);
+  const [product, taxonomy] = await Promise.all([fetchProduct(slug), fetchTaxonomy()]);
   if (!product) notFound();
 
   const t = await getTranslations("products.detail");
   const tCta = await getTranslations("products.cta");
   const loc = locale === "zh" ? ("zh" as const) : ("en" as const);
   const imageBase = product.imageName.replace(/\.[^.]+$/, "");
-  const group = getGroupOfCategory(product.category);
-  const groupLabel = getLocalizedLabel(PRODUCT_GROUP_LABELS, group, locale);
+  // 面包屑大类：优先 DB 分类体系，未知品类回退静态映射
+  const catGroup = categoryGroupMap(taxonomy);
+  const groupKey = catGroup.get(product.category) ?? getGroupOfCategory(product.category);
+  const groupLabel =
+    taxonomyLabel(taxonomy, groupKey, locale) ??
+    getLocalizedLabel(PRODUCT_GROUP_LABELS, groupKey, locale);
   const related = await fetchRelated(product);
   const isSoftware = SOFTWARE_CATEGORIES.includes(product.category);
 
@@ -78,7 +83,7 @@ export default async function ProductDetailPage({
             {t("breadcrumbProducts")}
           </Link>
           <span className="mx-2">/</span>
-          <Link href={`/products?group=${group}`} className="hover:text-brand-blue">
+          <Link href={`/products?group=${groupKey}`} className="hover:text-brand-blue">
             {groupLabel}
           </Link>
           <span className="mx-2">/</span>

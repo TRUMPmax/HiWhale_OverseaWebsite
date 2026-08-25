@@ -11,10 +11,10 @@ import {
   getLocalizedLabel,
   INDUSTRY_LABELS,
   Industry,
-  PRODUCT_GROUP_LABELS,
   ProductGroup,
 } from "@hiwhale/shared/constants";
 import { GROUP_IMAGE_NAMES, INDUSTRY_IMAGE_NAMES } from "./assets";
+import { taxonomyLabel, type TaxonomyGroup } from "@/lib/taxonomy";
 
 /** 产品芯片的景深层次（translateZ） */
 const CHIP_DEPTHS = [0, 60, 20, 80, 40, 10, 70];
@@ -40,7 +40,7 @@ const PARALLAX_LAYERS: Array<[string, number]> = [
  * → 75-100% 数据飞出/星空持续逼近 → 地球从画面下部升起 → 丁达尔光芒中的品牌名
  * 移动端不渲染（由静态 Hero 替代）
  */
-export function HeroNarrative() {
+export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
   const t = useTranslations("home");
   const locale = useLocale();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -49,7 +49,7 @@ export function HeroNarrative() {
   /** 滚轮叙事进度 0..1，驱动星空"逼近"效果 */
   const scrollProgressRef = useRef(0);
 
-  const groups = Object.values(ProductGroup);
+  const groups = taxonomy;
   const industries = Object.values(Industry);
 
   useEffect(() => {
@@ -222,16 +222,17 @@ export function HeroNarrative() {
           >
             {groups.map((group, i) => (
               <div
-                key={group}
+                key={group.key}
                 className="np-chip w-24 lg:w-32"
                 style={{ transform: `translateZ(${CHIP_DEPTHS[i]}px)` }}
               >
                 <div className="border-brand-blue/40 bg-brand-blue/20 flex aspect-[4/3] flex-col items-center justify-center rounded-xl border p-2">
                   <span className="text-center text-xs font-medium">
-                    {getLocalizedLabel(PRODUCT_GROUP_LABELS, group, locale)}
+                    {taxonomyLabel(taxonomy, group.key, locale)}
                   </span>
                   <span className="mt-1 font-mono text-[0.625rem] text-white/60">
-                    {GROUP_IMAGE_NAMES[group]}
+                    {GROUP_IMAGE_NAMES[group.key as ProductGroup] ??
+                      `product-group-${group.key.toLowerCase()}.png`}
                   </span>
                 </div>
               </div>

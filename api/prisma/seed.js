@@ -9,8 +9,15 @@ const prisma = new PrismaClient();
 
 async function main() {
   // shared 包为 ESM（"type": "module"），CJS 脚本中用动态 import 加载
-  const { MOCK_PRODUCTS, MOCK_SOLUTIONS, MOCK_CASES, getGroupOfCategory } =
-    await import("@hiwhale/shared/constants");
+  const {
+    MOCK_PRODUCTS,
+    MOCK_SOLUTIONS,
+    MOCK_CASES,
+    getGroupOfCategory,
+    PRODUCT_CATEGORY_GROUPS,
+    PRODUCT_GROUP_LABELS,
+    PRODUCT_CATEGORY_LABELS,
+  } = await import("@hiwhale/shared/constants");
   // 后台超级管理员
   const email = "admin@hiwhale.com";
   const staff = await prisma.staffUser.upsert({
@@ -41,6 +48,32 @@ async function main() {
     });
   }
   console.log(`[seed] sales staff upserted: ${salesStaff.length}`);
+
+  // 产品分类体系（大类 + 品类）
+  let groupOrder = 0;
+  for (const { group, categories } of PRODUCT_CATEGORY_GROUPS) {
+    groupOrder += 1;
+    const g = await prisma.productGroupEntity.upsert({
+      where: { key: group },
+      update: { nameJson: PRODUCT_GROUP_LABELS[group], sort: groupOrder },
+      create: { key: group, nameJson: PRODUCT_GROUP_LABELS[group], sort: groupOrder },
+    });
+    let catOrder = 0;
+    for (const category of categories) {
+      catOrder += 1;
+      await prisma.productCategoryEntity.upsert({
+        where: { key: category },
+        update: { nameJson: PRODUCT_CATEGORY_LABELS[category], sort: catOrder, groupId: g.id },
+        create: {
+          key: category,
+          nameJson: PRODUCT_CATEGORY_LABELS[category],
+          sort: catOrder,
+          groupId: g.id,
+        },
+      });
+    }
+  }
+  console.log("[seed] taxonomy upserted: " + PRODUCT_CATEGORY_GROUPS.length + " groups");
 
   // 产品（按 slug upsert）
   let count = 0;

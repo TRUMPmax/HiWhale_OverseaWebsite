@@ -1,13 +1,14 @@
 import { Suspense } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { fetchProducts } from "@/lib/content";
+import { fetchTaxonomy } from "@/lib/taxonomy";
 import { ProductsBrowser } from "@/components/products/ProductsBrowser";
 
 /** 产品列表页：顶部横幅（服务端渲染）+ 可筛选产品网格（客户端组件） */
 export default async function ProductsPage({ params: { locale } }: { params: { locale: string } }) {
   setRequestLocale(locale);
   const t = await getTranslations("products");
-  const products = await fetchProducts();
+  const [products, taxonomy] = await Promise.all([fetchProducts(), fetchTaxonomy()]);
 
   return (
     <>
@@ -18,7 +19,7 @@ export default async function ProductsPage({ params: { locale } }: { params: { l
         </div>
       </section>
       <Suspense fallback={null}>
-        <ProductsBrowser products={products} />
+        <ProductsBrowser products={products} taxonomy={taxonomy} />
       </Suspense>
     </>
   );

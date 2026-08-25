@@ -7,6 +7,7 @@ import {
   Bot,
   FileText,
   FolderOpen,
+  FolderTree,
   Inbox,
   Layers,
   LayoutDashboard,
@@ -21,6 +22,7 @@ import { cn } from "@/lib/utils";
 export const NAV_ITEMS = [
   { href: "/dashboard", label: "仪表盘", icon: LayoutDashboard },
   { href: "/products", label: "产品管理", icon: Package },
+  { href: "/categories", label: "品类管理", icon: FolderTree },
   { href: "/solutions", label: "方案管理", icon: Layers },
   { href: "/cases", label: "案例管理", icon: FolderOpen },
   { href: "/inquiries", label: "询盘管理", icon: Inbox },

@@ -16,6 +16,7 @@ import { StatsModule } from "./modules/stats/stats.module";
 import { LogsModule } from "./modules/logs/logs.module";
 import { SettingsModule } from "./modules/settings/settings.module";
 import { FavoritesModule } from "./modules/favorites/favorites.module";
+import { TaxonomyModule } from "./modules/taxonomy/taxonomy.module";
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { FavoritesModule } from "./modules/favorites/favorites.module";
     LogsModule,
     SettingsModule,
     FavoritesModule,
+    TaxonomyModule,
   ],
 })
 export class AppModule {}
