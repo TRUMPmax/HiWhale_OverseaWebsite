@@ -1,19 +1,9 @@
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/navigation";
-import { Placeholder } from "@/components/ui/Placeholder";
+import { SlottedImage } from "@/components/ui/SlottedImage";
 import { Reveal } from "@/components/ui/Reveal";
 import { INDUSTRY_IMAGE_NAMES } from "./assets";
 import { getLocalizedLabel, INDUSTRY_LABELS, Industry } from "@hiwhale/shared/constants";
-
-/** 已投放真实素材的行业（public/images/industries/ 下有图即用真图） */
-const INDUSTRIES_WITH_IMAGE: ReadonlySet<Industry> = new Set([
-  Industry.E_COMMERCE,
-  Industry.AUTOMOTIVE,
-  Industry.THIRD_PARTY_LOGISTICS,
-  Industry.FOOD_COLD_CHAIN,
-  Industry.PHARMACEUTICAL,
-  Industry.PORT,
-]);
 
 /** 行业 → 对应方案详情页 */
 const INDUSTRY_SOLUTION_SLUG: Record<Industry, string> = {
@@ -45,22 +35,18 @@ export function IndustrySolutions() {
           {industries.map((industry, index) => (
             <Reveal key={industry} delay={index * 80} className="h-full">
               <div className="flex h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition-all hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg">
-                {INDUSTRIES_WITH_IMAGE.has(industry) ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={`/images/industries/${INDUSTRY_IMAGE_NAMES[industry]}`}
-                    alt={getLocalizedLabel(INDUSTRY_LABELS, industry, locale)}
-                    className="aspect-video w-full object-cover"
-                  />
-                ) : (
-                  <Placeholder
-                    ratio="aspect-video"
-                    className="rounded-none border-0"
-                    label={t(`items.${industry}.image`)}
-                    size={t("imageSize")}
-                    name={INDUSTRY_IMAGE_NAMES[industry]}
-                  />
-                )}
+                <SlottedImage
+                  src={`/images/industries/${INDUSTRY_IMAGE_NAMES[industry]}`}
+                  alt={getLocalizedLabel(INDUSTRY_LABELS, industry, locale)}
+                  className="aspect-video w-full object-cover"
+                  placeholder={{
+                    ratio: "aspect-video",
+                    className: "rounded-none border-0",
+                    label: t(`items.${industry}.image`),
+                    size: t("imageSize"),
+                    name: INDUSTRY_IMAGE_NAMES[industry],
+                  }}
+                />
                 <div className="flex flex-1 flex-col p-6">
                   <h3 className="font-heading text-foreground text-xl font-bold">
                     {getLocalizedLabel(INDUSTRY_LABELS, industry, locale)}

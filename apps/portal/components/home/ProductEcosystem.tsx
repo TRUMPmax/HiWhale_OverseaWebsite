@@ -1,7 +1,7 @@
 import { useTranslations, useLocale } from "next-intl";
 import { Bot, Cog, Container, Monitor, Sparkles, Truck, PackageOpen, Shapes } from "lucide-react";
 import { Link } from "@/navigation";
-import { Placeholder } from "@/components/ui/Placeholder";
+import { SlottedImage } from "@/components/ui/SlottedImage";
 import { Reveal } from "@/components/ui/Reveal";
 import { GROUP_IMAGE_NAMES } from "./assets";
 import { ProductGroup } from "@hiwhale/shared/constants";
@@ -16,9 +16,6 @@ const GROUP_ICONS: Record<ProductGroup, typeof Truck> = {
   [ProductGroup.DELIVERY_ROBOT]: PackageOpen,
   [ProductGroup.SOFTWARE]: Monitor,
 };
-
-/** 已投放真实素材的产品组（public/images/products/ 下有图即用真图） */
-const GROUPS_WITH_IMAGE: ReadonlySet<ProductGroup> = new Set([ProductGroup.ROBOTIC_ARM]);
 
 /** 首页分区 2：产品生态（分类体系由服务端传入，API 失败时回退静态常量） */
 export function ProductEcosystem({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
@@ -52,29 +49,21 @@ export function ProductEcosystem({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
             return (
               <Reveal key={group.key} delay={index * 80} className="h-full">
                 <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-6 transition-all hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg">
-                  {GROUPS_WITH_IMAGE.has(groupKey) ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={`/images/products/${GROUP_IMAGE_NAMES[groupKey]}`}
-                      alt={name}
-                      className="aspect-[4/3] w-full rounded-lg object-cover"
-                    />
-                  ) : (
-                    <Placeholder
-                      ratio="aspect-[4/3]"
-                      className="p-4"
-                      label={
-                        known
-                          ? t(`items.${group.key}.image`)
-                          : `${taxonomyLabel(taxonomy, group.key, "zh")} 组合图（占位）`
-                      }
-                      size={t("imageSize")}
-                      name={
-                        GROUP_IMAGE_NAMES[groupKey] ??
-                        `product-group-${group.key.toLowerCase()}.png`
-                      }
-                    />
-                  )}
+                  <SlottedImage
+                    src={`/images/products/${GROUP_IMAGE_NAMES[groupKey] ?? `product-group-${group.key.toLowerCase()}.png`}`}
+                    alt={name}
+                    className="aspect-[4/3] w-full rounded-lg object-cover"
+                    placeholder={{
+                      ratio: "aspect-[4/3]",
+                      className: "p-4",
+                      label: known
+                        ? t(`items.${group.key}.image`)
+                        : `${taxonomyLabel(taxonomy, group.key, "zh")} 组合图（占位）`,
+                      size: t("imageSize"),
+                      name:
+                        GROUP_IMAGE_NAMES[groupKey] ?? `product-group-${group.key.toLowerCase()}.png`,
+                    }}
+                  />
                   <div className="mt-5 flex items-center gap-3">
                     <Icon className="text-brand-blue h-5 w-5" />
                     <h3 className="font-heading text-foreground text-lg font-bold">{name}</h3>

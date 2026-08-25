@@ -10,7 +10,7 @@ import {
 } from "@hiwhale/shared/constants";
 import { fetchProducts, fetchSolution } from "@/lib/content";
 import { Link } from "@/navigation";
-import { Placeholder } from "@/components/ui/Placeholder";
+import { SlottedImage } from "@/components/ui/SlottedImage";
 import { Reveal } from "@/components/ui/Reveal";
 import { Starfield } from "@/components/ui/Starfield";
 import { ProductCard } from "@/components/products/ProductCard";
@@ -59,21 +59,17 @@ export default async function SolutionDetailPage({
       <section className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24 lg:px-12">
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <Reveal>
-            {INDUSTRY_IMAGE_NAMES[solution.industry as Industry] ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={`/images/industries/${INDUSTRY_IMAGE_NAMES[solution.industry as Industry]}`}
-                alt={industryLabel(solution.industry, locale)}
-                className="aspect-video w-full rounded-xl border border-slate-200 object-cover"
-              />
-            ) : (
-              <Placeholder
-                ratio="aspect-video"
-                label={`行业方案场景图：${solution.industry}`}
-                size="16:9 · 建议 1600×900"
-                name={solution.imageName}
-              />
-            )}
+            <SlottedImage
+              src={`/images/industries/${INDUSTRY_IMAGE_NAMES[solution.industry as Industry] ?? `industry-${solution.industry}.png`}`}
+              alt={industryLabel(solution.industry, locale)}
+              className="aspect-video w-full rounded-xl border border-slate-200 object-cover"
+              placeholder={{
+                ratio: "aspect-video",
+                label: `行业方案场景图：${solution.industry}`,
+                size: "16:9 · 建议 1600×900",
+                name: solution.imageName,
+              }}
+            />
           </Reveal>
           <Reveal delay={120}>
             <h2 className="font-heading text-foreground text-2xl font-bold md:text-3xl">
