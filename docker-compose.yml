@@ -86,6 +86,9 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-hiwhale}:${POSTGRES_PASSWORD:-hiwhale_dev}@postgres:5432/${POSTGRES_DB:-hiwhale}
       REDIS_URL: redis://default:${REDIS_PASSWORD:-hiwhale_dev}@redis:6379
       MINIO_ENDPOINT: minio
+      PORTAL_PUBLIC_DIR: /portal-public
+    volumes:
+      - portal_images:/portal-public/images
     expose:
       - "4000"
     depends_on:
@@ -124,6 +127,8 @@ services:
     restart: unless-stopped
     environment:
       NEXT_PUBLIC_API_URL: http://api:4000
+    volumes:
+      - portal_images:/app/apps/portal/public/images
     expose:
       - "3000"
     depends_on:
@@ -168,6 +173,7 @@ volumes:
   redis_data:
   minio_data:
   tei_data:
+  portal_images:
 
 networks:
   hiwhale-network:

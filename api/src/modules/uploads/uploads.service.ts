@@ -1,4 +1,11 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException, OnModuleInit, ServiceUnavailableException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  OnModuleInit,
+  ServiceUnavailableException,
+} from "@nestjs/common";
 import * as Minio from "minio";
 import { CopyDestinationOptions, CopySourceOptions } from "minio";
 import * as fs from "node:fs";
@@ -41,9 +48,7 @@ export class UploadsService implements OnModuleInit {
   private bucket = process.env.MINIO_BUCKET ?? "hiwhale-uploads";
   private publicBase = process.env.MINIO_PUBLIC_URL ?? `http://localhost:9000/${this.bucket}`;
 
-  constructor(
-    private readonly prisma: PrismaService,
-  ) {
+  constructor(private readonly prisma: PrismaService) {
     this.client = new Minio.Client({
       endPoint: process.env.MINIO_ENDPOINT ?? "localhost",
       port: Number(process.env.MINIO_PORT ?? 9000),
@@ -269,10 +274,14 @@ export class UploadsService implements OnModuleInit {
     const rule = UploadsService.SITE_ASSET_RULES[ext];
     const fileExt = path.extname(file.originalname).toLowerCase();
     if (!rule || fileExt !== ext || !rule.mimes.includes(file.mimetype)) {
-      throw new BadRequestException(`文件类型不符：需 ${ext}（${rule?.mimes.join("/") ?? "不支持"}）`);
+      throw new BadRequestException(
+        `文件类型不符：需 ${ext}（${rule?.mimes.join("/") ?? "不支持"}）`,
+      );
     }
     if (file.size > rule.maxSize) {
-      throw new BadRequestException(`文件超出大小限制（${Math.round(rule.maxSize / 1024 / 1024)}MB）`);
+      throw new BadRequestException(
+        `文件超出大小限制（${Math.round(rule.maxSize / 1024 / 1024)}MB）`,
+      );
     }
     const target = this.slotPath(slot);
     try {

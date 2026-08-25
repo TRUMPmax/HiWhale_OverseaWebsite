@@ -3,7 +3,12 @@
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
-import { getLocalizedLabel, INDUSTRY_LABELS, Industry, MOCK_PRODUCTS } from "@hiwhale/shared/constants";
+import {
+  getLocalizedLabel,
+  INDUSTRY_LABELS,
+  Industry,
+  MOCK_PRODUCTS,
+} from "@hiwhale/shared/constants";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

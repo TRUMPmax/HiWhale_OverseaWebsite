@@ -61,7 +61,8 @@ export function ProductEcosystem({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
                         : `${taxonomyLabel(taxonomy, group.key, "zh")} 组合图（占位）`,
                       size: t("imageSize"),
                       name:
-                        GROUP_IMAGE_NAMES[groupKey] ?? `product-group-${group.key.toLowerCase()}.png`,
+                        GROUP_IMAGE_NAMES[groupKey] ??
+                        `product-group-${group.key.toLowerCase()}.png`,
                     }}
                   />
                   <div className="mt-5 flex items-center gap-3">
