@@ -48,19 +48,22 @@ export function Footer() {
             <h4 className="font-heading text-sm font-bold uppercase tracking-wider">
               {t("products")}
             </h4>
-            <ul className="mt-4 space-y-2">
-              {taxonomy.flatMap((group) =>
-                group.categories.map((category) => (
-                  <li key={category.key}>
-                    <Link
-                      href={`/products?category=${category.key}`}
-                      className="text-sm text-white/70 transition-colors hover:text-white"
-                    >
-                      {taxonomyLabel(taxonomy, category.key, locale)}
-                    </Link>
-                  </li>
-                )),
-              )}
+            {/* 只展示一级类目（产品分组）；超过 5 个时自动分两列 */}
+            <ul
+              className={`mt-4 ${
+                taxonomy.length > 5 ? "grid grid-cols-2 gap-x-4 gap-y-2" : "space-y-2"
+              }`}
+            >
+              {taxonomy.map((group) => (
+                <li key={group.key}>
+                  <Link
+                    href={`/products?group=${group.key}`}
+                    className="text-sm text-white/70 transition-colors hover:text-white"
+                  >
+                    {taxonomyLabel(taxonomy, group.key, locale)}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
