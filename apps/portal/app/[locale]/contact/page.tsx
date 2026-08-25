@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Mail, MapPin, MessageCircle, Phone, Share2 } from "lucide-react";
-import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
+import { SlottedImage } from "@/components/ui/SlottedImage";
 import { ContactForm } from "@/components/contact/ContactForm";
 import type { ContactInfo } from "@/components/about/types";
 import { fetchSetting } from "@/lib/settings";
@@ -61,12 +61,17 @@ export default async function ContactPage({ params: { locale } }: { params: { lo
                 ))}
               </div>
             </div>
-            <Placeholder
-              ratio="aspect-[4/3]"
-              className="mt-6"
-              label="公司位置地图截图"
-              size="4:3 · 建议 1200×900"
-              name="contact-map.png"
+            <SlottedImage
+              src="/images/contact/contact-map.png"
+              alt="公司位置地图截图"
+              className="mt-6 aspect-[4/3] w-full rounded-xl border border-slate-200 object-cover"
+              placeholder={{
+                ratio: "aspect-[4/3]",
+                className: "mt-6",
+                label: "公司位置地图截图",
+                size: "4:3 · 建议 1200×900",
+                name: "contact-map.png",
+              }}
             />
           </Reveal>
 

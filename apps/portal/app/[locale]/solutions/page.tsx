@@ -2,8 +2,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { industryLabel, Industry } from "@hiwhale/shared/constants";
 import { fetchSolutions } from "@/lib/content";
 import { Link } from "@/navigation";
-import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
+import { SlottedImage } from "@/components/ui/SlottedImage";
 import { INDUSTRY_IMAGE_NAMES } from "@/components/home/assets";
 
 /** 行业方案列表页（数据来自 API，失败回退 Mock） */
@@ -32,22 +32,19 @@ export default async function SolutionsPage({
             {solutions.map((solution, index) => (
               <Reveal key={solution.slug} delay={index * 80} className="h-full">
                 <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-6 transition-all hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg">
-                  {INDUSTRY_IMAGE_NAMES[solution.industry as Industry] ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={`/images/industries/${INDUSTRY_IMAGE_NAMES[solution.industry as Industry]}`}
-                      alt={industryLabel(solution.industry, locale)}
-                      className="aspect-video w-full rounded-lg object-cover"
-                    />
-                  ) : (
-                    <Placeholder
-                      ratio="aspect-video"
-                      className="p-4"
-                      label={`行业方案场景图：${solution.industry}`}
-                      size="16:9 · 建议 1600×900"
-                      name={solution.imageName}
-                    />
-                  )}
+                  <SlottedImage
+                    src={`/images/solutions/${solution.imageName}`}
+                    fallbackSrc={`/images/industries/${INDUSTRY_IMAGE_NAMES[solution.industry as Industry] ?? `industry-${solution.industry}.png`}`}
+                    alt={industryLabel(solution.industry, locale)}
+                    className="aspect-video w-full rounded-lg object-cover"
+                    placeholder={{
+                      ratio: "aspect-video",
+                      className: "p-4",
+                      label: `行业方案场景图：${solution.industry}`,
+                      size: "16:9 · 建议 1600×900",
+                      name: solution.imageName,
+                    }}
+                  />
                   <span className="mt-5 inline-flex w-fit items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
                     {industryLabel(solution.industry, locale)}
                   </span>

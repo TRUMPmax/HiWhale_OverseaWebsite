@@ -4,7 +4,7 @@ import { Clock, Package, Quote } from "lucide-react";
 import { getLocalizedLabel, INDUSTRY_LABELS, MOCK_CASES } from "@hiwhale/shared/constants";
 import { fetchCase, fetchProducts } from "@/lib/content";
 import { Link } from "@/navigation";
-import { Placeholder } from "@/components/ui/Placeholder";
+import { SlottedImage } from "@/components/ui/SlottedImage";
 import { Reveal } from "@/components/ui/Reveal";
 import { Starfield } from "@/components/ui/Starfield";
 import { ProductCard } from "@/components/products/ProductCard";
@@ -63,12 +63,17 @@ export default async function CaseDetailPage({
             </h1>
             <p className="text-muted mt-2 text-lg">{item.clientName[loc]}</p>
           </div>
-          <Placeholder
-            ratio="aspect-[21/9]"
-            className="mt-8"
-            label="客户项目现场图"
-            size="21:9 · 建议 2100×900"
-            name={item.imageName}
+          <SlottedImage
+            src={`/images/cases/${item.imageName}`}
+            alt={item.clientName[loc]}
+            className="mt-8 aspect-[21/9] w-full rounded-xl border border-slate-200 object-cover"
+            placeholder={{
+              ratio: "aspect-[21/9]",
+              className: "mt-8",
+              label: "客户项目现场图",
+              size: "21:9 · 建议 2100×900",
+              name: item.imageName,
+            }}
           />
         </Reveal>
       </section>

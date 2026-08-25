@@ -1,6 +1,6 @@
 import { useLocale, useTranslations } from "next-intl";
-import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
+import { SlottedImage } from "@/components/ui/SlottedImage";
 import { pickLang, type CompanyAbout } from "./types";
 
 /** 关于我们 2：方案集成商定位（内容可来自公司数据中台） */
@@ -24,11 +24,16 @@ export function Positioning({ data }: { data?: CompanyAbout | null }) {
           </p>
         </Reveal>
         <Reveal delay={120}>
-          <Placeholder
-            ratio="aspect-[4/3]"
-            label="公司团队/办公场景图"
-            size="4:3 · 建议 1200×900"
-            name="about-team.png"
+          <SlottedImage
+            src="/images/about/about-team.png"
+            alt="公司团队/办公场景图"
+            className="aspect-[4/3] w-full rounded-xl border border-slate-200 object-cover"
+            placeholder={{
+              ratio: "aspect-[4/3]",
+              label: "公司团队/办公场景图",
+              size: "4:3 · 建议 1200×900",
+              name: "about-team.png",
+            }}
           />
         </Reveal>
       </div>

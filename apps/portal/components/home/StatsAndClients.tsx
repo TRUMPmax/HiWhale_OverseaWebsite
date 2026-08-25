@@ -1,5 +1,5 @@
 import { useLocale, useTranslations } from "next-intl";
-import { Placeholder } from "@/components/ui/Placeholder";
+import { SlottedImage } from "@/components/ui/SlottedImage";
 import { CountUp } from "@/components/ui/CountUp";
 import { Reveal } from "@/components/ui/Reveal";
 import { parseCountValue, type CompanyStatItem } from "@/components/about/types";
@@ -61,11 +61,16 @@ export function StatsAndClients({ stats }: { stats?: CompanyStatItem[] | null })
         <div className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-4">
           {Array.from({ length: CLIENT_LOGO_COUNT }, (_, i) => (
             <Reveal key={i} delay={i * 60}>
-              <Placeholder
-                className="p-4 grayscale transition-all hover:grayscale-0"
-                label={t("clientLogo.label")}
-                size={t("clientLogo.size")}
-                name={`client-logo-${String(i + 1).padStart(2, "0")}.png`}
+              <SlottedImage
+                src={`/images/clients/client-logo-${String(i + 1).padStart(2, "0")}.png`}
+                alt={t("clientLogo.label")}
+                className="w-full rounded-xl object-contain grayscale transition-all hover:grayscale-0"
+                placeholder={{
+                  className: "p-4 grayscale transition-all hover:grayscale-0",
+                  label: t("clientLogo.label"),
+                  size: t("clientLogo.size"),
+                  name: `client-logo-${String(i + 1).padStart(2, "0")}.png`,
+                }}
               />
             </Reveal>
           ))}

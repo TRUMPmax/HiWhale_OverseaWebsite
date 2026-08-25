@@ -1,7 +1,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { MapPin } from "lucide-react";
-import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
+import { SlottedImage } from "@/components/ui/SlottedImage";
 import { pickLang, type CompanyAbout } from "./types";
 
 const DEFAULT_LOCATIONS = ["hq", "frankfurt", "singapore", "houston"] as const;
@@ -24,12 +24,17 @@ export function GlobalPresence({ data }: { data?: CompanyAbout | null }) {
             {t("title")}
           </h2>
           <p className="text-muted mt-2">{t("subtitle")}</p>
-          <Placeholder
-            ratio="aspect-[21/9]"
-            className="mt-8"
-            label="全球布局世界地图（标注：中国总部+海外服务点）"
-            size="21:9 · 建议 2100×900"
-            name="about-world-map.png"
+          <SlottedImage
+            src="/images/about/about-world-map.png"
+            alt="全球布局世界地图"
+            className="mt-8 aspect-[21/9] w-full rounded-xl border border-slate-200 object-cover"
+            placeholder={{
+              ratio: "aspect-[21/9]",
+              className: "mt-8",
+              label: "全球布局世界地图（标注：中国总部+海外服务点）",
+              size: "21:9 · 建议 2100×900",
+              name: "about-world-map.png",
+            }}
           />
           <div className="mt-6 flex flex-wrap gap-3">
             {locations.map((location) => (

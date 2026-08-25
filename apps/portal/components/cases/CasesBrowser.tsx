@@ -5,8 +5,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { getLocalizedLabel, INDUSTRY_LABELS, Industry } from "@hiwhale/shared/constants";
 import type { MockCase } from "@hiwhale/shared/constants";
 import { Link } from "@/navigation";
-import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
+import { SlottedImage } from "@/components/ui/SlottedImage";
 
 /** 案例列表：行业筛选（客户端 useState）+ 案例卡片网格（数据由服务端页面传入） */
 export function CasesBrowser({ cases }: { cases: MockCase[] }) {
@@ -55,12 +55,17 @@ export function CasesBrowser({ cases }: { cases: MockCase[] }) {
             <Reveal key={item.slug} delay={index * 80} className="h-full">
               <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-6 transition-all hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg">
                 <div className="flex items-center justify-between gap-4">
-                  <Placeholder
-                    ratio="aspect-[2/1]"
-                    className="w-32 shrink-0 rounded-lg p-2"
-                    label="客户 Logo，透明底 PNG"
-                    size="2:1 · 建议 240×120"
-                    name={item.logoName}
+                  <SlottedImage
+                    src={`/images/cases/${item.logoName}`}
+                    alt={item.clientName[loc]}
+                    className="aspect-[2/1] w-32 shrink-0 rounded-lg border border-slate-200 bg-white object-contain p-2"
+                    placeholder={{
+                      ratio: "aspect-[2/1]",
+                      className: "w-32 shrink-0 rounded-lg p-2",
+                      label: "客户 Logo，透明底 PNG",
+                      size: "2:1 · 建议 240×120",
+                      name: item.logoName,
+                    }}
                   />
                   <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
                     {getLocalizedLabel(INDUSTRY_LABELS, item.industry, locale)}

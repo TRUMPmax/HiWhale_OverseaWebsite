@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
-import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
+import { SlottedImage } from "@/components/ui/SlottedImage";
 import type { CompanyAbout } from "./types";
 
 const DEFAULT_CERTS = ["CE", "ISO 9001", "ISO 3691-4", "ISO 13849", "UL"];
@@ -20,13 +20,18 @@ export function Partners({ data }: { data?: CompanyAbout | null }) {
           </h2>
           <div className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Placeholder
+              <SlottedImage
                 key={i}
-                ratio="aspect-[2/1]"
-                className="rounded-lg p-3"
-                label="合作伙伴 Logo"
-                size="2:1 · 建议 240×120"
-                name={`partner-logo-0${i}.png`}
+                src={`/images/about/partner-logo-0${i}.png`}
+                alt="合作伙伴 Logo"
+                className="aspect-[2/1] w-full rounded-lg border border-slate-200 bg-white object-contain p-3"
+                placeholder={{
+                  ratio: "aspect-[2/1]",
+                  className: "rounded-lg p-3",
+                  label: "合作伙伴 Logo",
+                  size: "2:1 · 建议 240×120",
+                  name: `partner-logo-0${i}.png`,
+                }}
               />
             ))}
           </div>

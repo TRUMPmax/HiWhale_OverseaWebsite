@@ -139,31 +139,33 @@ export default function MediaPage() {
         title="素材管理"
         description="通用素材库（MinIO）与站点展示位素材的统一管理"
         action={
-          <div className="flex items-center gap-3">
-            <select
-              className="border-input bg-background focus:border-brand-blue flex h-9 rounded-md border px-3 text-sm outline-none"
-              value={uploadKind}
-              onChange={(e) => setUploadKind(e.target.value)}
-            >
-              <option value="image">图片</option>
-              <option value="spec">文档</option>
-              <option value="model">模型</option>
-            </select>
-            <label className="bg-brand-blue hover:bg-brand-blue/90 inline-flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity">
-              <input
-                type="file"
-                multiple
-                className="hidden"
-                disabled={uploading}
-                onChange={(e) => {
-                  if (e.target.files?.length) void doUpload(e.target.files, uploadKind);
-                  e.target.value = "";
-                }}
-              />
-              <Upload className="h-4 w-4" />
-              {uploading ? "上传中…" : "上传素材"}
-            </label>
-          </div>
+          tab === "files" ? (
+            <div className="flex items-center gap-3">
+              <select
+                className="border-input bg-background focus:border-brand-blue flex h-9 rounded-md border px-3 text-sm outline-none"
+                value={uploadKind}
+                onChange={(e) => setUploadKind(e.target.value)}
+              >
+                <option value="image">图片</option>
+                <option value="spec">文档</option>
+                <option value="model">模型</option>
+              </select>
+              <label className="bg-brand-blue hover:bg-brand-blue/90 inline-flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity">
+                <input
+                  type="file"
+                  multiple
+                  className="hidden"
+                  disabled={uploading}
+                  onChange={(e) => {
+                    if (e.target.files?.length) void doUpload(e.target.files, uploadKind);
+                    e.target.value = "";
+                  }}
+                />
+                <Upload className="h-4 w-4" />
+                {uploading ? "上传中…" : "上传素材"}
+              </label>
+            </div>
+          ) : undefined
         }
       />
 

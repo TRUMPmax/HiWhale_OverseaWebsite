@@ -1,7 +1,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { CountUp } from "@/components/ui/CountUp";
-import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
+import { SlottedImage } from "@/components/ui/SlottedImage";
 import { parseCountValue, pickLang, type CompanyAbout } from "./types";
 
 /** 关于我们 5：研发实力（内容可来自公司数据中台） */
@@ -51,11 +51,16 @@ export function RnDStrength({ data }: { data?: CompanyAbout | null }) {
             </div>
           </Reveal>
           <Reveal delay={120}>
-            <Placeholder
-              ratio="aspect-video"
-              label="研发中心/工厂实拍图"
-              size="16:9 · 建议 1600×900"
-              name="about-factory.png"
+            <SlottedImage
+              src="/images/about/about-factory.png"
+              alt="研发中心/工厂实拍图"
+              className="aspect-video w-full rounded-xl border border-slate-200 object-cover"
+              placeholder={{
+                ratio: "aspect-video",
+                label: "研发中心/工厂实拍图",
+                size: "16:9 · 建议 1600×900",
+                name: "about-factory.png",
+              }}
             />
           </Reveal>
         </div>

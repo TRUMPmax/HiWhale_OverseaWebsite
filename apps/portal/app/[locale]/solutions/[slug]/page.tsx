@@ -60,7 +60,8 @@ export default async function SolutionDetailPage({
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <Reveal>
             <SlottedImage
-              src={`/images/industries/${INDUSTRY_IMAGE_NAMES[solution.industry as Industry] ?? `industry-${solution.industry}.png`}`}
+              src={`/images/solutions/${solution.imageName}`}
+              fallbackSrc={`/images/industries/${INDUSTRY_IMAGE_NAMES[solution.industry as Industry] ?? `industry-${solution.industry}.png`}`}
               alt={industryLabel(solution.industry, locale)}
               className="aspect-video w-full rounded-xl border border-slate-200 object-cover"
               placeholder={{

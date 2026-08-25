@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
-import { Placeholder } from "@/components/ui/Placeholder";
+import { SlottedImage } from "@/components/ui/SlottedImage";
 import { Starfield } from "@/components/ui/Starfield";
 
 /** 首页分区 1：首屏 Hero（静态版；移动端展示，桌面端由 HeroNarrative 滚轮叙事替代） */
@@ -39,12 +39,17 @@ export function Hero() {
           </div>
         </div>
 
-        <Placeholder
-          variant="dark"
-          ratio="aspect-video"
-          label={t("placeholder.label")}
-          size={t("placeholder.size")}
-          name="home-hero-product-family.png"
+        <SlottedImage
+          src="/images/home/home-hero-product-family.png"
+          alt={t("placeholder.label")}
+          className="aspect-video w-full rounded-xl object-cover"
+          placeholder={{
+            variant: "dark",
+            ratio: "aspect-video",
+            label: t("placeholder.label"),
+            size: t("placeholder.size"),
+            name: "home-hero-product-family.png",
+          }}
         />
       </div>
     </section>

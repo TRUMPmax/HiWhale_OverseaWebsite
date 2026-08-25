@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { Starfield } from "@/components/ui/Starfield";
+import { SlottedImage } from "@/components/ui/SlottedImage";
 import {
   getLocalizedLabel,
   INDUSTRY_LABELS,
@@ -252,11 +253,16 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
                 key={industry}
                 className="ns-card text-foreground overflow-hidden rounded-xl bg-white"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <SlottedImage
                   src={`/images/industries/${INDUSTRY_IMAGE_NAMES[industry]}`}
                   alt={getLocalizedLabel(INDUSTRY_LABELS, industry, locale)}
                   className="aspect-video w-full object-cover"
+                  placeholder={{
+                    ratio: "aspect-video",
+                    label: `行业场景图：${getLocalizedLabel(INDUSTRY_LABELS, industry, "zh")}`,
+                    size: "16:9 · 建议 1600×900",
+                    name: INDUSTRY_IMAGE_NAMES[industry],
+                  }}
                 />
                 <div className="p-4 pt-3">
                   <h3 className="font-heading text-sm font-bold">

@@ -92,10 +92,10 @@ export class UploadsController {
     return this.uploads.listSiteAssets();
   }
 
-  /** 上传/替换素材位：POST /api/uploads/site-asset?slotId=xxx（multipart, 字段名 file） */
+  /** 上传/替换素材位：POST /api/uploads/site-asset?slotId=xxx（multipart, 字段名 file；上限 100MB 对齐 mp4 素材位） */
   @UseGuards(JwtAuthGuard)
   @Post("site-asset")
-  @UseInterceptors(FileInterceptor("file"))
+  @UseInterceptors(FileInterceptor("file", { limits: { fileSize: 100 * 1024 * 1024 } }))
   saveSiteAsset(
     @CurrentUser() payload: JwtPayload,
     @UploadedFile() file: Express.Multer.File,
