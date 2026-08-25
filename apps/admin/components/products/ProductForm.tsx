@@ -154,31 +154,35 @@ export function ProductForm({ initial }: ProductFormProps) {
     }
   };
 
-  /** 删除 MinIO 对象（404 时视为已删除，同步移除本地状态） */
-  const deleteAsset = async (url: string, apply: () => void) => {
-    const key = url.split("hiwhale-uploads/")[1];
-    try {
-      const token = useAdminAuthStore.getState().token;
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/uploads`,
-        {
+  /** 待删除素材 URL 列表（UI 中移除后暂存，保存成功后才真正删除 MinIO 对象） */
+  const [pendingDeletions, setPendingDeletions] = useState<string[]>([]);
+
+  /** 从 URL 提取 MinIO object key */
+  const keyOf = (url: string) => url.split("hiwhale-uploads/")[1];
+
+  /** UI 移除：仅从表单状态移除并记入待删除列表（保存后才生效） */
+  const markForDeletion = (url: string, apply: () => void) => {
+    setPendingDeletions((prev) => (prev.includes(url) ? prev : [...prev, url]));
+    apply();
+  };
+
+  /** 保存成功后：尽力删除待删 MinIO 对象（忽略 404/失败） */
+  const flushPendingDeletions = async () => {
+    if (pendingDeletions.length === 0) return;
+    const token = useAdminAuthStore.getState().token;
+    await Promise.allSettled(
+      pendingDeletions.map((url) =>
+        fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/uploads`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
-          body: JSON.stringify({ key }),
-        },
-      );
-      if (!res.ok && res.status !== 404) {
-        const data = (await res.json().catch(() => ({}))) as { message?: string };
-        throw new Error(data.message ?? "删除失败");
-      }
-      apply();
-      toast.success("已删除");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "删除失败");
-    }
+          body: JSON.stringify({ key: keyOf(url) }),
+        }),
+      ),
+    );
+    setPendingDeletions([]);
   };
 
   /** 从 URL 提取文件名 */
@@ -251,6 +255,8 @@ export function ProductForm({ initial }: ProductFormProps) {
       } else {
         await addProduct(payload);
       }
+      // 保存成功后才删除 MinIO 对象（避免未保存时数据库指向已删除文件）
+      await flushPendingDeletions();
       toast.success("保存成功");
       router.push("/products");
     } catch (e) {
@@ -381,7 +387,9 @@ export function ProductForm({ initial }: ProductFormProps) {
       <Card>
         <CardHeader className="flex-row items-center justify-between space-y-0">
           <CardTitle className="text-base">产品图片</CardTitle>
-          <span className="text-xs text-slate-400">拖拽调整顺序，第一张为主图（最多 4 张）</span>
+          <span className="text-xs text-slate-400">
+            拖拽调整顺序，第一张为主图（最多 4 张）· 删除图片在保存后生效
+          </span>
         </CardHeader>
         <CardContent>
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
@@ -393,9 +401,7 @@ export function ProductForm({ initial }: ProductFormProps) {
                     url={url}
                     index={index}
                     onDelete={() =>
-                      void deleteAsset(url, () =>
-                        setImages((prev) => prev.filter((u) => u !== url)),
-                      )
+                      markForDeletion(url, () => setImages((prev) => prev.filter((u) => u !== url)))
                     }
                   />
                 ))}
@@ -462,7 +468,7 @@ export function ProductForm({ initial }: ProductFormProps) {
                 <button
                   type="button"
                   aria-label="删除文件"
-                  onClick={() => void deleteAsset(slot.value, slot.clear)}
+                  onClick={() => markForDeletion(slot.value, slot.clear)}
                   className="rounded-md p-1 text-slate-400 transition-colors hover:text-red-600"
                 >
                   <X className="h-4 w-4" />
