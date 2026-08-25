@@ -17,8 +17,13 @@ export class StaffService {
     private readonly logs: OperationLogService,
   ) {}
 
-  list() {
-    return this.prisma.staffUser.findMany({
+  /** Prisma 枚举 ACTIVE/DISABLED → 前端约定的小写 active/disabled */
+  private mapStatus<T extends { status: string }>(staff: T) {
+    return { ...staff, status: staff.status.toLowerCase() };
+  }
+
+  async list() {
+    const items = await this.prisma.staffUser.findMany({
       orderBy: { createdAt: "asc" },
       select: {
         id: true,
@@ -30,6 +35,7 @@ export class StaffService {
         _count: { select: { assignedInquiries: true } },
       },
     });
+    return items.map((s) => this.mapStatus(s));
   }
 
   async create(dto: CreateStaffDto, operatorId: string) {
@@ -44,7 +50,7 @@ export class StaffService {
         select: { id: true, name: true, email: true, role: true, status: true },
       });
       await this.logs.log(operatorId, "新增员工", `${staff.name}（${staff.email}）`);
-      return staff;
+      return this.mapStatus(staff);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
         throw new ConflictException("该邮箱已存在");
@@ -65,7 +71,7 @@ export class StaffService {
       select: { id: true, name: true, email: true, role: true, status: true },
     });
     await this.logs.log(operatorId, "编辑员工", staff.name);
-    return staff;
+    return this.mapStatus(staff);
   }
 
   async setStatus(id: string, status: "active" | "disabled", operatorId: string) {
@@ -78,7 +84,7 @@ export class StaffService {
       select: { id: true, name: true, status: true },
     });
     await this.logs.log(operatorId, status === "active" ? "启用员工" : "禁用员工", staff.name);
-    return staff;
+    return this.mapStatus(staff);
   }
 
   async remove(id: string, operatorId: string) {
