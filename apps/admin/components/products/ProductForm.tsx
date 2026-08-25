@@ -5,7 +5,17 @@ import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FileText, Package, Plus, Trash2, X } from "lucide-react";
+import { FileText, GripVertical, Package, Plus, Trash2, X } from "lucide-react";
+import {
+  closestCenter,
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { toast } from "sonner";
 import {
   getGroupOfCategory,
@@ -40,6 +50,53 @@ type ProductFormProps = {
   initial?: { record: AdminProduct };
 };
 
+/** 可拖拽图片块（整块可拖；X 删除按钮通过 5px 激活距离与 stopPropagation 保持可点） */
+function SortableImageTile({
+  url,
+  index,
+  onDelete,
+}: {
+  url: string;
+  index: number;
+  onDelete: () => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: url,
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      {...attributes}
+      {...listeners}
+      className={`group relative aspect-[4/3] cursor-grab overflow-hidden rounded-lg border border-slate-200 active:cursor-grabbing ${
+        isDragging ? "z-10 opacity-80 shadow-lg" : ""
+      }`}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={url} alt={`产品图 ${index + 1}`} className="h-full w-full object-cover" />
+      {index === 0 && (
+        <span className="bg-brand-blue absolute left-1.5 top-1.5 rounded-md px-1.5 py-0.5 text-xs font-medium text-white">
+          主图
+        </span>
+      )}
+      <span className="absolute bottom-1.5 left-1.5 rounded-md bg-black/50 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100">
+        <GripVertical className="h-3.5 w-3.5" />
+      </span>
+      <button
+        type="button"
+        aria-label="删除图片"
+        onPointerDown={(e) => e.stopPropagation()}
+        onClick={onDelete}
+        className="absolute right-1.5 top-1.5 rounded-md bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
+      >
+        <X className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  );
+}
+
 /** 产品新增/编辑表单（真实 API + MinIO 素材上传/删除） */
 export function ProductForm({ initial }: ProductFormProps) {
   const router = useRouter();
@@ -54,6 +111,20 @@ export function ProductForm({ initial }: ProductFormProps) {
   const [spec, setSpec] = useState(initial?.record.specUrl ?? "");
   const [model3d, setModel3d] = useState(initial?.record.modelUrl ?? "");
   const [uploading, setUploading] = useState<"image" | "spec" | "model3d" | null>(null);
+
+  /** 拖拽传感器：5px 激活距离（避免误触删除按钮与普通点击） */
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+
+  /** 拖拽结束：按目标位置重排（主图始终为 position 0） */
+  const onDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setImages((prev) => {
+      const oldIndex = prev.indexOf(String(active.id));
+      const newIndex = prev.indexOf(String(over.id));
+      return arrayMove(prev, oldIndex, newIndex);
+    });
+  };
 
   /** 上传素材到 MinIO（经 API） */
   const uploadAsset = async (kind: "image" | "spec" | "model3d", file: File) => {
@@ -306,58 +377,50 @@ export function ProductForm({ initial }: ProductFormProps) {
         </CardContent>
       </Card>
 
-      {/* 产品图片管理 */}
+      {/* 产品图片管理（拖拽排序，第一张为主图） */}
       <Card>
         <CardHeader className="flex-row items-center justify-between space-y-0">
           <CardTitle className="text-base">产品图片</CardTitle>
-          <span className="text-xs text-slate-400">第一张为主图（最多 4 张）</span>
+          <span className="text-xs text-slate-400">拖拽调整顺序，第一张为主图（最多 4 张）</span>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-4 gap-4">
-            {images.map((url, index) => (
-              <div
-                key={url}
-                className="group relative aspect-[4/3] overflow-hidden rounded-lg border border-slate-200"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={url} alt={`产品图 ${index + 1}`} className="h-full w-full object-cover" />
-                {index === 0 && (
-                  <span className="bg-brand-blue absolute left-1.5 top-1.5 rounded-md px-1.5 py-0.5 text-xs font-medium text-white">
-                    主图
-                  </span>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+            <SortableContext items={images} strategy={rectSortingStrategy}>
+              <div className="grid grid-cols-4 gap-4">
+                {images.map((url, index) => (
+                  <SortableImageTile
+                    key={url}
+                    url={url}
+                    index={index}
+                    onDelete={() =>
+                      void deleteAsset(url, () =>
+                        setImages((prev) => prev.filter((u) => u !== url)),
+                      )
+                    }
+                  />
+                ))}
+                {images.length < 4 && (
+                  <label className="hover:border-brand-blue flex aspect-[4/3] cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 p-4 text-center transition-colors">
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                      disabled={uploading !== null}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) void uploadAsset("image", file);
+                        e.target.value = "";
+                      }}
+                    />
+                    <Plus className="h-6 w-6 text-slate-400" />
+                    <span className="text-xs text-slate-500">
+                      {uploading === "image" ? "上传中…" : "添加图片"}
+                    </span>
+                  </label>
                 )}
-                <button
-                  type="button"
-                  aria-label="删除图片"
-                  onClick={() =>
-                    void deleteAsset(url, () => setImages((prev) => prev.filter((u) => u !== url)))
-                  }
-                  className="absolute right-1.5 top-1.5 rounded-md bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
               </div>
-            ))}
-            {images.length < 4 && (
-              <label className="hover:border-brand-blue flex aspect-[4/3] cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 p-4 text-center transition-colors">
-                <input
-                  type="file"
-                  className="hidden"
-                  accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                  disabled={uploading !== null}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) void uploadAsset("image", file);
-                    e.target.value = "";
-                  }}
-                />
-                <Plus className="h-6 w-6 text-slate-400" />
-                <span className="text-xs text-slate-500">
-                  {uploading === "image" ? "上传中…" : "添加图片"}
-                </span>
-              </label>
-            )}
-          </div>
+            </SortableContext>
+          </DndContext>
         </CardContent>
       </Card>
 
