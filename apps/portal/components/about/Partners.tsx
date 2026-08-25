@@ -1,12 +1,15 @@
 import { useTranslations } from "next-intl";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
+import type { CompanyAbout } from "./types";
 
-const CERTS = ["CE", "ISO 9001", "ISO 3691-4", "ISO 13849", "UL"];
+const DEFAULT_CERTS = ["CE", "ISO 9001", "ISO 3691-4", "ISO 13849", "UL"];
 
-/** 关于我们 6：合作伙伴 + 认证 */
-export function Partners() {
+/** 关于我们 6：合作伙伴 + 认证（认证列表可来自公司数据中台） */
+export function Partners({ data }: { data?: CompanyAbout | null }) {
   const t = useTranslations("about.partners");
+  const certs =
+    data?.certifications && data.certifications.length > 0 ? data.certifications : DEFAULT_CERTS;
 
   return (
     <section>
@@ -31,7 +34,7 @@ export function Partners() {
             {t("certsTitle")}
           </h3>
           <div className="mt-4 flex flex-wrap gap-3">
-            {CERTS.map((cert) => (
+            {certs.map((cert) => (
               <span
                 key={cert}
                 className="text-muted rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm font-medium"

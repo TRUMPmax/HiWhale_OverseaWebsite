@@ -1,5 +1,4 @@
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/navigation";
 import { Starfield } from "@/components/ui/Starfield";
 import { MissionBanner } from "@/components/about/MissionBanner";
@@ -8,20 +7,23 @@ import { Milestones } from "@/components/about/Milestones";
 import { GlobalPresence } from "@/components/about/GlobalPresence";
 import { RnDStrength } from "@/components/about/RnDStrength";
 import { Partners } from "@/components/about/Partners";
+import type { CompanyAbout } from "@/components/about/types";
+import { fetchSetting } from "@/lib/settings";
 
-/** 关于我们页 */
-export default function AboutPage({ params: { locale } }: { params: { locale: string } }) {
+/** 关于我们页（内容优先公司数据中台，失败回退 i18n 文案） */
+export default async function AboutPage({ params: { locale } }: { params: { locale: string } }) {
   setRequestLocale(locale);
-  const t = useTranslations("about.cta");
+  const t = await getTranslations("about.cta");
+  const about = await fetchSetting<CompanyAbout>("company-about");
 
   return (
     <>
-      <MissionBanner />
-      <Positioning />
-      <Milestones />
-      <GlobalPresence />
-      <RnDStrength />
-      <Partners />
+      <MissionBanner data={about} />
+      <Positioning data={about} />
+      <Milestones data={about} />
+      <GlobalPresence data={about} />
+      <RnDStrength data={about} />
+      <Partners data={about} />
 
       {/* 底部 CTA */}
       <section className="bg-night-sky relative overflow-hidden text-white">

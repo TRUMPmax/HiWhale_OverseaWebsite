@@ -177,10 +177,22 @@
         "size": "1:1 · 模型格式 GLB/GLTF，单模型 ≤10MB"
       },
       "specs": {
-        "loadCapacity": { "label": "Load Capacity", "value": "1,500 kg" },
-        "liftHeight": { "label": "Lift Height", "value": "3,000 mm" },
-        "navigation": { "label": "Navigation", "value": "LiDAR SLAM" },
-        "battery": { "label": "Battery", "value": "Li-ion 48V / 200Ah" }
+        "loadCapacity": {
+          "label": "Load Capacity",
+          "value": "1,500 kg"
+        },
+        "liftHeight": {
+          "label": "Lift Height",
+          "value": "3,000 mm"
+        },
+        "navigation": {
+          "label": "Navigation",
+          "value": "LiDAR SLAM"
+        },
+        "battery": {
+          "label": "Battery",
+          "value": "Li-ion 48V / 200Ah"
+        }
       }
     },
     "video": {
@@ -197,10 +209,22 @@
       "subtitle": "Numbers that speak for our delivery capability.",
       "clientsTitle": "Trusted by Industry Leaders",
       "items": {
-        "projects": { "value": "500+", "label": "Projects Delivered" },
-        "countries": { "value": "30+", "label": "Countries Served" },
-        "uptime": { "value": "99.9%", "label": "System Uptime" },
-        "pallets": { "value": "50M+", "label": "Pallets Handled / Year" }
+        "projects": {
+          "value": "500+",
+          "label": "Projects Delivered"
+        },
+        "countries": {
+          "value": "30+",
+          "label": "Countries Served"
+        },
+        "uptime": {
+          "value": "99.9%",
+          "label": "System Uptime"
+        },
+        "pallets": {
+          "value": "50M+",
+          "label": "Pallets Handled / Year"
+        }
       },
       "clientLogo": {
         "label": "客户 Logo（默认灰度，hover 恢复彩色）",
@@ -212,11 +236,26 @@
       "subtitle": "Our products meet the strictest international safety and quality standards.",
       "imageSize": "1:1 · 建议 200×200，透明底 PNG",
       "items": {
-        "ce": { "image": "CE 认证标志", "name": "CE" },
-        "iso9001": { "image": "ISO 9001 质量管理体系认证标志", "name": "ISO 9001" },
-        "iso3691": { "image": "ISO 3691-4 无人叉车安全标准标志", "name": "ISO 3691-4" },
-        "iso13849": { "image": "ISO 13849 功能安全认证标志", "name": "ISO 13849" },
-        "ul": { "image": "UL 认证标志", "name": "UL" }
+        "ce": {
+          "image": "CE 认证标志",
+          "name": "CE"
+        },
+        "iso9001": {
+          "image": "ISO 9001 质量管理体系认证标志",
+          "name": "ISO 9001"
+        },
+        "iso3691": {
+          "image": "ISO 3691-4 无人叉车安全标准标志",
+          "name": "ISO 3691-4"
+        },
+        "iso13849": {
+          "image": "ISO 13849 功能安全认证标志",
+          "name": "ISO 13849"
+        },
+        "ul": {
+          "image": "UL 认证标志",
+          "name": "UL"
+        }
       }
     },
     "cta": {
@@ -378,14 +417,26 @@
           "year": "2017",
           "event": "Guangdong Haojing Technology Co., Ltd. founded in Shenzhen, Greater Bay Area"
         },
-        "m2018": { "year": "2018", "event": "First AGV forklift project delivered and accepted" },
-        "m2020": { "year": "2020", "event": "HiWhale WCS scheduling platform launched" },
+        "m2018": {
+          "year": "2018",
+          "event": "First AGV forklift project delivered and accepted"
+        },
+        "m2020": {
+          "year": "2020",
+          "event": "HiWhale WCS scheduling platform launched"
+        },
         "m2022": {
           "year": "2022",
           "event": "Overseas expansion begins — first projects in Europe and Southeast Asia"
         },
-        "m2024": { "year": "2024", "event": "500+ projects delivered across 30+ countries" },
-        "m2026": { "year": "2026", "event": "HiWhale global brand and IWMS platform released" }
+        "m2024": {
+          "year": "2024",
+          "event": "500+ projects delivered across 30+ countries"
+        },
+        "m2026": {
+          "year": "2026",
+          "event": "HiWhale global brand and IWMS platform released"
+        }
       }
     },
     "presence": {
@@ -551,5 +602,56 @@
       "save": "Save Changes",
       "saved": "Profile saved."
     }
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "updated": "Last updated: August 2026",
+    "intro": "HiWhale Robotics (\"we\", \"us\") respects your privacy. This policy explains what data we collect through this website, how we use it, and the rights you have over it.",
+    "sections": [
+      {
+        "h": "1. Data We Collect",
+        "body": "Account registration: your name, company, email address and password (stored only as a secure hash). Email verification: your email address and a temporary 6-digit verification code (valid for 10 minutes). Inquiry forms: contact details, country, product interests and your project description. Product favorites saved to your account. Uploaded files (product images, spec sheets, 3D models) stored in our object storage (MinIO)."
+      },
+      {
+        "h": "2. Cookies & Local Storage",
+        "body": "We use browser localStorage — not advertising cookies — to remember your login session, language preference, AI chat history cache and dashboard preferences. You can clear this data at any time via your browser settings; core site features remain available without it."
+      },
+      {
+        "h": "3. AI Chat & Third-Party Processing",
+        "body": "Our AI assistant answers product questions using your conversation history for context. Conversations are stored in our database and are processed by DeepSeek, a third-party large language model provider, to generate responses. Do not submit trade secrets or personal data of third parties in chat. Conversation records may be reviewed by our team to improve answer quality."
+      },
+      {
+        "h": "4. How We Use Your Data",
+        "body": "We use collected data to: provide and operate the website; respond to inquiries and prepare quotations; maintain and improve our products, services and AI assistant; ensure system security and prevent abuse; meet legal and contractual obligations."
+      },
+      {
+        "h": "5. Operation Logs",
+        "body": "For staff and administrator accounts, we keep operation logs (who changed what and when) for audit and security purposes."
+      },
+      {
+        "h": "6. Data Retention",
+        "body": "Account data is kept while your account is active. Inquiry records are retained for up to 3 years to support the sales process. AI conversations are retained for up to 12 months. Email verification codes expire after 10 minutes and are deleted after use."
+      },
+      {
+        "h": "7. Cross-Border Transfer",
+        "body": "Our servers are located in China. Data submitted from overseas is transferred to and processed in China to provide our global services. We apply appropriate safeguards for such transfers as required by applicable law."
+      },
+      {
+        "h": "8. Security Measures",
+        "body": "We protect your data with encrypted transport (TLS), hashed password storage, role-based access control for staff systems, and isolated object storage for uploaded files. No method of transmission over the internet is 100% secure, but we continuously improve our safeguards."
+      },
+      {
+        "h": "9. Your Rights",
+        "body": "Depending on your jurisdiction (including GDPR), you have the right to access, rectify, delete, or export your personal data, and to withdraw consent where processing is based on consent. To exercise these rights, contact us at mia@gdhjtech.com — we will respond within 30 days."
+      },
+      {
+        "h": "10. Changes to This Policy",
+        "body": "We may update this policy from time to time. Material changes will be announced on this page before they take effect. Continued use of the website after changes take effect constitutes acceptance of the updated policy."
+      },
+      {
+        "h": "11. Contact Us",
+        "body": "For any privacy questions or requests, contact our data protection contact at mia@gdhjtech.com, or write to HiWhale Robotics, Shanghai, China."
+      }
+    ]
   }
 }

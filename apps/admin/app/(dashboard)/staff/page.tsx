@@ -13,6 +13,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -70,8 +71,10 @@ export default function StaffPage() {
   const addStaff = useStaffStore((s) => s.addStaff);
   const updateStaff = useStaffStore((s) => s.updateStaff);
   const toggleStatus = useStaffStore((s) => s.toggleStatus);
+  const deleteStaff = useStaffStore((s) => s.deleteStaff);
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<AdminStaff | null>(null);
 
   useEffect(() => {
     void fetchStaff().catch((e) => toast.error(e instanceof Error ? e.message : "加载失败"));
@@ -181,6 +184,13 @@ export default function StaffPage() {
                   >
                     {item.status === "active" ? "禁用" : "启用"}
                   </button>
+                  <button
+                    type="button"
+                    className="ml-4 text-sm font-medium text-red-600 hover:underline"
+                    onClick={() => setPendingDelete(item)}
+                  >
+                    删除
+                  </button>
                 </TableCell>
               </TableRow>
             ))}
@@ -287,6 +297,47 @@ export default function StaffPage() {
             </Button>
             <Button className="bg-brand-blue hover:bg-brand-blue/90" onClick={submit}>
               保存
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* 删除员工确认 */}
+      <Dialog
+        open={pendingDelete !== null}
+        onOpenChange={(open) => !open && setPendingDelete(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>确认删除员工？</DialogTitle>
+            <DialogDescription>
+              删除「{pendingDelete?.name}」后将无法恢复。
+              {(pendingDelete?.assignedInquiries ?? 0) > 0 &&
+                `该员工名下有 ${pendingDelete?.assignedInquiries} 条询盘，删除后将释放为未分配，可由其他员工继续跟进。`}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPendingDelete(null)}>
+              取消
+            </Button>
+            <Button
+              className="bg-red-600 hover:bg-red-700"
+              onClick={() => {
+                if (pendingDelete) {
+                  void deleteStaff(pendingDelete.id)
+                    .then(({ releasedInquiries }) =>
+                      toast.success(
+                        releasedInquiries > 0
+                          ? `已删除，释放 ${releasedInquiries} 条询盘`
+                          : "已删除",
+                      ),
+                    )
+                    .catch((e) => toast.error(e instanceof Error ? e.message : "删除失败"));
+                }
+                setPendingDelete(null);
+              }}
+            >
+              确认删除
             </Button>
           </DialogFooter>
         </DialogContent>

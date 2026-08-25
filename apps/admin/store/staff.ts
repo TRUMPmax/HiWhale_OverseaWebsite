@@ -8,6 +8,8 @@ export type AdminStaff = {
   email: string;
   role: UserRole;
   status: "active" | "disabled";
+  /** 名下询盘数（API _count 展开） */
+  assignedInquiries?: number;
 };
 
 type StaffState = {
@@ -22,7 +24,7 @@ type StaffState = {
   }) => Promise<void>;
   updateStaff: (id: string, patch: { name?: string; role?: UserRole }) => Promise<void>;
   toggleStatus: (id: string) => Promise<void>;
-  deleteStaff: (id: string) => Promise<void>;
+  deleteStaff: (id: string) => Promise<{ releasedInquiries: number }>;
 };
 
 /** 员工管理 store：真实 API 数据层（仅超级管理员可操作） */
@@ -32,7 +34,14 @@ export const useStaffStore = create<StaffState>()((set, get) => ({
   fetchStaff: async () => {
     set({ loading: true });
     try {
-      const items = await adminApi<AdminStaff[]>("/api/staff");
+      const raw =
+        await adminApi<Array<AdminStaff & { _count?: { assignedInquiries: number } }>>(
+          "/api/staff",
+        );
+      const items = raw.map(({ _count, ...item }) => ({
+        ...item,
+        assignedInquiries: _count?.assignedInquiries ?? 0,
+      }));
       set({ staff: items });
     } finally {
       set({ loading: false });
@@ -56,7 +65,11 @@ export const useStaffStore = create<StaffState>()((set, get) => ({
     await get().fetchStaff();
   },
   deleteStaff: async (id) => {
-    await adminApi(`/api/staff/${id}`, { method: "DELETE" });
+    const res = await adminApi<{ deleted: boolean; releasedInquiries: number }>(
+      `/api/staff/${id}`,
+      { method: "DELETE" },
+    );
     await get().fetchStaff();
+    return { releasedInquiries: res.releasedInquiries };
   },
 }));

@@ -32,23 +32,6 @@ async function main() {
   });
   console.log(`[seed] staff super admin ready: ${staff.email} (role=${staff.role})`);
 
-  // 销售团队（询盘分配候选人）
-  const salesStaff = [
-    { name: "张三", email: "zhangsan@hiwhale.com" },
-    { name: "李四", email: "lisi@hiwhale.com" },
-    { name: "王五", email: "wangwu@hiwhale.com" },
-    { name: "Mia", email: "mia@hiwhale.com" },
-  ];
-  const salesPassword = await bcrypt.hash("staff123", 10);
-  for (const s of salesStaff) {
-    await prisma.staffUser.upsert({
-      where: { email: s.email },
-      update: {},
-      create: { ...s, passwordHash: salesPassword, role: "SALES" },
-    });
-  }
-  console.log(`[seed] sales staff upserted: ${salesStaff.length}`);
-
   // 产品分类体系（大类 + 品类）
   let groupOrder = 0;
   for (const { group, categories } of PRODUCT_CATEGORY_GROUPS) {

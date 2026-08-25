@@ -24,7 +24,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { exportInquiriesCsv } from "@/lib/export-csv";
-import { STAFF_OPTIONS } from "@/lib/mock/inquiries";
+import { adminApi } from "@/lib/api";
 import { useInquiriesStore } from "@/store/inquiries";
 import { STATUS_BADGE } from "@/components/inquiries/status-badge";
 
@@ -40,6 +40,14 @@ export default function InquiryDetailPage({ params }: { params: { id: string } }
   const assign = useInquiriesStore((s) => s.assign);
   const addFollowUp = useInquiriesStore((s) => s.addFollowUp);
   const [draft, setDraft] = useState("");
+  const [staffOptions, setStaffOptions] = useState<string[]>([]);
+
+  // 负责人候选：来自员工 API
+  useEffect(() => {
+    adminApi<Array<{ name: string }>>("/api/staff")
+      .then((staff) => setStaffOptions(staff.map((s) => s.name)))
+      .catch(() => {});
+  }, []);
   const [saving, setSaving] = useState(false);
 
   // 加载列表（获取基本信息）+ 跟进记录
@@ -185,7 +193,7 @@ export default function InquiryDetailPage({ params }: { params: { id: string } }
                     <SelectValue placeholder="未分配" />
                   </SelectTrigger>
                   <SelectContent>
-                    {STAFF_OPTIONS.map((name) => (
+                    {staffOptions.map((name) => (
                       <SelectItem key={name} value={name}>
                         {name}
                       </SelectItem>

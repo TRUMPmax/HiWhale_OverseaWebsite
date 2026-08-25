@@ -9,9 +9,8 @@ class PutSettingDto {
   value: unknown;
 }
 
-/** 站点设置 KV 存取（员工） */
+/** 站点设置 KV 存取（GET 公开只读，PUT 仅员工） */
 @Controller("settings")
-@UseGuards(JwtAuthGuard)
 export class SettingsController {
   constructor(private readonly prisma: PrismaService) {}
 
@@ -19,13 +18,14 @@ export class SettingsController {
     if (payload.kind !== "staff") throw new ForbiddenException("仅后台员工可操作");
   }
 
+  /** 公开读取（公司数据等公开内容） */
   @Get(":key")
-  async get(@CurrentUser() payload: JwtPayload, @Param("key") key: string) {
-    this.requireStaff(payload);
+  async get(@Param("key") key: string) {
     const row = await this.prisma.siteSetting.findUnique({ where: { key } });
     return { key, value: row?.value ?? null };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(":key")
   async put(
     @CurrentUser() payload: JwtPayload,

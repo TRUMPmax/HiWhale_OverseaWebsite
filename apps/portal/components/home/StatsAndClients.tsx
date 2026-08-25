@@ -1,20 +1,33 @@
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { CountUp } from "@/components/ui/CountUp";
 import { Reveal } from "@/components/ui/Reveal";
+import { parseCountValue, type CompanyStatItem } from "@/components/about/types";
 
-const STATS = [
-  { key: "projects", end: 500, suffix: "+", decimals: 0 },
-  { key: "countries", end: 30, suffix: "+", decimals: 0 },
-  { key: "uptime", end: 99.9, suffix: "%", decimals: 1 },
-  { key: "pallets", end: 50, suffix: "M+", decimals: 0 },
+const DEFAULT_STATS = [
+  { value: "500+", key: "projects" },
+  { value: "30+", key: "countries" },
+  { value: "99.9%", key: "uptime" },
+  { value: "50M+", key: "pallets" },
 ] as const;
 
 const CLIENT_LOGO_COUNT = 8;
 
-/** 首页分区 7：成果数据（CountUp 滚动计数）+ 客户 Logo 墙 */
-export function StatsAndClients() {
+/** 首页分区 7：成果数据（CountUp 滚动计数；数据可来自公司数据中台）+ 客户 Logo 墙 */
+export function StatsAndClients({ stats }: { stats?: CompanyStatItem[] | null }) {
   const t = useTranslations("home.stats");
+  const locale = useLocale();
+
+  const items =
+    stats && stats.length > 0
+      ? stats.slice(0, 6).map((s) => ({
+          ...parseCountValue(s.value),
+          label: locale === "zh" ? s.label : (s.labelEn ?? s.label),
+        }))
+      : DEFAULT_STATS.map((s) => ({
+          ...parseCountValue(s.value),
+          label: t(`items.${s.key}.label`),
+        }));
 
   return (
     <section className="bg-slate-50">
@@ -27,8 +40,8 @@ export function StatsAndClients() {
         </div>
 
         <div className="mt-12 grid grid-cols-2 gap-6 lg:grid-cols-4">
-          {STATS.map((stat, index) => (
-            <Reveal key={stat.key} delay={index * 100}>
+          {items.map((stat, index) => (
+            <Reveal key={stat.label} delay={index * 100}>
               <div className="rounded-xl border border-slate-200 bg-white p-6 text-center">
                 <CountUp
                   end={stat.end}
@@ -36,7 +49,7 @@ export function StatsAndClients() {
                   decimals={stat.decimals}
                   className="font-heading text-brand-blue text-4xl font-bold md:text-5xl"
                 />
-                <div className="text-muted mt-2 text-sm">{t(`items.${stat.key}.label`)}</div>
+                <div className="text-muted mt-2 text-sm">{stat.label}</div>
               </div>
             </Reveal>
           ))}

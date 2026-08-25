@@ -1,20 +1,27 @@
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
+import { pickLang, type CompanyAbout } from "./types";
 
-/** 关于我们 2：方案集成商定位 */
-export function Positioning() {
+/** 关于我们 2：方案集成商定位（内容可来自公司数据中台） */
+export function Positioning({ data }: { data?: CompanyAbout | null }) {
   const t = useTranslations("about.positioning");
+  const locale = useLocale();
+  const p = data?.positioning;
 
   return (
     <section>
       <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 md:grid-cols-2 md:px-8 md:py-24 lg:px-12">
         <Reveal>
           <h2 className="font-heading text-foreground text-2xl font-bold md:text-3xl">
-            {t("title")}
+            {pickLang(locale, p?.title, p?.titleEn, t("title"))}
           </h2>
-          <p className="text-muted mt-4 leading-relaxed">{t("text")}</p>
-          <p className="text-muted mt-3 leading-relaxed">{t("text2")}</p>
+          <p className="text-muted mt-4 leading-relaxed">
+            {pickLang(locale, p?.text, p?.textEn, t("text"))}
+          </p>
+          <p className="text-muted mt-3 leading-relaxed">
+            {pickLang(locale, p?.text2, p?.text2En, t("text2"))}
+          </p>
         </Reveal>
         <Reveal delay={120}>
           <Placeholder

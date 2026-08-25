@@ -1,21 +1,38 @@
-import { useTranslations } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Mail, MapPin, MessageCircle, Phone, Share2 } from "lucide-react";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
 import { ContactForm } from "@/components/contact/ContactForm";
+import type { ContactInfo } from "@/components/about/types";
+import { fetchSetting } from "@/lib/settings";
 
-/** 联系我们页：联系信息 + 询盘表单 */
-export default function ContactPage({ params: { locale } }: { params: { locale: string } }) {
+/** 联系我们页：联系信息（优先公司数据中台）+ 询盘表单 */
+export default async function ContactPage({ params: { locale } }: { params: { locale: string } }) {
   setRequestLocale(locale);
-  const t = useTranslations("contact");
+  const t = await getTranslations("contact");
+  const contact = await fetchSetting<ContactInfo>("contact-info");
 
   const infoRows = [
-    { icon: Mail, label: t("info.email"), value: t("info.emailValue") },
-    { icon: Phone, label: t("info.phone"), value: t("info.phoneValue") },
-    { icon: MapPin, label: t("info.address"), value: t("info.addressValue") },
-    { icon: MessageCircle, label: t("info.whatsapp"), value: t("info.whatsappValue") },
-    { icon: Share2, label: t("info.linkedin"), value: t("info.linkedinValue") },
+    { icon: Mail, label: t("info.email"), value: contact?.email ?? t("info.emailValue") },
+    { icon: Phone, label: t("info.phone"), value: contact?.phone ?? t("info.phoneValue") },
+    {
+      icon: MapPin,
+      label: t("info.address"),
+      value:
+        locale === "zh"
+          ? (contact?.address ?? t("info.addressValue"))
+          : (contact?.addressEn ?? contact?.address ?? t("info.addressValue")),
+    },
+    {
+      icon: MessageCircle,
+      label: t("info.whatsapp"),
+      value: contact?.whatsapp ?? t("info.whatsappValue"),
+    },
+    {
+      icon: Share2,
+      label: t("info.linkedin"),
+      value: contact?.linkedin ?? t("info.linkedinValue"),
+    },
   ];
 
   return (

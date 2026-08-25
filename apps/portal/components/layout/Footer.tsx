@@ -5,6 +5,7 @@ import { Link } from "@/navigation";
 import { BrandName } from "@/components/ui/BrandName";
 import { useEffect, useState } from "react";
 import { API_BASE } from "@/lib/api";
+import type { ContactInfo } from "@/components/about/types";
 import { STATIC_TAXONOMY, taxonomyLabel, type TaxonomyGroup } from "@/lib/taxonomy";
 
 /** 页脚：深蓝背景，公司/产品/方案/联系方式 */
@@ -22,7 +23,15 @@ export function Footer() {
         if (Array.isArray(data) && data.length > 0) setTaxonomy(data);
       })
       .catch(() => {});
+    // 联系方式：优先公司数据中台
+    fetch(`${API_BASE}/api/settings/contact-info`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data: { value?: ContactInfo }) => {
+        if (data.value) setContact(data.value);
+      })
+      .catch(() => {});
   }, []);
+  const [contact, setContact] = useState<ContactInfo | null>(null);
 
   return (
     <footer className="bg-brand-navy text-white">
@@ -88,9 +97,13 @@ export function Footer() {
               {t("contact")}
             </h4>
             <ul className="mt-4 space-y-2 text-sm text-white/70">
-              <li>{t("contactEmail")}</li>
-              <li>{t("contactPhone")}</li>
-              <li>{t("contactAddress")}</li>
+              <li>{contact?.email ?? t("contactEmail")}</li>
+              <li>{contact?.phone ?? t("contactPhone")}</li>
+              <li>
+                {locale === "zh"
+                  ? (contact?.address ?? t("contactAddress"))
+                  : (contact?.addressEn ?? contact?.address ?? t("contactAddress"))}
+              </li>
             </ul>
           </div>
         </div>

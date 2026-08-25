@@ -27,6 +27,7 @@ export class StaffService {
         role: true,
         status: true,
         createdAt: true,
+        _count: { select: { assignedInquiries: true } },
       },
     });
   }
@@ -90,8 +91,17 @@ export class StaffService {
       });
       if (superAdmins <= 1) throw new BadRequestException("至少保留一名超级管理员");
     }
+    // 释放名下询盘（释放为未分配，可由其他员工继续跟进）
+    const released = await this.prisma.inquiry.updateMany({
+      where: { assigneeId: id },
+      data: { assigneeId: null },
+    });
     await this.prisma.staffUser.delete({ where: { id } });
-    await this.logs.log(operatorId, "删除员工", `${target.name}（${target.email}）`);
-    return { deleted: true };
+    await this.logs.log(
+      operatorId,
+      "删除员工",
+      `${target.name}（${target.email}），释放询盘 ${released.count} 条`,
+    );
+    return { deleted: true, releasedInquiries: released.count };
   }
 }

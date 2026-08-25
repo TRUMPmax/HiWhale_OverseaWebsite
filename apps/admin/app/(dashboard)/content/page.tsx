@@ -10,6 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHeader } from "@/components/common/PageHeader";
+import { StatsTab } from "@/components/content/StatsTab";
+import { AboutTab } from "@/components/content/AboutTab";
+import { ContactInfoTab } from "@/components/content/ContactInfoTab";
 import { adminApi } from "@/lib/api";
 
 type Banner = { id: string; titleEn: string; titleZh: string; imageName: string };
@@ -113,6 +116,9 @@ export default function ContentPage() {
           <TabsTrigger value="banners">首页 Banner</TabsTrigger>
           <TabsTrigger value="copy">多语言文案</TabsTrigger>
           <TabsTrigger value="footer">Footer 链接</TabsTrigger>
+          <TabsTrigger value="stats">数据指标</TabsTrigger>
+          <TabsTrigger value="about">公司介绍</TabsTrigger>
+          <TabsTrigger value="contact">联系方式</TabsTrigger>
           <TabsTrigger value="privacy">隐私政策</TabsTrigger>
         </TabsList>
 
@@ -273,6 +279,18 @@ export default function ContentPage() {
         </TabsContent>
 
         {/* 隐私政策 */}
+        <TabsContent value="stats" className="mt-4">
+          <StatsTab />
+        </TabsContent>
+
+        <TabsContent value="about" className="mt-4">
+          <AboutTab />
+        </TabsContent>
+
+        <TabsContent value="contact" className="mt-4">
+          <ContactInfoTab />
+        </TabsContent>
+
         <TabsContent value="privacy" className="mt-4">
           <div className="grid grid-cols-2 gap-6">
             <Card>

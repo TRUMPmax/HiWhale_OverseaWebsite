@@ -1,13 +1,20 @@
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { MapPin } from "lucide-react";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
+import { pickLang, type CompanyAbout } from "./types";
 
-const LOCATION_KEYS = ["shenzhen", "suzhou", "qingdao", "overseas"] as const;
+const DEFAULT_LOCATIONS = ["hq", "frankfurt", "singapore", "houston"] as const;
 
-/** 关于我们 4：全球布局 */
-export function GlobalPresence() {
+/** 关于我们 4：全球布局（内容可来自公司数据中台） */
+export function GlobalPresence({ data }: { data?: CompanyAbout | null }) {
   const t = useTranslations("about.presence");
+  const locale = useLocale();
+
+  const locations: Array<{ city: string; cityEn?: string }> =
+    data?.locations && data.locations.length > 0
+      ? data.locations
+      : DEFAULT_LOCATIONS.map((key) => ({ city: t(`locations.${key}`) }));
 
   return (
     <section>
@@ -20,18 +27,18 @@ export function GlobalPresence() {
           <Placeholder
             ratio="aspect-[21/9]"
             className="mt-8"
-            label="全球布局世界地图（标注：深圳总部 + 苏州基地 + 青岛基地）"
+            label="全球布局世界地图（标注：中国总部+海外服务点）"
             size="21:9 · 建议 2100×900"
             name="about-world-map.png"
           />
           <div className="mt-6 flex flex-wrap gap-3">
-            {LOCATION_KEYS.map((key) => (
+            {locations.map((location) => (
               <span
-                key={key}
+                key={location.city}
                 className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700"
               >
                 <MapPin className="h-3.5 w-3.5" />
-                {t(`locations.${key}`)}
+                {pickLang(locale, location.city, location.cityEn, location.city)}
               </span>
             ))}
           </div>
