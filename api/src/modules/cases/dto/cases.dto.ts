@@ -30,6 +30,12 @@ export class UpsertCaseDto {
   @IsArray()
   equipment?: unknown[];
 
+  /** 关联产品 slug 数组 */
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  productSlugs?: string[];
+
   @IsOptional()
   @IsObject()
   duration?: { en: string; zh: string };

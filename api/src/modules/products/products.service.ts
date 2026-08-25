@@ -147,7 +147,46 @@ export class ProductsService {
     const exists = await this.prisma.product.findUnique({ where: { id } });
     if (!exists) throw new NotFoundException("产品不存在");
     await this.prisma.product.delete({ where: { id } });
-    if (operatorId) await this.logs.log(operatorId, "删除产品", exists.model);
-    return { deleted: true };
+
+    // 级联清理引用（favorites 由 FK onDelete: Cascade 自动清理）
+    let scrubbedRefs = 0;
+    // 1. AI 对话产品上下文
+    scrubbedRefs += (
+      await this.prisma.chatConversation.updateMany({
+        where: { productContext: exists.slug },
+        data: { productContext: null },
+      })
+    ).count;
+    // 2. 方案关联产品（Prisma 无法操作数组元素，读出-过滤-写回）
+    const solutions = await this.prisma.solution.findMany({
+      where: { productSlugs: { has: exists.slug } },
+    });
+    for (const sol of solutions) {
+      await this.prisma.solution.update({
+        where: { id: sol.id },
+        data: { productSlugs: sol.productSlugs.filter((s) => s !== exists.slug) },
+      });
+      scrubbedRefs++;
+    }
+    // 3. 案例关联产品
+    const cases = await this.prisma.caseStudy.findMany({
+      where: { productSlugs: { has: exists.slug } },
+    });
+    for (const c of cases) {
+      await this.prisma.caseStudy.update({
+        where: { id: c.id },
+        data: { productSlugs: c.productSlugs.filter((s) => s !== exists.slug) },
+      });
+      scrubbedRefs++;
+    }
+
+    if (operatorId) {
+      await this.logs.log(
+        operatorId,
+        "删除产品",
+        `${exists.model}（级联清理引用 ${scrubbedRefs} 处）`,
+      );
+    }
+    return { deleted: true, scrubbedRefs };
   }
 }

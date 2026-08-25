@@ -24,10 +24,11 @@ export class UpsertSolutionDto {
   @IsArray()
   painPoints?: unknown[];
 
-  /** ProductCategory 枚举值数组 */
+  /** 关联产品 slug 数组 */
   @IsOptional()
   @IsArray()
-  equipment?: string[];
+  @IsString({ each: true })
+  productSlugs?: string[];
 
   @IsOptional()
   @IsArray()

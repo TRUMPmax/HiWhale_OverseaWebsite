@@ -47,6 +47,7 @@ export class CasesService {
           challenge: dto.challenge ?? { en: "", zh: "" },
           solution: dto.solution ?? { en: "", zh: "" },
           equipment: asJson(dto.equipment),
+          productSlugs: dto.productSlugs ?? [],
           duration: dto.duration ?? { en: "", zh: "" },
           results: asJson(dto.results),
           testimonial: (dto.testimonial ?? {}) as Prisma.InputJsonValue,
@@ -80,6 +81,7 @@ export class CasesService {
           ...(dto.challenge !== undefined ? { challenge: dto.challenge } : {}),
           ...(dto.solution !== undefined ? { solution: dto.solution } : {}),
           ...(dto.equipment !== undefined ? { equipment: asJson(dto.equipment) } : {}),
+          ...(dto.productSlugs !== undefined ? { productSlugs: dto.productSlugs } : {}),
           ...(dto.duration !== undefined ? { duration: dto.duration } : {}),
           ...(dto.results !== undefined ? { results: asJson(dto.results) } : {}),
           ...(dto.testimonial !== undefined
