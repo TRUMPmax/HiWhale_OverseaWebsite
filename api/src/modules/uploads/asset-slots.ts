@@ -10,17 +10,22 @@ export type AssetSlot = {
   purpose: string;
 };
 
-/** 由 DB 实体动态生成素材位：方案场景图 + 案例现场图/客户 Logo */
+/** 由 DB 实体动态生成素材位：方案场景图 + 案例现场图/客户 Logo（文件名与 DB imageName/logoName 对齐） */
 export function buildDynamicSlots(
-  solutions: Array<{ slug: string; title: unknown }>,
-  cases: Array<{ slug: string; clientName: unknown }>,
+  solutions: Array<{ slug: string; title: unknown; imageName: string }>,
+  cases: Array<{
+    slug: string;
+    clientName: unknown;
+    imageName: string;
+    logoName: string;
+  }>,
 ): AssetSlot[] {
   const zh = (v: unknown) =>
     v && typeof v === "object" ? String((v as { zh?: string }).zh ?? "") : "";
   return [
     ...solutions.map((s) => ({
       id: `solution-${s.slug}`,
-      filename: `solution-${s.slug}.png`,
+      filename: s.imageName,
       subdir: "solutions",
       area: "方案",
       purpose: `方案场景图：${zh(s.title) || s.slug}`,
@@ -28,14 +33,14 @@ export function buildDynamicSlots(
     ...cases.flatMap((c) => [
       {
         id: `case-${c.slug}`,
-        filename: `case-${c.slug}.png`,
+        filename: c.imageName,
         subdir: "cases",
         area: "案例",
         purpose: `案例现场图：${zh(c.clientName) || c.slug}`,
       },
       {
         id: `case-logo-${c.slug}`,
-        filename: `case-logo-${c.slug}.png`,
+        filename: c.logoName,
         subdir: "cases",
         area: "案例",
         purpose: `案例客户 Logo：${zh(c.clientName) || c.slug}`,

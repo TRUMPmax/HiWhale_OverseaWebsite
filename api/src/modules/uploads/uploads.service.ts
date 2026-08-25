@@ -231,8 +231,10 @@ export class UploadsService implements OnModuleInit {
   /** 全量素材位 = 静态注册表 + DB 动态槽（方案/案例） */
   private async allSlots(): Promise<AssetSlot[]> {
     const [solutions, cases] = await Promise.all([
-      this.prisma.solution.findMany({ select: { slug: true, title: true } }),
-      this.prisma.caseStudy.findMany({ select: { slug: true, clientName: true } }),
+      this.prisma.solution.findMany({ select: { slug: true, title: true, imageName: true } }),
+      this.prisma.caseStudy.findMany({
+        select: { slug: true, clientName: true, imageName: true, logoName: true },
+      }),
     ]);
     return [...ASSET_SLOTS, ...buildDynamicSlots(solutions, cases)];
   }
