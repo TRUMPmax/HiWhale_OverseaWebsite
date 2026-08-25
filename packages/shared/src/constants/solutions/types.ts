@@ -1,4 +1,4 @@
-import type { Industry, ProductCategory } from "../index";
+import type { ProductCategory } from "../index";
 import type { LocalizedText } from "../products/types";
 
 export type MockSolutionStep = {
@@ -14,7 +14,8 @@ export type MockSolutionResult = {
 /** Stage 5 行业方案 Mock 类型（后续由数据库 Solution 替换） */
 export type MockSolution = {
   slug: string;
-  industry: Industry;
+  /** 行业：内置 Industry 枚举 key，或管理后台手输的自定义行业文本 */
+  industry: string;
   title: LocalizedText;
   summary: LocalizedText;
   description: LocalizedText;

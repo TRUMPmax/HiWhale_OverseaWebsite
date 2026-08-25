@@ -3,12 +3,14 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AlertTriangle } from "lucide-react";
 import {
   getLocalizedLabel,
-  INDUSTRY_LABELS,
+  industryLabel,
+  Industry,
   MOCK_SOLUTIONS,
   PRODUCT_CATEGORY_LABELS,
 } from "@hiwhale/shared/constants";
 import { fetchProducts, fetchSolution } from "@/lib/content";
 import { Link } from "@/navigation";
+import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
 import { Starfield } from "@/components/ui/Starfield";
 import { ProductCard } from "@/components/products/ProductCard";
@@ -44,7 +46,7 @@ export default async function SolutionDetailPage({
       <section className="bg-brand-navy text-white">
         <div className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24 lg:px-12">
           <span className="inline-flex items-center rounded-md bg-white/10 px-2 py-1 text-xs font-medium text-white/90">
-            {getLocalizedLabel(INDUSTRY_LABELS, solution.industry, locale)}
+            {industryLabel(solution.industry, locale)}
           </span>
           <h1 className="font-heading mt-4 text-3xl font-bold md:text-5xl">
             {solution.title[loc]}
@@ -57,12 +59,21 @@ export default async function SolutionDetailPage({
       <section className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24 lg:px-12">
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <Reveal>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`/images/industries/${INDUSTRY_IMAGE_NAMES[solution.industry]}`}
-              alt={getLocalizedLabel(INDUSTRY_LABELS, solution.industry, locale)}
-              className="aspect-video w-full rounded-xl border border-slate-200 object-cover"
-            />
+            {INDUSTRY_IMAGE_NAMES[solution.industry as Industry] ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={`/images/industries/${INDUSTRY_IMAGE_NAMES[solution.industry as Industry]}`}
+                alt={industryLabel(solution.industry, locale)}
+                className="aspect-video w-full rounded-xl border border-slate-200 object-cover"
+              />
+            ) : (
+              <Placeholder
+                ratio="aspect-video"
+                label={`行业方案场景图：${solution.industry}`}
+                size="16:9 · 建议 1600×900"
+                name={solution.imageName}
+              />
+            )}
           </Reveal>
           <Reveal delay={120}>
             <h2 className="font-heading text-foreground text-2xl font-bold md:text-3xl">

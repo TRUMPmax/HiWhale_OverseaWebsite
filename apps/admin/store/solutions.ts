@@ -1,13 +1,13 @@
 import { create } from "zustand";
 import { MOCK_PRODUCTS } from "@hiwhale/shared/constants";
-import type { Industry, ProductCategory } from "@hiwhale/shared/constants";
+import type { ProductCategory } from "@hiwhale/shared/constants";
 import { adminApi } from "@/lib/api";
 
 export type AdminSolution = {
   id: string;
   titleZh: string;
   titleEn: string;
-  industry: Industry;
+  industry: string;
   summary: string;
   painPoints: string[];
   /** 关联产品 slug 列表（UI 层；API 存的是品类，边界处转换） */
@@ -17,7 +17,7 @@ export type AdminSolution = {
 
 type ApiSolution = {
   id: string;
-  industry: Industry;
+  industry: string;
   title: { en: string; zh: string };
   summary: { en: string; zh: string };
   painPoints: Array<{ en: string; zh: string }>;

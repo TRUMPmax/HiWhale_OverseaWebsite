@@ -82,6 +82,15 @@ export const INDUSTRY_LABELS: Record<Industry, { en: string; zh: string }> = {
   [Industry.PORT]: { en: "Port", zh: "港口" },
 };
 
+/**
+ * 行业展示标签：内置枚举返回中英文标签；管理后台手输的自定义行业按原文展示
+ */
+export function industryLabel(industry: string, locale: string): string {
+  const labels = INDUSTRY_LABELS[industry as Industry];
+  if (labels) return locale === "zh" ? labels.zh : labels.en;
+  return industry;
+}
+
 export enum UserRole {
   SUPER_ADMIN = "SUPER_ADMIN",
   SALES = "SALES",

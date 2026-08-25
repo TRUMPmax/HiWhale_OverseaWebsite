@@ -80,7 +80,7 @@ export function SolutionFormDialog({ open, onOpenChange, initial }: SolutionForm
     const payload = {
       titleZh: form.titleZh.trim(),
       titleEn: form.titleEn.trim(),
-      industry: form.industry as Industry,
+      industry: form.industry,
       summary: form.summary.trim(),
       painPoints: form.painPoints.map((p) => p.trim()).filter(Boolean),
       products: form.products,
@@ -114,18 +114,23 @@ export function SolutionFormDialog({ open, onOpenChange, initial }: SolutionForm
           </div>
           <div className="space-y-1.5">
             <Label>所属行业 *</Label>
-            <select
-              className="border-input bg-background focus:border-brand-blue flex h-9 w-full rounded-md border px-3 text-sm outline-none"
+            {/* 可选择现有行业，也可手动输入自定义行业 */}
+            <Input
+              list="industry-options"
+              placeholder="选择或直接输入行业，如：新能源"
               value={form.industry}
               onChange={(e) => set("industry", e.target.value)}
-            >
-              <option value="">请选择行业</option>
+            />
+            <datalist id="industry-options">
               {Object.values(Industry).map((industry) => (
                 <option key={industry} value={industry}>
                   {getLocalizedLabel(INDUSTRY_LABELS, industry, "zh")}
                 </option>
               ))}
-            </select>
+            </datalist>
+            {form.industry && !(form.industry in INDUSTRY_LABELS) && (
+              <p className="text-muted text-xs">自定义行业：前台将按原文展示</p>
+            )}
           </div>
           <div className="space-y-1.5">
             <Label>方案简介</Label>
