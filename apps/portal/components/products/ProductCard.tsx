@@ -1,5 +1,9 @@
 import { useLocale, useTranslations } from "next-intl";
-import { getLocalizedLabel, PRODUCT_CATEGORY_LABELS } from "@hiwhale/shared/constants";
+import {
+  getLocalizedLabel,
+  localizeModel,
+  PRODUCT_CATEGORY_LABELS,
+} from "@hiwhale/shared/constants";
 import type { MockProduct } from "@hiwhale/shared/constants";
 import { Link } from "@/navigation";
 import { Placeholder } from "@/components/ui/Placeholder";
@@ -40,7 +44,7 @@ export function ProductCard({ product, delay = 0, className = "" }: ProductCardP
           {getLocalizedLabel(PRODUCT_CATEGORY_LABELS, product.category, locale)}
         </span>
         <h3 className="font-heading text-foreground mt-3 text-lg font-bold">{product.name[loc]}</h3>
-        <p className="text-muted mt-1 font-mono text-sm">{product.model}</p>
+        <p className="text-muted mt-1 font-mono text-sm">{localizeModel(product.model, locale)}</p>
         <dl className="mt-4 flex-1 space-y-1.5">
           {product.quickSpecs.slice(0, 3).map((spec) => (
             <div key={spec.label.en} className="flex items-center justify-between gap-2 text-sm">

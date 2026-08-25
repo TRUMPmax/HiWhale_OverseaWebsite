@@ -114,6 +114,7 @@ export const mt1Max: MockProduct = {
           "Operating Environment (excl. charging)",
           "工作环境（不含充电）",
           "温度 -10℃ ~ 45℃；湿度 ≤ 90% RH",
+          "Temperature -10–45 °C; humidity ≤ 90% RH",
         ),
         S(
           "Charging Environment",

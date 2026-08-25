@@ -40,6 +40,7 @@ export const t600: MockProduct = {
           "Dimensions (L×W×H)",
           "整机尺寸（L×W×H）",
           "标准版 960 × 500 × 1350 mm；潜伏版 845 × 500 × 255 mm",
+          "Standard 960×500×1350 mm; Latent 845×500×255 mm",
         ),
         S(
           "Display",
@@ -93,6 +94,7 @@ export const t600: MockProduct = {
           "Stay Powered During Battery Swap",
           "换电保持开机",
           "支持（拔出电池后维持 60 秒开机状态）",
+          "Supported (stays on for 60 s after battery removal)",
         ),
       ],
     },

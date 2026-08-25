@@ -75,6 +75,7 @@ export const t150: MockProduct = {
           "Stay Powered During Battery Swap",
           "换电保持开机",
           "支持（拔出电池后维持 60 秒开机状态）",
+          "Supported (stays on for 60 s after battery removal)",
         ),
       ],
     },
@@ -152,6 +153,7 @@ export const t150: MockProduct = {
           "Expansion Interface",
           "扩展接口",
           "USB 2.0、IO（选配件信号通信）、SIM卡槽（nano）、OTG调试",
+          "USB 2.0, IO (optional signal comms), SIM slot (nano), OTG debug",
         ),
         S(
           "Multi-Robot Scheduling",

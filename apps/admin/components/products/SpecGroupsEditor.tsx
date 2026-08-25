@@ -99,10 +99,7 @@ export function SpecGroupsEditor({ groups, onChange }: SpecGroupsEditorProps) {
             className="mt-3"
             onClick={() =>
               update(gi, {
-                items: [
-                  ...group.items,
-                  { labelZh: "", labelEn: "", valueZh: "", valueEn: "" },
-                ],
+                items: [...group.items, { labelZh: "", labelEn: "", valueZh: "", valueEn: "" }],
               })
             }
           >
@@ -116,7 +113,11 @@ export function SpecGroupsEditor({ groups, onChange }: SpecGroupsEditorProps) {
         onClick={() =>
           onChange([
             ...groups,
-            { groupZh: "", groupEn: "", items: [{ labelZh: "", labelEn: "", valueZh: "", valueEn: "" }] },
+            {
+              groupZh: "",
+              groupEn: "",
+              items: [{ labelZh: "", labelEn: "", valueZh: "", valueEn: "" }],
+            },
           ])
         }
       >

@@ -5,6 +5,7 @@ import {
   getGroupOfCategory,
   getLocalizedLabel,
   getRelatedProducts,
+  localizeModel,
   INDUSTRY_LABELS,
   MOCK_PRODUCTS,
   PRODUCT_CATEGORY_LABELS,
@@ -137,7 +138,9 @@ export default async function ProductDetailPage({
             <h1 className="font-heading text-foreground mt-3 text-3xl font-bold md:text-4xl">
               {product.name[loc]}
             </h1>
-            <p className="text-muted mt-1 font-mono text-sm">{product.model}</p>
+            <p className="text-muted mt-1 font-mono text-sm">
+              {localizeModel(product.model, locale)}
+            </p>
             <p className="text-muted mt-4 text-lg">{product.tagline[loc]}</p>
             <p className="text-muted mt-3 leading-relaxed">{product.description[loc]}</p>
 

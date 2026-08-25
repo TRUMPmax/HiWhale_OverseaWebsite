@@ -137,6 +137,7 @@ export const mt1Vac: MockProduct = {
           "Applicable Floors",
           "适用地面",
           "抛光水泥地、环氧树脂、橡胶、规整砖石、瓷砖等硬化地面；短毛地毯、工业地毯",
+          "Polished concrete, epoxy, rubber, pavers, ceramic tile and other hard floors; short-pile and industrial carpet",
         ),
       ],
     },

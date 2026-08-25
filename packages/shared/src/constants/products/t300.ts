@@ -80,6 +80,7 @@ export const t300: MockProduct = {
           "Stay Powered During Battery Swap",
           "换电保持开机",
           "支持（拔出电池后维持 60 秒开机状态）",
+          "Supported (stays on for 60 s after battery removal)",
         ),
       ],
     },

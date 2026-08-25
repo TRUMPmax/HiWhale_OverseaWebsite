@@ -111,6 +111,7 @@ export const cc1: MockProduct = {
           "Operating Environment (incl. charging)",
           "工作环境（含充电）",
           "温度 1~40℃；湿度 ≤85% RH",
+          "Temperature 1–40 °C; humidity ≤85% RH",
         ),
         S(
           "Storage Environment",
@@ -124,6 +125,7 @@ export const cc1: MockProduct = {
           "Applicable Floors",
           "适用地面",
           "水磨石、大理石、地板砖、环氧树脂、砂岩、人造石地面、短毛地毯等",
+          "Terrazzo, marble, floor tile, epoxy, sandstone, artificial stone, short-pile carpet, etc.",
         ),
       ],
     },

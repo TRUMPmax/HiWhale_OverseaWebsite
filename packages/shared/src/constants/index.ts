@@ -91,6 +91,15 @@ export function industryLabel(industry: string, locale: string): string {
   return industry;
 }
 
+/** 型号变体后缀按语言展示（型号字符串为单语言存储，渲染时翻译变体词） */
+export function localizeModel(model: string, locale: string): string {
+  if (locale === "zh") return model;
+  return model
+    .replaceAll("标准版", "Standard")
+    .replaceAll("顶升版", "Lifting")
+    .replaceAll("潜伏版", "Latent");
+}
+
 export enum UserRole {
   SUPER_ADMIN = "SUPER_ADMIN",
   SALES = "SALES",
