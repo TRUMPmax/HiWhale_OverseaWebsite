@@ -27,8 +27,8 @@ export const mbg40t: MockProduct = {
   quickSpecs: [
     S("Rated Load", "额定载荷", "40.5 t"),
     S("Span", "跨距", "30 m"),
-    S("Lifting Height", "起升高度", "18 m（堆 5 过 6）"),
-    S("Automation", "自动化", "全自动无人作业"),
+    S("Lifting Height", "起升高度", "18 m（堆 5 过 6）", "18 m (stack 5 pass 6)"),
+    S("Automation", "自动化", "全自动无人作业", "Fully automated unmanned operation"),
   ],
   specGroups: [
     {
@@ -36,15 +36,20 @@ export const mbg40t: MockProduct = {
       items: [
         S("Span", "跨距", "30 m"),
         S("Lifting Height", "起升高度", "18 m"),
-        S("Spreader", "吊具", "20' / 40' / 45' 伸缩吊具"),
+        S("Spreader", "吊具", "20' / 40' / 45' 伸缩吊具", "20' / 40' / 45' telescopic spreader"),
         S("Duty Class", "工作级别", "A8"),
       ],
     },
     {
       group: GROUP_PERFORMANCE,
       items: [
-        S("Rated Load", "额定载荷", "40.5 t（吊具下）"),
-        S("Hoisting Speed", "起升速度", "满载 28 m/min / 空载 56 m/min"),
+        S("Rated Load", "额定载荷", "40.5 t（吊具下）", "40.5 t (under spreader)"),
+        S(
+          "Hoisting Speed",
+          "起升速度",
+          "满载 28 m/min / 空载 56 m/min",
+          "Loaded 28 m/min / empty 56 m/min",
+        ),
         S("Trolley Speed", "小车速度", "70 m/min"),
         S("Gantry Speed", "大车速度", "120 m/min"),
       ],
@@ -52,28 +57,58 @@ export const mbg40t: MockProduct = {
     {
       group: L("Power Supply", "动力系统"),
       items: [
-        S("Power Supply", "供电方式", "10 kV 电缆卷筒 / 滑触线"),
+        S(
+          "Power Supply",
+          "供电方式",
+          "10 kV 电缆卷筒 / 滑触线",
+          "10 kV cable reel / conductor rail",
+        ),
         S("Installed Power", "装机容量", "320 kW"),
-        S("Energy Recovery", "能量回馈", "起升下降势能回馈电网"),
-        S("Drive", "驱动方式", "全变频驱动"),
+        S(
+          "Energy Recovery",
+          "能量回馈",
+          "起升下降势能回馈电网",
+          "Hoist-down regenerative energy recovery",
+        ),
+        S("Drive", "驱动方式", "全变频驱动", "Full variable-frequency drive"),
       ],
     },
     {
       group: GROUP_SAFETY,
       items: [
-        S("Anti-Sway", "防摇系统", "电子防摇，摆动 ±50 mm"),
-        S("Protection", "安全防护", "防雷 / 防风锚定 / 大车防撞"),
-        S("Monitoring", "状态监测", "CMS 起重机健康管理系统"),
+        S(
+          "Anti-Sway",
+          "防摇系统",
+          "电子防摇，摆动 ±50 mm",
+          "Electronic anti-sway, swing within ±50 mm",
+        ),
+        S(
+          "Protection",
+          "安全防护",
+          "防雷 / 防风锚定 / 大车防撞",
+          "Lightning protection / wind anchoring / gantry anti-collision",
+        ),
+        S("Monitoring", "状态监测", "CMS 起重机健康管理系统", "CMS crane health monitoring"),
         S("Standard", "安全标准", "FEM 1.001 / GB/T 3811"),
       ],
     },
     {
       group: GROUP_COMMUNICATION,
       items: [
-        S("Network", "通信网络", "5G / 光纤环网"),
-        S("Positioning", "定位方式", "GNSS + 编码器 + 激光扫描"),
-        S("Scheduling", "调度方式", "对接 TOS / ECS 堆场系统"),
-        S("Remote Ops", "远程操作", "远程操控台一键接管"),
+        S("Network", "通信网络", "5G / 光纤环网", "5G / fiber ring network"),
+        S(
+          "Positioning",
+          "定位方式",
+          "GNSS + 编码器 + 激光扫描",
+          "GNSS + encoders + laser scanning",
+        ),
+        S(
+          "Scheduling",
+          "调度方式",
+          "对接 TOS / ECS 堆场系统",
+          "Integrates with TOS / ECS yard systems",
+        ),
+        S("Remote Ops", "远程操作", "远程操控台一键接管", "One-click remote console takeover"),
       ],
     },
   ],

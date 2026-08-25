@@ -35,7 +35,14 @@ const schema = z.object({
   model: z.string().min(1, "请输入型号"),
   category: z.string().min(1, "请选择品类"),
   status: z.boolean(),
-  quickSpecs: z.array(z.object({ labelZh: z.string(), labelEn: z.string(), value: z.string() })),
+  quickSpecs: z.array(
+    z.object({
+      labelZh: z.string(),
+      labelEn: z.string(),
+      valueZh: z.string(),
+      valueEn: z.string(),
+    }),
+  ),
   features: z.array(z.object({ zh: z.string(), en: z.string() })),
 });
 type FormValues = z.infer<typeof schema>;
@@ -207,7 +214,8 @@ export function ProductForm({ initial }: ProductFormProps) {
           quickSpecs: initial.record.quickSpecs.map((s) => ({
             labelZh: s.label.zh,
             labelEn: s.label.en,
-            value: s.value,
+            valueZh: s.value.zh,
+            valueEn: s.value.en,
           })),
           features: initial.record.features.map((f) => ({ zh: f.zh, en: f.en })),
         }
@@ -217,7 +225,7 @@ export function ProductForm({ initial }: ProductFormProps) {
           model: "",
           category: "",
           status: true,
-          quickSpecs: [{ labelZh: "", labelEn: "", value: "" }],
+          quickSpecs: [{ labelZh: "", labelEn: "", valueZh: "", valueEn: "" }],
           features: [{ zh: "", en: "" }],
         },
   });
@@ -239,7 +247,12 @@ export function ProductForm({ initial }: ProductFormProps) {
     initial?.record.specGroups.map((g) => ({
       groupZh: g.group.zh,
       groupEn: g.group.en,
-      items: g.items.map((i) => ({ labelZh: i.label.zh, labelEn: i.label.en, value: i.value })),
+      items: g.items.map((i) => ({
+        labelZh: i.label.zh,
+        labelEn: i.label.en,
+        valueZh: i.value.zh,
+        valueEn: i.value.en,
+      })),
     })) ?? [],
   );
 
@@ -262,20 +275,20 @@ export function ProductForm({ initial }: ProductFormProps) {
       tagline: { zh: tagline.zh, en: enOf(tagline.zh, tagline.en) },
       description: { zh: description.zh, en: enOf(description.zh, description.en) },
       quickSpecs: values.quickSpecs
-        .filter((r) => r.labelZh.trim() && r.value.trim())
+        .filter((r) => r.labelZh.trim() && r.valueZh.trim())
         .map((r) => ({
           label: { zh: r.labelZh, en: enOf(r.labelZh, r.labelEn) },
-          value: r.value,
+          value: { zh: r.valueZh, en: enOf(r.valueZh, r.valueEn) },
         })),
       specGroups: specGroups
         .filter((g) => g.groupZh.trim())
         .map((g) => ({
           group: { zh: g.groupZh, en: enOf(g.groupZh, g.groupEn) },
           items: g.items
-            .filter((i) => i.labelZh.trim() && i.value.trim())
+            .filter((i) => i.labelZh.trim() && i.valueZh.trim())
             .map((i) => ({
               label: { zh: i.labelZh, en: enOf(i.labelZh, i.labelEn) },
-              value: i.value,
+              value: { zh: i.valueZh, en: enOf(i.valueZh, i.valueEn) },
             })),
         })),
       features: values.features
@@ -383,26 +396,32 @@ export function ProductForm({ initial }: ProductFormProps) {
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => specs.append({ labelZh: "", labelEn: "", value: "" })}
+            onClick={() => specs.append({ labelZh: "", labelEn: "", valueZh: "", valueEn: "" })}
           >
             <Plus /> 添加参数
           </Button>
         </CardHeader>
         <CardContent className="space-y-3">
           {specs.fields.map((field, index) => (
-            <div key={field.id} className="flex items-center gap-3">
-              <Input
-                placeholder="参数名（中文），如：额定载重"
-                {...register(`quickSpecs.${index}.labelZh`)}
-              />
-              <Input
-                placeholder="Label (EN), e.g. Load Capacity"
-                {...register(`quickSpecs.${index}.labelEn`)}
-              />
-              <Input
-                placeholder="参数值，如：1,500 kg"
-                {...register(`quickSpecs.${index}.value`)}
-              />
+            <div key={field.id} className="flex items-start gap-3">
+              <div className="grid flex-1 grid-cols-2 gap-3">
+                <Input
+                  placeholder="参数名（中文），如：额定载重"
+                  {...register(`quickSpecs.${index}.labelZh`)}
+                />
+                <Input
+                  placeholder="Label (EN), e.g. Load Capacity"
+                  {...register(`quickSpecs.${index}.labelEn`)}
+                />
+                <Input
+                  placeholder="参数值（中文），如：1,500 kg"
+                  {...register(`quickSpecs.${index}.valueZh`)}
+                />
+                <Input
+                  placeholder="Value (EN), e.g. 1,500 kg"
+                  {...register(`quickSpecs.${index}.valueEn`)}
+                />
+              </div>
               <Button
                 type="button"
                 variant="ghost"

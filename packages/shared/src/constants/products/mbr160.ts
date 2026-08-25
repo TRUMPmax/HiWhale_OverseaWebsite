@@ -28,17 +28,17 @@ export const mbr160: MockProduct = {
   quickSpecs: [
     S("Payload", "额定负载", "160 kg"),
     S("Reach", "臂展", "3,150 mm"),
-    S("Cycle Rate", "循环节拍", "≤ 1,200 次/小时"),
+    S("Cycle Rate", "循环节拍", "≤ 1,200 次/小时", "≤ 1,200 cycles/hour"),
     S("Repeatability", "重复定位精度", "±0.1 mm"),
   ],
   specGroups: [
     {
       group: GROUP_GENERAL,
       items: [
-        S("Axes", "轴数", "4 轴"),
+        S("Axes", "轴数", "4 轴", "4 axes"),
         S("Dead Weight", "自重", "1,150 kg"),
-        S("Mounting", "安装方式", "地面安装"),
-        S("Protection Rating", "防护等级", "IP54（腕部 IP67）"),
+        S("Mounting", "安装方式", "地面安装", "Floor-mounted"),
+        S("Protection Rating", "防护等级", "IP54（腕部 IP67）", "IP54 (wrist IP67)"),
       ],
     },
     {
@@ -46,25 +46,35 @@ export const mbr160: MockProduct = {
       items: [
         S("Payload", "额定负载", "160 kg"),
         S("Reach", "臂展", "3,150 mm"),
-        S("Cycle Rate", "循环节拍", "≤ 1,200 次/小时"),
+        S("Cycle Rate", "循环节拍", "≤ 1,200 次/小时", "≤ 1,200 cycles/hour"),
         S("Repeatability", "重复定位精度", "±0.1 mm"),
       ],
     },
     {
       group: L("Power", "动力系统"),
       items: [
-        S("Power Supply", "电源", "380V / 3 相 / 50-60Hz"),
+        S("Power Supply", "电源", "380V / 3 相 / 50-60Hz", "380V / 3-phase / 50-60Hz"),
         S("Rated Power", "额定功率", "8 kW"),
-        S("Servo", "伺服系统", "绝对值编码器伺服电机"),
-        S("Brake", "制动", "全轴抱闸"),
+        S("Servo", "伺服系统", "绝对值编码器伺服电机", "Absolute-encoder servo motors"),
+        S("Brake", "制动", "全轴抱闸", "Brakes on all axes"),
       ],
     },
     {
       group: GROUP_SAFETY,
       items: [
-        S("Safety Controller", "安全控制器", "安全 PLC，PL d / Cat.3"),
-        S("Safeguarding", "防护方式", "安全围栏 + 光幕 + 安全门锁"),
-        S("Collision Detection", "碰撞检测", "全轴力矩碰撞检测"),
+        S("Safety Controller", "安全控制器", "安全 PLC，PL d / Cat.3", "Safety PLC, PL d / Cat.3"),
+        S(
+          "Safeguarding",
+          "防护方式",
+          "安全围栏 + 光幕 + 安全门锁",
+          "Safety fencing + light curtains + interlocked doors",
+        ),
+        S(
+          "Collision Detection",
+          "碰撞检测",
+          "全轴力矩碰撞检测",
+          "All-axis torque collision detection",
+        ),
         S("Standard", "安全标准", "ISO 10218-1 / CE"),
       ],
     },
@@ -72,8 +82,13 @@ export const mbr160: MockProduct = {
       group: GROUP_COMMUNICATION,
       items: [
         S("Fieldbus", "现场总线", "EtherCAT / PROFINET"),
-        S("Vision", "视觉系统", "3D 视觉拆垛 + 垛型规划"),
-        S("Scheduling", "调度方式", "接入 WCS 统一调度"),
+        S(
+          "Vision",
+          "视觉系统",
+          "3D 视觉拆垛 + 垛型规划",
+          "3D vision depalletizing + pattern planning",
+        ),
+        S("Scheduling", "调度方式", "接入 WCS 统一调度", "Integrates with WCS unified scheduling"),
         S("API", "开放接口", "REST API / SDK"),
       ],
     },

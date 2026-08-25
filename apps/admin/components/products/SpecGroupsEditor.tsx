@@ -4,7 +4,12 @@ import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export type SpecItemDraft = { labelZh: string; labelEn: string; value: string };
+export type SpecItemDraft = {
+  labelZh: string;
+  labelEn: string;
+  valueZh: string;
+  valueEn: string;
+};
 export type SpecGroupDraft = { groupZh: string; groupEn: string; items: SpecItemDraft[] };
 
 type SpecGroupsEditorProps = {
@@ -52,22 +57,29 @@ export function SpecGroupsEditor({ groups, onChange }: SpecGroupsEditorProps) {
           </div>
           <div className="mt-3 space-y-3">
             {group.items.map((item, ii) => (
-              <div key={ii} className="grid grid-cols-[1fr_1fr_1fr_2.5rem] items-center gap-2">
-                <Input
-                  placeholder="参数名（中文）"
-                  value={item.labelZh}
-                  onChange={(e) => updateItem(gi, ii, { labelZh: e.target.value })}
-                />
-                <Input
-                  placeholder="Label (EN)"
-                  value={item.labelEn}
-                  onChange={(e) => updateItem(gi, ii, { labelEn: e.target.value })}
-                />
-                <Input
-                  placeholder="参数值"
-                  value={item.value}
-                  onChange={(e) => updateItem(gi, ii, { value: e.target.value })}
-                />
+              <div key={ii} className="flex items-start gap-2">
+                <div className="grid flex-1 grid-cols-2 gap-2">
+                  <Input
+                    placeholder="参数名（中文）"
+                    value={item.labelZh}
+                    onChange={(e) => updateItem(gi, ii, { labelZh: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Label (EN)"
+                    value={item.labelEn}
+                    onChange={(e) => updateItem(gi, ii, { labelEn: e.target.value })}
+                  />
+                  <Input
+                    placeholder="参数值（中文）"
+                    value={item.valueZh}
+                    onChange={(e) => updateItem(gi, ii, { valueZh: e.target.value })}
+                  />
+                  <Input
+                    placeholder="Value (EN)"
+                    value={item.valueEn}
+                    onChange={(e) => updateItem(gi, ii, { valueEn: e.target.value })}
+                  />
+                </div>
                 <Button
                   type="button"
                   variant="ghost"
@@ -86,7 +98,12 @@ export function SpecGroupsEditor({ groups, onChange }: SpecGroupsEditorProps) {
             size="sm"
             className="mt-3"
             onClick={() =>
-              update(gi, { items: [...group.items, { labelZh: "", labelEn: "", value: "" }] })
+              update(gi, {
+                items: [
+                  ...group.items,
+                  { labelZh: "", labelEn: "", valueZh: "", valueEn: "" },
+                ],
+              })
             }
           >
             <Plus /> 添加参数
@@ -99,7 +116,7 @@ export function SpecGroupsEditor({ groups, onChange }: SpecGroupsEditorProps) {
         onClick={() =>
           onChange([
             ...groups,
-            { groupZh: "", groupEn: "", items: [{ labelZh: "", labelEn: "", value: "" }] },
+            { groupZh: "", groupEn: "", items: [{ labelZh: "", labelEn: "", valueZh: "", valueEn: "" }] },
           ])
         }
       >

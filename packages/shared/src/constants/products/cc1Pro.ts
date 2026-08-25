@@ -16,9 +16,14 @@ export const cc1Pro: MockProduct = {
   ),
   quickSpecs: [
     S("Net Weight", "整机重量", "75 kg"),
-    S("Runtime", "续航时间", "洗地 5h / 巡检清洁 1500-3000 m²/h"),
-    S("Cleaning Width", "清洁宽度", "500 mm（含边刷）"),
-    S("Navigation", "导航方式", "激光 + Marker + VSLAM"),
+    S(
+      "Runtime",
+      "续航时间",
+      "洗地 5h / 巡检清洁 1500-3000 m²/h",
+      "Scrubbing 5h / patrol cleaning 1,500–3,000 m²/h",
+    ),
+    S("Cleaning Width", "清洁宽度", "500 mm（含边刷）", "500 mm (incl. side brush)"),
+    S("Navigation", "导航方式", "激光 + Marker + VSLAM", "Laser + Marker + VSLAM"),
   ],
   specGroups: [
     {
@@ -28,7 +33,7 @@ export const cc1Pro: MockProduct = {
         S("Net Weight", "整机重量", "75 kg（165.35 lb）"),
         S("Dimensions", "整机尺寸", "629×552×695 mm"),
         S("Housing Material", "整机外壳材质", "PC+ABS"),
-        S("Display", "屏幕规格", "10.1 寸 LCD 屏"),
+        S("Display", "屏幕规格", "10.1 寸 LCD 屏", '10.1" LCD display'),
         S("Operating System", "操作系统", "Android"),
       ],
     },
@@ -36,11 +41,16 @@ export const cc1Pro: MockProduct = {
       group: L("Performance", "性能"),
       items: [
         S("Operating Voltage", "工作电压", "DC 23~29.2 V"),
-        S("Cleaning Functions", "清洁能力", "清扫、(地毯)吸尘、尘推、洗地"),
+        S(
+          "Cleaning Functions",
+          "清洁能力",
+          "清扫、(地毯)吸尘、尘推、洗地",
+          "Sweeping, (carpet) vacuuming, dust mopping, scrubbing",
+        ),
         S("Cleaning Width (incl. side brush)", "清洁宽度（含边刷）", "500 mm"),
         S("Coverage Cleaning Efficiency", "覆盖清洁效率", "700-1000 m²/h"),
         S("Patrol Cleaning Efficiency", "巡检清洁效率", "1500-3000 m²/h"),
-        S("Cruise Speed", "巡航速度", "0.2~1.2 m/s（可调节）"),
+        S("Cruise Speed", "巡航速度", "0.2~1.2 m/s（可调节）", "0.2–1.2 m/s (adjustable)"),
         S("Max Obstacle Height", "最大越障高度", "20 mm"),
         S("Max Gap Width", "最大过缝宽度", "35 mm"),
         S("Min Passage Width", "最小通过宽度", "70 cm"),
@@ -50,10 +60,15 @@ export const cc1Pro: MockProduct = {
     {
       group: L("Battery", "电池"),
       items: [
-        S("Battery Type", "电池类型", "磷酸铁锂电池"),
+        S("Battery Type", "电池类型", "磷酸铁锂电池", "LiFePO4 battery"),
         S("Battery Capacity", "电池容量", "50 Ah"),
-        S("Charging Time", "充电时间", "约 3 h"),
-        S("Runtime", "续航时间", "洗地 5h；扫吸推 5h；地毯吸尘 4h；静音尘推 9h"),
+        S("Charging Time", "充电时间", "约 3 h", "Approx. 3 h"),
+        S(
+          "Runtime",
+          "续航时间",
+          "洗地 5h；扫吸推 5h；地毯吸尘 4h；静音尘推 9h",
+          "Scrubbing 5h; sweep-vacuum-mop 5h; carpet vacuum 4h; silent dust-mop 9h",
+        ),
       ],
     },
     {
@@ -61,18 +76,43 @@ export const cc1Pro: MockProduct = {
       items: [
         S("Clean Water Tank", "清水箱", "15 L"),
         S("Waste Water Tank", "污水箱", "15 L"),
-        S("Dust Box Capacity", "尘盒容量", "2.5 L（默认）/ 6 L（扩容）"),
+        S(
+          "Dust Box Capacity",
+          "尘盒容量",
+          "2.5 L（默认）/ 6 L（扩容）",
+          "2.5 L (standard) / 6 L (extended)",
+        ),
       ],
     },
     {
       group: L("Navigation & AI", "导航与AI"),
       items: [
-        S("Navigation", "导航方式", "激光 + Marker + VSLAM"),
-        S("Front AI Camera", "前视AI相机", "识别地面污渍（咖啡、酱料、积水等）"),
-        S("Rear AI Camera", "后视AI相机", "清洁效果检测 + 二次污染监测"),
-        S("AI Patrol Cleaning", "AI巡检清洁", "实时识别脏污自动生成最优路径"),
-        S("AI Adaptive Cleaning", "AI自适应清洁", "自动切换强力/低功耗模式"),
-        S("AI Debris/Obstacle Recognition", "AI垃圾/障碍物识别", "支持"),
+        S("Navigation", "导航方式", "激光 + Marker + VSLAM", "Laser + Marker + VSLAM"),
+        S(
+          "Front AI Camera",
+          "前视AI相机",
+          "识别地面污渍（咖啡、酱料、积水等）",
+          "Detects floor stains (coffee, sauces, standing water)",
+        ),
+        S(
+          "Rear AI Camera",
+          "后视AI相机",
+          "清洁效果检测 + 二次污染监测",
+          "Cleaning-quality inspection + re-contamination monitoring",
+        ),
+        S(
+          "AI Patrol Cleaning",
+          "AI巡检清洁",
+          "实时识别脏污自动生成最优路径",
+          "Real-time dirt detection with automatic optimal path planning",
+        ),
+        S(
+          "AI Adaptive Cleaning",
+          "AI自适应清洁",
+          "自动切换强力/低功耗模式",
+          "Auto-switch between power and eco modes",
+        ),
+        S("AI Debris/Obstacle Recognition", "AI垃圾/障碍物识别", "支持", "Supported"),
       ],
     },
     {
@@ -80,15 +120,25 @@ export const cc1Pro: MockProduct = {
       items: [
         S("Protection Rating", "防护等级", "IPX4"),
         S("Safety Standard", "安全标准", "IEC 63327"),
-        S("360° All-round Safety Perception", "360° 全方位安全感知", "AI融合感知系统"),
-        S("Emergency Stop Button", "急停按钮", "支持"),
+        S(
+          "360° All-round Safety Perception",
+          "360° 全方位安全感知",
+          "AI融合感知系统",
+          "AI fusion perception system",
+        ),
+        S("Emergency Stop Button", "急停按钮", "支持", "Supported"),
       ],
     },
     {
       group: L("Communication", "通信"),
       items: [
-        S("Connectivity", "通信网络", "支持 4G、Wi-Fi、蓝牙、ESP、LORA 通信（选装）"),
-        S("Mobile App", "手机端 APP", "支持"),
+        S(
+          "Connectivity",
+          "通信网络",
+          "支持 4G、Wi-Fi、蓝牙、ESP、LORA 通信（选装）",
+          "4G, Wi-Fi, Bluetooth, ESP, LORA (optional)",
+        ),
+        S("Mobile App", "手机端 APP", "支持", "Supported"),
       ],
     },
     {
@@ -99,7 +149,12 @@ export const cc1Pro: MockProduct = {
           "工作环境（含充电）",
           "温度 1~40℃；湿度 ≤85% RH",
         ),
-        S("Storage Environment", "储存环境", "温度 -20~60℃；湿度 ≤85% RH"),
+        S(
+          "Storage Environment",
+          "储存环境",
+          "温度 -20~60℃；湿度 ≤85% RH",
+          "Temperature -20–60 °C; humidity ≤85% RH",
+        ),
         S("Operating Altitude", "工作海拔", "< 2000 m"),
         S("Cleaning Noise", "清洁作业噪音", "< 70 dB"),
         S(

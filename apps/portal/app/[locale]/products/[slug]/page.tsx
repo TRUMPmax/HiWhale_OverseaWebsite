@@ -151,7 +151,7 @@ export default async function ProductDetailPage({
                   className="border-border flex items-center justify-between gap-4 border-b pb-2 text-sm"
                 >
                   <dt className="text-subtle">{spec.label[loc]}</dt>
-                  <dd className="text-foreground text-right font-medium">{spec.value}</dd>
+                  <dd className="text-foreground text-right font-medium">{spec.value[loc]}</dd>
                 </div>
               ))}
             </dl>
@@ -206,7 +206,9 @@ export default async function ProductDetailPage({
                         className="border-border flex items-center justify-between gap-4 border-b py-3 text-sm"
                       >
                         <dt className="text-subtle">{item.label[loc]}</dt>
-                        <dd className="text-foreground text-right font-medium">{item.value}</dd>
+                        <dd className="text-foreground text-right font-medium">
+                          {item.value[loc]}
+                        </dd>
                       </div>
                     ))}
                   </dl>

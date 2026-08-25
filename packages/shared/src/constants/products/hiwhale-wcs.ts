@@ -25,7 +25,7 @@ export const hiwhaleWcs: MockProduct = {
     "浩鲸 WCS 将 AGV、AMR、机械臂、输送线与月台设备统一编排为一支协同车队。实时交通管理、任务优化与开放 API，可对接任意 WMS、ERP 或 MES 系统。",
   ),
   quickSpecs: [
-    S("Deployment", "部署方式", "本地 / 私有云"),
+    S("Deployment", "部署方式", "本地 / 私有云", "On-prem / private cloud"),
     S("Devices per Cluster", "单集群设备数", "500+"),
     S("Dispatch Latency", "调度延迟", "< 100 ms"),
     S("API", "开放接口", "Open REST API"),
@@ -34,10 +34,10 @@ export const hiwhaleWcs: MockProduct = {
     {
       group: GROUP_GENERAL,
       items: [
-        S("Deployment", "部署方式", "本地部署 / 私有云"),
+        S("Deployment", "部署方式", "本地部署 / 私有云", "On-premises / private cloud"),
         S("Server OS", "服务器系统", "Linux / Windows Server"),
         S("Client", "客户端", "Web（Chrome / Edge）"),
-        S("Languages", "界面语言", "中文 / English"),
+        S("Languages", "界面语言", "中文 / English", "Chinese / English"),
       ],
     },
     {
@@ -46,25 +46,40 @@ export const hiwhaleWcs: MockProduct = {
         S("Devices per Cluster", "单集群设备数", "500+"),
         S("Concurrent Tasks", "并发任务", "10,000+"),
         S("Dispatch Latency", "调度延迟", "< 100 ms"),
-        S("Availability", "可用性", "99.9%（双机热备）"),
+        S("Availability", "可用性", "99.9%（双机热备）", "99.9% (dual hot standby)"),
       ],
     },
     {
       group: L("Security", "数据安全"),
       items: [
-        S("Access Control", "权限管理", "RBAC 角色权限体系"),
+        S("Access Control", "权限管理", "RBAC 角色权限体系", "RBAC role-based access control"),
         S("Encryption", "传输加密", "TLS 1.3"),
-        S("Audit", "审计", "全量操作审计日志"),
-        S("Backup", "备份", "定时快照 + 异地容灾"),
+        S("Audit", "审计", "全量操作审计日志", "Full operation audit logs"),
+        S("Backup", "备份", "定时快照 + 异地容灾", "Scheduled snapshots + geo-disaster recovery"),
       ],
     },
     {
       group: GROUP_COMMUNICATION,
       items: [
-        S("Robot Protocol", "机器人协议", "VDA 5050 / 私有协议适配"),
+        S(
+          "Robot Protocol",
+          "机器人协议",
+          "VDA 5050 / 私有协议适配",
+          "VDA 5050 / proprietary protocol adapters",
+        ),
         S("Upstream", "上游对接", "WMS / ERP / MES（REST / WebService）"),
-        S("Downstream", "下游对接", "PLC / 输送线 / 提升机 / 月台"),
-        S("Monitoring", "监控", "实时地图 + 看板 + 告警推送"),
+        S(
+          "Downstream",
+          "下游对接",
+          "PLC / 输送线 / 提升机 / 月台",
+          "PLC / conveyors / lifts / dock doors",
+        ),
+        S(
+          "Monitoring",
+          "监控",
+          "实时地图 + 看板 + 告警推送",
+          "Real-time map + dashboards + alert push",
+        ),
       ],
     },
   ],

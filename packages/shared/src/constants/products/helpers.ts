@@ -30,8 +30,9 @@ export function L(en: string, zh: string): LocalizedText {
 }
 
 /** 便捷构造规格项 */
-export function S(en: string, zh: string, value: string): MockSpecItem {
-  return { label: L(en, zh), value };
+/** 便捷构造规格项（标签与值均为双语；缺省英文值时与中文一致） */
+export function S(en: string, zh: string, valueZh: string, valueEn?: string): MockSpecItem {
+  return { label: L(en, zh), value: L(valueEn ?? valueZh, valueZh) };
 }
 
 /** 常用规格组标题 */

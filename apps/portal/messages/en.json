@@ -30,7 +30,7 @@
     "terms": "Terms of Service",
     "sitemap": "Sitemap",
     "cookiePolicy": "Cookie Policy",
-    "icp": "沪ICP备XXXXXXXX号（备案号占位，上线前替换）",
+    "icp": "ICP Filing No. XXXXXXXX (placeholder, replace before launch)",
     "copyright": "© {year} HiWhale Robotics (Qingdao) Co., Ltd. All rights reserved.",
     "tagline": "Intelligent warehousing and material handling solutions for global customers.",
     "solutionsEcommerce": "E-commerce",
@@ -49,42 +49,42 @@
       "ctaPrimary": "Explore Products",
       "ctaSecondary": "Request a Consultation",
       "placeholder": {
-        "label": "主视觉图：全品类产品家族合影（AGV/AMR/叉车/机械臂/龙门吊/软件界面）",
-        "size": "16:9 · 建议 1920×1080"
+        "label": "Hero image: full product family group photo (AGV/AMR/forklift/robotic arm/gantry crane/software UI)",
+        "size": "16:9 · recommended 1920×1080"
       }
     },
     "ecosystem": {
       "title": "Our Product Ecosystem",
       "subtitle": "A full-category product family covering every step of material handling.",
       "explore": "Explore",
-      "imageSize": "4:3 · 建议 1200×900",
+      "imageSize": "4:3 · recommended 1200×900",
       "items": {
         "FORKLIFT": {
-          "image": "叉车产品组合图（有人叉车 + 无人叉车 AGV）",
+          "image": "Forklift group photo (manned + AGV forklifts)",
           "description": "Manned forklifts and AGV forklifts for every pallet handling task."
         },
         "MOBILE_ROBOT": {
-          "image": "移动机器人组合图（RGV + AGV + AMR）",
+          "image": "Mobile robot group photo (RGV + AGV + AMR)",
           "description": "RGVs, AGVs and AMRs for flexible in-plant material flow."
         },
         "ROBOTIC_ARM": {
-          "image": "机械臂工作场景图（码垛/拆垛工位）",
+          "image": "Robotic arm work cell (palletizing/depalletizing station)",
           "description": "Robotic arms for palletizing, depalletizing and precision handling."
         },
         "GANTRY_CRANE": {
-          "image": "龙门吊/门式起重机场景图（堆场或港口）",
+          "image": "Gantry crane scene (yard or port)",
           "description": "Gantry crane systems for heavy-duty yard and port container handling."
         },
         "SOFTWARE": {
-          "image": "软件系统界面拼图（WCS 调度地图 + IWMS 库存看板）",
+          "image": "Software UI collage (WCS scheduling map + IWMS inventory dashboard)",
           "description": "WCS scheduler and IWMS platform — the brain of the warehouse."
         },
         "CLEANING_ROBOT": {
-          "image": "清洁机器人组合图（CC1/MT1 系列）",
+          "image": "Cleaning robot group photo (CC1/MT1 series)",
           "description": "Commercial cleaning robots covering sweeping, scrubbing, vacuuming and dust mopping."
         },
         "DELIVERY_ROBOT": {
-          "image": "配送机器人组合图（T150/T300/T600）",
+          "image": "Delivery robot group photo (T150/T300/T600)",
           "description": "150–600 kg industrial delivery robots — out-of-box deployment in hours."
         }
       }
@@ -92,11 +92,11 @@
     "integration": {
       "title": "One System, Three Layers",
       "subtitle": "We are not an equipment vendor — we integrate hardware, software and industry know-how into turnkey solutions.",
-      "imageSize": "4:3 · 建议 1200×900",
+      "imageSize": "4:3 · recommended 1200×900",
       "layers": {
         "equipment": {
           "title": "Equipment Layer",
-          "image": "设备层示意图：多品类设备组合线稿/渲染图",
+          "image": "Equipment layer illustration: multi-category equipment lineup/render",
           "description": "A full product family: AGV forklifts, AMRs, robotic arms, gantry cranes and manned forklifts.",
           "points": [
             "Full-category hardware lineup",
@@ -106,7 +106,7 @@
         },
         "system": {
           "title": "System Layer",
-          "image": "系统层示意图：调度软件连接多设备拓扑图",
+          "image": "System layer illustration: scheduling software connecting device topology",
           "description": "WCS/WES scheduling software connects every device into one orchestrated fleet.",
           "points": [
             "Multi-device traffic orchestration",
@@ -116,7 +116,7 @@
         },
         "solution": {
           "title": "Solution Layer",
-          "image": "方案层示意图：行业整仓方案鸟瞰效果图",
+          "image": "Solution layer illustration: turnkey warehouse aerial render",
           "description": "Industry-specific turnkey solutions designed around your throughput and layout.",
           "points": [
             "Custom layout & simulation",
@@ -130,35 +130,35 @@
       "title": "Solutions by Industry",
       "subtitle": "Proven solutions for the industries that move the world.",
       "viewSolution": "View Solution",
-      "imageSize": "16:9 · 建议 1600×900",
+      "imageSize": "16:9 · recommended 1600×900",
       "items": {
         "E_COMMERCE": {
-          "image": "电商仓场景图：高位货架 + AMR 分拣作业",
+          "image": "E-commerce warehouse scene: high-bay racking + AMR picking",
           "description": "High-throughput sortation and goods-to-person fulfillment for e-commerce warehouses.",
           "painPoint": "Peak order surges"
         },
         "AUTOMOTIVE": {
-          "image": "汽车工厂场景图：产线边 AGV 配送",
+          "image": "Automotive plant scene: line-side AGV delivery",
           "description": "Just-in-sequence line-side delivery for automotive manufacturing plants.",
           "painPoint": "Strict takt times"
         },
         "THIRD_PARTY_LOGISTICS": {
-          "image": "第三方物流仓场景图：多客户多 SKU 混合作业",
+          "image": "3PL warehouse scene: multi-client multi-SKU mixed operations",
           "description": "Flexible automation that adapts to multi-client, multi-SKU 3PL operations.",
           "painPoint": "Variable SKU profiles"
         },
         "FOOD_COLD_CHAIN": {
-          "image": "冷链仓场景图：低温环境 AGV 作业（冷雾氛围）",
+          "image": "Cold chain warehouse scene: AGVs in sub-zero environment (frosty atmosphere)",
           "description": "Cold-rated robots and full traceability for food and cold chain storage.",
           "painPoint": "-25°C operation"
         },
         "PHARMACEUTICAL": {
-          "image": "医药仓场景图：洁净环境 + 批次追溯作业",
+          "image": "Pharma warehouse scene: cleanroom + batch traceability operations",
           "description": "GMP-compliant handling with full batch traceability for pharma logistics.",
           "painPoint": "Compliance & traceability"
         },
         "PORT": {
-          "image": "港口场景图：自动化集装箱堆场 + 龙门吊",
+          "image": "Port scene: automated container yard + gantry cranes",
           "description": "Automated container handling and yard scheduling for ports and terminals.",
           "painPoint": "Heavy-duty 24/7 ops"
         }
@@ -173,8 +173,8 @@
       "viewFullSpecs": "View Full Specs",
       "requestConsultation": "Request a Consultation",
       "placeholder": {
-        "label": "3D 模型查看器（React Three Fiber）：拖拽旋转 / 滚轮缩放 / 自动旋转 / 型号切换",
-        "size": "1:1 · 模型格式 GLB/GLTF，单模型 ≤10MB"
+        "label": "3D model viewer (React Three Fiber): drag to rotate / scroll to zoom / auto-rotate / model switch",
+        "size": "1:1 · GLB/GLTF format, ≤10MB per model"
       },
       "specs": {
         "loadCapacity": {
@@ -200,8 +200,8 @@
       "subtitle": "Watch how our solutions run in real warehouses around the world.",
       "play": "Play video",
       "placeholder": {
-        "label": "企业宣传视频（客户案例实拍 + 产品混剪）",
-        "size": "16:9 · 1920×1080 · MP4 + WebM 双格式"
+        "label": "Corporate video (customer case footage + product montage)",
+        "size": "16:9 · 1920×1080 · MP4 + WebM dual format"
       }
     },
     "stats": {
@@ -227,33 +227,33 @@
         }
       },
       "clientLogo": {
-        "label": "客户 Logo（默认灰度，hover 恢复彩色）",
-        "size": "2:1 · 建议 240×120，透明底 PNG"
+        "label": "Client logo (grayscale by default, color on hover)",
+        "size": "2:1 · recommended 240×120, transparent PNG"
       }
     },
     "certifications": {
       "title": "Globally Certified, Trusted Worldwide",
       "subtitle": "Our products meet the strictest international safety and quality standards.",
-      "imageSize": "1:1 · 建议 200×200，透明底 PNG",
+      "imageSize": "1:1 · recommended 200×200, transparent PNG",
       "items": {
         "ce": {
-          "image": "CE 认证标志",
+          "image": "CE certification mark",
           "name": "CE"
         },
         "iso9001": {
-          "image": "ISO 9001 质量管理体系认证标志",
+          "image": "ISO 9001 quality management certification mark",
           "name": "ISO 9001"
         },
         "iso3691": {
-          "image": "ISO 3691-4 无人叉车安全标准标志",
+          "image": "ISO 3691-4 driverless forklift safety standard mark",
           "name": "ISO 3691-4"
         },
         "iso13849": {
-          "image": "ISO 13849 功能安全认证标志",
+          "image": "ISO 13849 functional safety certification mark",
           "name": "ISO 13849"
         },
         "ul": {
-          "image": "UL 认证标志",
+          "image": "UL certification mark",
           "name": "UL"
         }
       }

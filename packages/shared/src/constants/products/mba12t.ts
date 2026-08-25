@@ -38,7 +38,7 @@ export const mba12t: MockProduct = {
         S("Overall Dimensions", "整车尺寸", "1,150 × 800 × 300 mm"),
         S("Dead Weight", "自重", "220 kg"),
         S("Lifting Stroke", "顶升行程", "60 mm"),
-        S("Rotation", "旋转方式", "原地 360° 旋转"),
+        S("Rotation", "旋转方式", "原地 360° 旋转", "In-place 360° rotation"),
       ],
     },
     {
@@ -53,18 +53,23 @@ export const mba12t: MockProduct = {
     {
       group: GROUP_BATTERY,
       items: [
-        S("Battery Type", "电池类型", "Li-ion 磷酸铁锂"),
+        S("Battery Type", "电池类型", "Li-ion 磷酸铁锂", "Li-ion (LiFePO4)"),
         S("Capacity", "电池容量", "48V / 80Ah"),
-        S("Charging Time", "充电时长", "≤ 1.5 h（快充）"),
+        S("Charging Time", "充电时长", "≤ 1.5 h（快充）", "≤ 1.5 h (fast charge)"),
         S("Runtime", "续航时间", "8 h"),
       ],
     },
     {
       group: GROUP_SAFETY,
       items: [
-        S("Safety Scanner", "安全雷达", "前后激光避障雷达"),
-        S("Emergency Stop", "急停装置", "车身急停按钮 + 远程急停"),
-        S("Obstacle Detection", "障碍物检测", "激光雷达 + 安全触边"),
+        S("Safety Scanner", "安全雷达", "前后激光避障雷达", "Front & rear laser obstacle sensors"),
+        S(
+          "Emergency Stop",
+          "急停装置",
+          "车身急停按钮 + 远程急停",
+          "Body e-stop buttons + remote e-stop",
+        ),
+        S("Obstacle Detection", "障碍物检测", "激光雷达 + 安全触边", "LiDAR + safety bumpers"),
         S("Standard", "安全标准", "CE / ISO 3691-4"),
       ],
     },
@@ -73,7 +78,7 @@ export const mba12t: MockProduct = {
       items: [
         S("Network", "通信网络", "Wi-Fi 6"),
         S("Protocol", "通信协议", "VDA 5050 / MQTT"),
-        S("Scheduling", "调度方式", "WCS 集群调度"),
+        S("Scheduling", "调度方式", "WCS 集群调度", "WCS fleet scheduling"),
         S("API", "开放接口", "REST API"),
       ],
     },

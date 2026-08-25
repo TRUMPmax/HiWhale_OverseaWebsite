@@ -5,7 +5,7 @@ export type LocalizedText = Record<Locale, string>;
 
 export type MockSpecItem = {
   label: LocalizedText;
-  value: string;
+  value: LocalizedText;
 };
 
 export type MockSpecGroup = {

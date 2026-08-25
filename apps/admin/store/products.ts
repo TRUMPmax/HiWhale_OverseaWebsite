@@ -11,10 +11,10 @@ export type AdminProduct = {
   name: { en: string; zh: string };
   tagline: { en: string; zh: string };
   description: { en: string; zh: string };
-  quickSpecs: Array<{ label: { en: string; zh: string }; value: string }>;
+  quickSpecs: Array<{ label: { en: string; zh: string }; value: { en: string; zh: string } }>;
   specGroups: Array<{
     group: { en: string; zh: string };
-    items: Array<{ label: { en: string; zh: string }; value: string }>;
+    items: Array<{ label: { en: string; zh: string }; value: { en: string; zh: string } }>;
   }>;
   features: Array<{ en: string; zh: string }>;
   scenarios: string[];

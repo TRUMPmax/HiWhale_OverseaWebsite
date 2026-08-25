@@ -28,7 +28,7 @@ export const mbr04g: MockProduct = {
     S("Load Capacity", "额定载重", "1,500 kg"),
     S("Travel Speed", "行驶速度", "160 m/min"),
     S("Positioning Accuracy", "定位精度", "±5 mm"),
-    S("Power Supply", "供电方式", "滑触线供电"),
+    S("Power Supply", "供电方式", "滑触线供电", "Conductor rail powered"),
   ],
   specGroups: [
     {
@@ -52,27 +52,47 @@ export const mbr04g: MockProduct = {
     {
       group: L("Power Supply", "动力系统"),
       items: [
-        S("Power Supply", "供电方式", "滑触线 48V DC 持续供电"),
-        S("Drive", "驱动方式", "伺服电机 + 同步带"),
-        S("Backup", "应急电源", "超级电容（断电回位）"),
-        S("Duty Cycle", "工作制", "24/7 连续作业"),
+        S(
+          "Power Supply",
+          "供电方式",
+          "滑触线 48V DC 持续供电",
+          "Conductor rail 48V DC continuous power",
+        ),
+        S("Drive", "驱动方式", "伺服电机 + 同步带", "Servo motor + timing belt"),
+        S("Backup", "应急电源", "超级电容（断电回位）", "Supercapacitor (power-loss homing)"),
+        S("Duty Cycle", "工作制", "24/7 连续作业", "24/7 continuous operation"),
       ],
     },
     {
       group: GROUP_SAFETY,
       items: [
-        S("Obstacle Detection", "障碍物检测", "前后激光测距 + 安全触边"),
-        S("Emergency Stop", "急停装置", "车身急停按钮 + 远程急停"),
-        S("Anti-Collision", "防撞", "同轨多车联锁防撞"),
+        S(
+          "Obstacle Detection",
+          "障碍物检测",
+          "前后激光测距 + 安全触边",
+          "Front & rear laser ranging + safety bumpers",
+        ),
+        S(
+          "Emergency Stop",
+          "急停装置",
+          "车身急停按钮 + 远程急停",
+          "Body e-stop buttons + remote e-stop",
+        ),
+        S("Anti-Collision", "防撞", "同轨多车联锁防撞", "Multi-shuttle interlock on shared rails"),
         S("Standard", "安全标准", "CE / EN 528"),
       ],
     },
     {
       group: GROUP_COMMUNICATION,
       items: [
-        S("Network", "通信网络", "工业无线 AP / 漏波电缆"),
+        S(
+          "Network",
+          "通信网络",
+          "工业无线 AP / 漏波电缆",
+          "Industrial wireless AP / leaky feeder cable",
+        ),
         S("Protocol", "通信协议", "PROFINET / Modbus TCP"),
-        S("Scheduling", "调度方式", "WCS 集群调度"),
+        S("Scheduling", "调度方式", "WCS 集群调度", "WCS fleet scheduling"),
         S("API", "开放接口", "REST API"),
       ],
     },

@@ -53,28 +53,38 @@ export const mbf35e: MockProduct = {
     {
       group: GROUP_BATTERY,
       items: [
-        S("Battery Type", "电池类型", "Li-ion 磷酸铁锂"),
+        S("Battery Type", "电池类型", "Li-ion 磷酸铁锂", "Li-ion (LiFePO4)"),
         S("Capacity", "电池容量", "80V / 460Ah"),
-        S("Charging Time", "充电时长", "≤ 2 h（快充）"),
+        S("Charging Time", "充电时长", "≤ 2 h（快充）", "≤ 2 h (fast charge)"),
         S("Runtime", "续航时间", "8 h"),
       ],
     },
     {
       group: GROUP_SAFETY,
       items: [
-        S("Operator Protection", "驾驶员保护", "OPS 驾驶在位感应系统"),
-        S("Stability", "稳定性", "弯道自动减速 + 门架缓冲"),
-        S("Visibility", "视野", "宽视野门架 + LED 作业灯"),
+        S(
+          "Operator Protection",
+          "驾驶员保护",
+          "OPS 驾驶在位感应系统",
+          "OPS operator-presence sensing",
+        ),
+        S(
+          "Stability",
+          "稳定性",
+          "弯道自动减速 + 门架缓冲",
+          "Curve auto-slowdown + mast cushioning",
+        ),
+        S("Visibility", "视野", "宽视野门架 + LED 作业灯", "Wide-view mast + LED work lights"),
         S("Standard", "安全标准", "CE / ISO 6292"),
       ],
     },
     {
       group: GROUP_COMMUNICATION,
       items: [
-        S("Telematics", "车队管理", "车载 4G 远程诊断终端"),
+        S("Telematics", "车队管理", "车载 4G 远程诊断终端", "Onboard 4G remote diagnostics"),
         S("Protocol", "通信协议", "CAN bus / Modbus"),
-        S("Fleet System", "车队系统", "可选配 FMS 车队管理"),
-        S("Upgrade Path", "升级路径", "支持加装自动驾驶套件"),
+        S("Fleet System", "车队系统", "可选配 FMS 车队管理", "Optional FMS fleet management"),
+        S("Upgrade Path", "升级路径", "支持加装自动驾驶套件", "Retrofittable with autonomy kit"),
       ],
     },
   ],

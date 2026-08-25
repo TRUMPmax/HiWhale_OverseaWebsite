@@ -53,18 +53,23 @@ export const mbv20p: MockProduct = {
     {
       group: GROUP_BATTERY,
       items: [
-        S("Battery Type", "电池类型", "Li-ion 磷酸铁锂"),
+        S("Battery Type", "电池类型", "Li-ion 磷酸铁锂", "Li-ion (LiFePO4)"),
         S("Capacity", "电池容量", "48V / 300Ah"),
-        S("Charging Time", "充电时长", "≤ 2.5 h（快充）"),
+        S("Charging Time", "充电时长", "≤ 2.5 h（快充）", "≤ 2.5 h (fast charge)"),
         S("Runtime", "续航时间", "8 h"),
       ],
     },
     {
       group: GROUP_SAFETY,
       items: [
-        S("Safety Scanner", "安全雷达", "2 × 360° 激光扫描仪"),
-        S("Emergency Stop", "急停装置", "车身四周急停按钮"),
-        S("Obstacle Detection", "障碍物检测", "3D 视觉 + 安全触边 + 声光报警"),
+        S("Safety Scanner", "安全雷达", "2 × 360° 激光扫描仪", "2 × 360° laser scanners"),
+        S("Emergency Stop", "急停装置", "车身四周急停按钮", "E-stop buttons on all sides"),
+        S(
+          "Obstacle Detection",
+          "障碍物检测",
+          "3D 视觉 + 安全触边 + 声光报警",
+          "3D vision + safety bumpers + audible/visual alarms",
+        ),
         S("Standard", "安全标准", "ISO 3691-4 / CE"),
       ],
     },
@@ -73,7 +78,7 @@ export const mbv20p: MockProduct = {
       items: [
         S("Network", "通信网络", "Wi-Fi 6 / 5G"),
         S("Protocol", "通信协议", "VDA 5050 / Modbus TCP"),
-        S("Scheduling", "调度方式", "WCS 集群调度"),
+        S("Scheduling", "调度方式", "WCS 集群调度", "WCS fleet scheduling"),
         S("API", "开放接口", "REST API"),
       ],
     },

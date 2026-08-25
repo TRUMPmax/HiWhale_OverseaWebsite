@@ -37,7 +37,12 @@ export const mbt10r: MockProduct = {
       items: [
         S("Overall Dimensions", "整车尺寸", "1,400 × 950 × 850 mm"),
         S("Dead Weight", "自重", "350 kg"),
-        S("Roller Height", "辊筒面高度", "800 mm（可定制 650–1,000 mm）"),
+        S(
+          "Roller Height",
+          "辊筒面高度",
+          "800 mm（可定制 650–1,000 mm）",
+          "800 mm (customizable 650–1,000 mm)",
+        ),
         S("Docking Width", "对接宽度", "600 mm"),
       ],
     },
@@ -53,18 +58,23 @@ export const mbt10r: MockProduct = {
     {
       group: GROUP_BATTERY,
       items: [
-        S("Battery Type", "电池类型", "Li-ion 磷酸铁锂"),
+        S("Battery Type", "电池类型", "Li-ion 磷酸铁锂", "Li-ion (LiFePO4)"),
         S("Capacity", "电池容量", "48V / 100Ah"),
-        S("Charging Time", "充电时长", "≤ 2 h（快充）"),
+        S("Charging Time", "充电时长", "≤ 2 h（快充）", "≤ 2 h (fast charge)"),
         S("Runtime", "续航时间", "8 h"),
       ],
     },
     {
       group: GROUP_SAFETY,
       items: [
-        S("Safety Scanner", "安全雷达", "2 × 激光避障雷达"),
-        S("Emergency Stop", "急停装置", "车身急停按钮 + 远程急停"),
-        S("Obstacle Detection", "障碍物检测", "激光雷达 + 3D 视觉"),
+        S("Safety Scanner", "安全雷达", "2 × 激光避障雷达", "2 × laser obstacle sensors"),
+        S(
+          "Emergency Stop",
+          "急停装置",
+          "车身急停按钮 + 远程急停",
+          "Body e-stop buttons + remote e-stop",
+        ),
+        S("Obstacle Detection", "障碍物检测", "激光雷达 + 3D 视觉", "LiDAR + 3D vision"),
         S("Standard", "安全标准", "CE / ISO 3691-4"),
       ],
     },
@@ -73,7 +83,7 @@ export const mbt10r: MockProduct = {
       items: [
         S("Network", "通信网络", "Wi-Fi 6 / 5G"),
         S("Protocol", "通信协议", "VDA 5050 / Modbus TCP"),
-        S("Scheduling", "调度方式", "WCS 集群调度"),
+        S("Scheduling", "调度方式", "WCS 集群调度", "WCS fleet scheduling"),
         S("API", "开放接口", "REST API"),
       ],
     },

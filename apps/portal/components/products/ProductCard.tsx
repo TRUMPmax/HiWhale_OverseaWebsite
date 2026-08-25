@@ -45,7 +45,7 @@ export function ProductCard({ product, delay = 0, className = "" }: ProductCardP
           {product.quickSpecs.slice(0, 3).map((spec) => (
             <div key={spec.label.en} className="flex items-center justify-between gap-2 text-sm">
               <dt className="text-subtle">{spec.label[loc]}</dt>
-              <dd className="text-foreground text-right font-medium">{spec.value}</dd>
+              <dd className="text-foreground text-right font-medium">{spec.value[loc]}</dd>
             </div>
           ))}
         </dl>
