@@ -80,6 +80,7 @@ export class ProductsService {
           imageUrl: dto.imageUrl,
           specUrl: dto.specUrl,
           modelUrl: dto.modelUrl,
+          imageUrls: dto.imageUrls ?? [],
           status: dto.status === "off" ? "OFF" : "ON",
         },
       });
@@ -115,6 +116,7 @@ export class ProductsService {
           ...(dto.imageUrl !== undefined ? { imageUrl: dto.imageUrl } : {}),
           ...(dto.specUrl !== undefined ? { specUrl: dto.specUrl } : {}),
           ...(dto.modelUrl !== undefined ? { modelUrl: dto.modelUrl } : {}),
+          ...(dto.imageUrls !== undefined ? { imageUrls: dto.imageUrls } : {}),
           ...(dto.status !== undefined
             ? { status: dto.status === "off" ? ("OFF" as const) : ("ON" as const) }
             : {}),

@@ -22,6 +22,14 @@ export const PRODUCT_CATEGORY_GROUPS: Array<{
     categories: ["GANTRY_CRANE"] as ProductCategory[],
   },
   {
+    group: "CLEANING_ROBOT" as ProductGroup,
+    categories: ["CLEANING_ROBOT"] as ProductCategory[],
+  },
+  {
+    group: "DELIVERY_ROBOT" as ProductGroup,
+    categories: ["DELIVERY_ROBOT"] as ProductCategory[],
+  },
+  {
     group: "SOFTWARE" as ProductGroup,
     categories: ["WCS", "IWMS"] as ProductCategory[],
   },

@@ -78,6 +78,14 @@
         "SOFTWARE": {
           "image": "软件系统界面拼图（WCS 调度地图 + IWMS 库存看板）",
           "description": "调度系统 WCS · 仓储管理系统 IWMS，仓库的智慧大脑。"
+        },
+        "CLEANING_ROBOT": {
+          "image": "清洁机器人组合图（CC1/MT1 系列）",
+          "description": "商用清洁机器人矩阵，覆盖扫地、洗地、吸尘、尘推全场景。"
+        },
+        "DELIVERY_ROBOT": {
+          "image": "配送机器人组合图（T150/T300/T600）",
+          "description": "150-600kg 工业配送机器人，开箱即用快速部署。"
         }
       }
     },

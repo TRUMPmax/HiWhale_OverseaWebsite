@@ -12,10 +12,19 @@ import { mbr160 } from "./mbr160";
 import { mbg40t } from "./mbg40t";
 import { hiwhaleWcs } from "./hiwhale-wcs";
 import { hiwhaleIwms } from "./hiwhale-iwms";
+import { cc1 } from "./cc1";
+import { cc1Pro } from "./cc1Pro";
+import { bg1Pro } from "./bg1Pro";
+import { mt1 } from "./mt1";
+import { mt1Max } from "./mt1Max";
+import { mt1Vac } from "./mt1Vac";
+import { t150 } from "./t150";
+import { t300 } from "./t300";
+import { t600 } from "./t600";
 
 export * from "./types";
 
-/** Mock 产品全集（11 款，覆盖全部 5 大类 / 9 品类） */
+/** Mock 产品全集（20 款，覆盖全部 7 大类 / 11 品类） */
 export const MOCK_PRODUCTS: MockProduct[] = [
   mbv15r,
   mbv20p,
@@ -28,6 +37,15 @@ export const MOCK_PRODUCTS: MockProduct[] = [
   mbg40t,
   hiwhaleWcs,
   hiwhaleIwms,
+  cc1,
+  cc1Pro,
+  bg1Pro,
+  mt1,
+  mt1Max,
+  mt1Vac,
+  t150,
+  t300,
+  t600,
 ];
 
 /** 按 slug 查询产品 */

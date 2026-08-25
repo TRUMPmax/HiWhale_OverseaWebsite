@@ -12,6 +12,8 @@ export const AGV = "AGV" as ProductCategory;
 export const AMR = "AMR" as ProductCategory;
 export const ROBOTIC_ARM = "ROBOTIC_ARM" as ProductCategory;
 export const GANTRY_CRANE = "GANTRY_CRANE" as ProductCategory;
+export const CLEANING_ROBOT = "CLEANING_ROBOT" as ProductCategory;
+export const DELIVERY_ROBOT = "DELIVERY_ROBOT" as ProductCategory;
 export const WCS = "WCS" as ProductCategory;
 export const IWMS = "IWMS" as ProductCategory;
 

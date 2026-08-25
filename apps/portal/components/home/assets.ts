@@ -6,6 +6,8 @@ export const GROUP_IMAGE_NAMES: Record<ProductGroup, string> = {
   [ProductGroup.MOBILE_ROBOT]: "product-group-mobile-robot.png",
   [ProductGroup.ROBOTIC_ARM]: "product-group-robotic-arm.png",
   [ProductGroup.GANTRY_CRANE]: "product-group-gantry-crane.png",
+  [ProductGroup.CLEANING_ROBOT]: "product-group-cleaning-robot.png",
+  [ProductGroup.DELIVERY_ROBOT]: "product-group-delivery-robot.png",
   [ProductGroup.SOFTWARE]: "product-group-software.png",
 };
 
@@ -18,6 +20,8 @@ export const CATEGORY_IMAGE_NAMES: Record<ProductCategory, string> = {
   [ProductCategory.AMR]: "product-amr.png",
   [ProductCategory.ROBOTIC_ARM]: "product-robotic-arm.png",
   [ProductCategory.GANTRY_CRANE]: "product-gantry-crane.png",
+  [ProductCategory.CLEANING_ROBOT]: "product-cleaning-robot.png",
+  [ProductCategory.DELIVERY_ROBOT]: "product-delivery-robot.png",
   [ProductCategory.WCS]: "product-wcs.png",
   [ProductCategory.IWMS]: "product-iwms.png",
 };

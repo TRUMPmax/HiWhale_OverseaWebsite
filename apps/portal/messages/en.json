@@ -78,6 +78,14 @@
         "SOFTWARE": {
           "image": "软件系统界面拼图（WCS 调度地图 + IWMS 库存看板）",
           "description": "WCS scheduler and IWMS platform — the brain of the warehouse."
+        },
+        "CLEANING_ROBOT": {
+          "image": "清洁机器人组合图（CC1/MT1 系列）",
+          "description": "Commercial cleaning robots covering sweeping, scrubbing, vacuuming and dust mopping."
+        },
+        "DELIVERY_ROBOT": {
+          "image": "配送机器人组合图（T150/T300/T600）",
+          "description": "150–600 kg industrial delivery robots — out-of-box deployment in hours."
         }
       }
     },

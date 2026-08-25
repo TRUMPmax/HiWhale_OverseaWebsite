@@ -140,6 +140,8 @@ model Product {
   imageUrl    String?       @map("image_url")
   specUrl     String?       @map("spec_url")
   modelUrl    String?       @map("model_url")
+  // 全部已上传图片 URL（主图在前，细节图随后）
+  imageUrls   Json          @default("[]") @map("image_urls")
   status      ProductStatus @default(ON)
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")

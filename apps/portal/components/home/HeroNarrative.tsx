@@ -17,7 +17,7 @@ import {
 import { GROUP_IMAGE_NAMES, INDUSTRY_IMAGE_NAMES } from "./assets";
 
 /** 产品芯片的景深层次（translateZ） */
-const CHIP_DEPTHS = [0, 60, 20, 80, 40];
+const CHIP_DEPTHS = [0, 60, 20, 80, 40, 10, 70];
 
 /** 数值指标（第 4 个 24/7 为静态文本，不参与滚动计数） */
 const METRICS = [
@@ -223,7 +223,7 @@ export function HeroNarrative() {
             {groups.map((group, i) => (
               <div
                 key={group}
-                className="np-chip w-28 lg:w-36"
+                className="np-chip w-24 lg:w-32"
                 style={{ transform: `translateZ(${CHIP_DEPTHS[i]}px)` }}
               >
                 <div className="border-brand-blue/40 bg-brand-blue/20 flex aspect-[4/3] flex-col items-center justify-center rounded-xl border p-2">

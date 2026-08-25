@@ -20,6 +20,8 @@ export enum ProductGroup {
   MOBILE_ROBOT = "MOBILE_ROBOT",
   ROBOTIC_ARM = "ROBOTIC_ARM",
   GANTRY_CRANE = "GANTRY_CRANE",
+  CLEANING_ROBOT = "CLEANING_ROBOT",
+  DELIVERY_ROBOT = "DELIVERY_ROBOT",
   SOFTWARE = "SOFTWARE",
 }
 
@@ -28,6 +30,8 @@ export const PRODUCT_GROUP_LABELS: Record<ProductGroup, { en: string; zh: string
   [ProductGroup.MOBILE_ROBOT]: { en: "Mobile Robots", zh: "移动机器人" },
   [ProductGroup.ROBOTIC_ARM]: { en: "Robotic Arms", zh: "机械臂" },
   [ProductGroup.GANTRY_CRANE]: { en: "Gantry Cranes", zh: "龙门吊" },
+  [ProductGroup.CLEANING_ROBOT]: { en: "Cleaning Robots", zh: "清洁机器人" },
+  [ProductGroup.DELIVERY_ROBOT]: { en: "Delivery Robots", zh: "配送机器人" },
   [ProductGroup.SOFTWARE]: { en: "Software", zh: "软件系统" },
 };
 
@@ -40,6 +44,8 @@ export enum ProductCategory {
   AMR = "AMR",
   ROBOTIC_ARM = "ROBOTIC_ARM",
   GANTRY_CRANE = "GANTRY_CRANE",
+  CLEANING_ROBOT = "CLEANING_ROBOT",
+  DELIVERY_ROBOT = "DELIVERY_ROBOT",
   WCS = "WCS",
   IWMS = "IWMS",
 }
@@ -52,6 +58,8 @@ export const PRODUCT_CATEGORY_LABELS: Record<ProductCategory, { en: string; zh: 
   [ProductCategory.AMR]: { en: "AMR", zh: "自主移动机器人 AMR" },
   [ProductCategory.ROBOTIC_ARM]: { en: "Robotic Arm", zh: "机械臂" },
   [ProductCategory.GANTRY_CRANE]: { en: "Gantry Crane", zh: "龙门吊" },
+  [ProductCategory.CLEANING_ROBOT]: { en: "Cleaning Robot", zh: "清洁机器人" },
+  [ProductCategory.DELIVERY_ROBOT]: { en: "Delivery Robot", zh: "配送机器人" },
   [ProductCategory.WCS]: { en: "WCS Scheduler", zh: "调度系统 WCS" },
   [ProductCategory.IWMS]: { en: "IWMS Platform", zh: "仓储管理系统 IWMS" },
 };

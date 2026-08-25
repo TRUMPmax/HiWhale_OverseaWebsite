@@ -103,15 +103,25 @@ export default async function ProductDetailPage({
               />
             )}
             <div className="mt-3 grid grid-cols-3 gap-3">
-              {[1, 2, 3].map((i) => (
-                <Placeholder
-                  key={i}
-                  ratio="aspect-square"
-                  className="rounded-lg p-3"
-                  label={`产品细节图 ${i}`}
-                  name={`${imageBase}-thumb-${i}.png`}
-                />
-              ))}
+              {[1, 2, 3].map((i) =>
+                product.imageUrls?.[i] ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={i}
+                    src={product.imageUrls[i]}
+                    alt={`${product.name[loc]} ${i}`}
+                    className="aspect-square w-full rounded-lg border border-slate-200 object-cover"
+                  />
+                ) : (
+                  <Placeholder
+                    key={i}
+                    ratio="aspect-square"
+                    className="rounded-lg p-3"
+                    label={`产品细节图 ${i}`}
+                    name={`${imageBase}-thumb-${i}.png`}
+                  />
+                ),
+              )}
             </div>
           </Reveal>
 
@@ -149,7 +159,8 @@ export default async function ProductDetailPage({
                 {t("requestConsultation")}
               </Link>
               <a
-                href="#"
+                href={product.specUrl ?? "#"}
+                {...(product.specUrl ? { download: true, target: "_blank", rel: "noopener" } : {})}
                 className="text-brand-blue border-brand-blue inline-flex items-center gap-2 rounded-lg border bg-white px-6 py-3 font-medium transition-colors hover:bg-blue-50"
               >
                 <Download className="h-4 w-4" />
@@ -222,24 +233,26 @@ export default async function ProductDetailPage({
         </div>
       </section>
 
-      {/* 适用行业 */}
-      <section className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24 lg:px-12">
-        <Reveal>
-          <h2 className="font-heading text-foreground text-2xl font-bold md:text-3xl">
-            {t("scenariosTitle")}
-          </h2>
-          <div className="mt-6 flex flex-wrap gap-3">
-            {product.scenarios.map((industry) => (
-              <span
-                key={industry}
-                className="rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700"
-              >
-                {getLocalizedLabel(INDUSTRY_LABELS, industry, locale)}
-              </span>
-            ))}
-          </div>
-        </Reveal>
-      </section>
+      {/* 适用行业（无适用行业数据时不渲染） */}
+      {product.scenarios.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24 lg:px-12">
+          <Reveal>
+            <h2 className="font-heading text-foreground text-2xl font-bold md:text-3xl">
+              {t("scenariosTitle")}
+            </h2>
+            <div className="mt-6 flex flex-wrap gap-3">
+              {product.scenarios.map((industry) => (
+                <span
+                  key={industry}
+                  className="rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700"
+                >
+                  {getLocalizedLabel(INDUSTRY_LABELS, industry, locale)}
+                </span>
+              ))}
+            </div>
+          </Reveal>
+        </section>
+      )}
 
       {/* 相关产品 */}
       {related.length > 0 && (

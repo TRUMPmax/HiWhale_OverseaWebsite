@@ -103,6 +103,10 @@ export class UpsertProductDto {
   modelUrl?: string;
 
   @IsOptional()
+  @IsArray()
+  imageUrls?: string[];
+
+  @IsOptional()
   @IsIn(["on", "off"])
   status?: "on" | "off";
 }

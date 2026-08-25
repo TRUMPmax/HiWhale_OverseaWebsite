@@ -1,5 +1,5 @@
 import { useTranslations, useLocale } from "next-intl";
-import { Bot, Cog, Container, Monitor, Truck } from "lucide-react";
+import { Bot, Cog, Container, Monitor, Sparkles, Truck, PackageOpen } from "lucide-react";
 import { Link } from "@/navigation";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
@@ -17,6 +17,8 @@ const GROUP_ICONS: Record<ProductGroup, typeof Truck> = {
   [ProductGroup.MOBILE_ROBOT]: Bot,
   [ProductGroup.ROBOTIC_ARM]: Cog,
   [ProductGroup.GANTRY_CRANE]: Container,
+  [ProductGroup.CLEANING_ROBOT]: Sparkles,
+  [ProductGroup.DELIVERY_ROBOT]: PackageOpen,
   [ProductGroup.SOFTWARE]: Monitor,
 };
 

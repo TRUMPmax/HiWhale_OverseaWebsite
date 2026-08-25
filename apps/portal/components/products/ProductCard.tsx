@@ -20,13 +20,22 @@ export function ProductCard({ product, delay = 0, className = "" }: ProductCardP
   return (
     <Reveal delay={delay} className={`h-full ${className}`}>
       <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-5 transition-all hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg">
-        <Placeholder
-          ratio="aspect-[4/3]"
-          className="p-4"
-          label={`${product.name[loc]}产品实拍图（45° 角，白色/浅灰背景）`}
-          size="4:3 · 建议 1200×900"
-          name={product.imageName}
-        />
+        {product.imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={product.imageUrl}
+            alt={product.name[loc]}
+            className="aspect-[4/3] w-full rounded-xl border border-slate-200 object-cover"
+          />
+        ) : (
+          <Placeholder
+            ratio="aspect-[4/3]"
+            className="p-4"
+            label={`${product.name[loc]}产品实拍图（45° 角，白色/浅灰背景）`}
+            size="4:3 · 建议 1200×900"
+            name={product.imageName}
+          />
+        )}
         <span className="mt-5 inline-flex w-fit items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
           {getLocalizedLabel(PRODUCT_CATEGORY_LABELS, product.category, locale)}
         </span>

@@ -9,7 +9,7 @@ const KIND_RULES: Record<string, { mimes: string[]; maxSize: number; label: stri
   },
   spec: {
     mimes: ["application/pdf"],
-    maxSize: 20 * 1024 * 1024,
+    maxSize: 100 * 1024 * 1024,
     label: "规格书 PDF",
   },
   model: {
