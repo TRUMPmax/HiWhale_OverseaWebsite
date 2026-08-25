@@ -24,6 +24,8 @@ export type MockCase = {
   solution: LocalizedText;
   /** 投入设备清单（文字） */
   equipment: LocalizedText[];
+  /** 关联产品 slug 数组（门户"相关产品"区块数据源） */
+  productSlugs: string[];
   /** 交付周期，如 "14 weeks" / "14 周" */
   duration: LocalizedText;
   /** 前后对比式成效指标，3-4 条 */

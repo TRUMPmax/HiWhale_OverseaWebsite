@@ -34,10 +34,10 @@ export default async function SolutionDetailPage({
   const tCta = await getTranslations("solutions.cta");
   const loc = locale === "zh" ? ("zh" as const) : ("en" as const);
 
-  // 相关设备：每个品类取第一款产品
+  // 相关产品：按 productSlugs 精确关联
   const allProducts = await fetchProducts();
-  const relatedProducts = solution.equipment
-    .map((category) => allProducts.find((p) => p.category === category))
+  const relatedProducts = solution.productSlugs
+    .map((slug) => allProducts.find((p) => p.slug === slug))
     .filter((p) => p !== undefined);
 
   return (
@@ -103,14 +103,14 @@ export default async function SolutionDetailPage({
         </div>
       </section>
 
-      {/* 设备组合 */}
+      {/* 设备组合（品类芯片由关联产品推导，去重） */}
       <section className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24 lg:px-12">
         <Reveal>
           <h2 className="font-heading text-foreground text-2xl font-bold md:text-3xl">
             {t("equipmentTitle")}
           </h2>
           <div className="mt-6 flex flex-wrap gap-3">
-            {solution.equipment.map((category) => (
+            {Array.from(new Set(relatedProducts.map((p) => p.category))).map((category) => (
               <span
                 key={category}
                 className="rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700"

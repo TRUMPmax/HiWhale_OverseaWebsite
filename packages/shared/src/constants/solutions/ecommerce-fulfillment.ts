@@ -1,4 +1,4 @@
-import { AGV_FORKLIFT, AMR, E_COMMERCE, IWMS, L, WCS } from "../products/helpers";
+import { E_COMMERCE, L } from "../products/helpers";
 import type { MockSolution } from "./types";
 
 export const ecommerceFulfillment: MockSolution = {
@@ -25,7 +25,12 @@ export const ecommerceFulfillment: MockSolution = {
     L("Rising labor cost and high turnover in peak seasons", "用工成本上升，旺季人员流动大"),
     L("Order accuracy directly drives return rates and CSAT", "订单准确率直接影响退货率与满意度"),
   ],
-  equipment: [AMR, AGV_FORKLIFT, WCS, IWMS],
+  productSlugs: [
+    "mbt10r-roller-top-amr",
+    "mbv15r-counterbalanced-agv-forklift",
+    "hiwhale-wcs-fleet-scheduling-system",
+    "hiwhale-iwms",
+  ],
   process: [
     {
       title: L("Site Survey & Data Analysis", "现场勘测与数据分析"),

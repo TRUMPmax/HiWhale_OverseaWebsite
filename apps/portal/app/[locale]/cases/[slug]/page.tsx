@@ -26,7 +26,10 @@ export default async function CaseDetailPage({
   const t = await getTranslations("cases.detail");
   const tCta = await getTranslations("cases.cta");
   const loc = locale === "zh" ? ("zh" as const) : ("en" as const);
-  const relatedProducts = (await fetchProducts()).slice(0, 3);
+  const allProducts = await fetchProducts();
+  const relatedProducts = item.productSlugs
+    .map((slug) => allProducts.find((p) => p.slug === slug))
+    .filter((p) => p !== undefined);
 
   const narrative = [
     { title: t("backgroundTitle"), text: item.background[loc] },
@@ -158,21 +161,23 @@ export default async function CaseDetailPage({
       </section>
 
       {/* 相关产品 */}
-      <section className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24 lg:px-12">
-        <h2 className="font-heading text-foreground text-2xl font-bold md:text-3xl">
-          {t("relatedProductsTitle")}
-        </h2>
-        <div className="mt-8 flex gap-6 overflow-x-auto pb-4">
-          {relatedProducts.map((product, index) => (
-            <ProductCard
-              key={product.slug}
-              product={product}
-              delay={index * 80}
-              className="w-72 shrink-0"
-            />
-          ))}
-        </div>
-      </section>
+      {relatedProducts.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24 lg:px-12">
+          <h2 className="font-heading text-foreground text-2xl font-bold md:text-3xl">
+            {t("relatedProductsTitle")}
+          </h2>
+          <div className="mt-8 flex gap-6 overflow-x-auto pb-4">
+            {relatedProducts.map((product, index) => (
+              <ProductCard
+                key={product.slug}
+                product={product}
+                delay={index * 80}
+                className="w-72 shrink-0"
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* 底部 CTA */}
       <section className="bg-night-sky relative overflow-hidden text-white">

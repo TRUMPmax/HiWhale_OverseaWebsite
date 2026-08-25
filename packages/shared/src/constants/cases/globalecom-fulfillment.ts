@@ -24,6 +24,7 @@ export const caseGlobalEcom: MockCase = {
     L("HiWhale IWMS + WCS software stack", "浩鲸 IWMS + WCS 软件栈"),
     L("Automated packing line integration", "自动包装线对接"),
   ],
+  productSlugs: ["mbt10r-roller-top-amr", "hiwhale-wcs-fleet-scheduling-system"],
   duration: L("14 weeks", "14 周"),
   results: [
     { value: "80K→240K", label: L("Daily Order Capacity", "日订单处理能力") },

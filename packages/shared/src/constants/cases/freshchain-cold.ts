@@ -24,6 +24,7 @@ export const caseFreshChain: MockCase = {
     L("Automated high-speed freezer doors", "自动高速冷库门"),
     L("HiWhale WCS with FEFO engine", "浩鲸 WCS（内置 FEFO 引擎）"),
   ],
+  productSlugs: ["mbv20p-stacker-agv-forklift", "mbr04g-rail-guided-shuttle-rgv"],
   duration: L("18 weeks", "18 周"),
   results: [
     { value: "24/7", label: L("Unmanned Freezer Operation", "冷库无人化连续作业") },

@@ -27,6 +27,7 @@ export const caseMediPharma: MockCase = {
     L("HiWhale IWMS (GMP-validated)", "浩鲸 IWMS（通过 GMP 验证）"),
     L("Environmental monitoring integration", "环境监测系统集成"),
   ],
+  productSlugs: ["mbh08l-latent-lifting-amr", "hiwhale-iwms"],
   duration: L("20 weeks", "20 周"),
   results: [
     { value: "100%", label: L("Batch Traceability", "批次追溯覆盖率") },

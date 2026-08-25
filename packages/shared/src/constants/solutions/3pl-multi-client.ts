@@ -1,4 +1,4 @@
-import { AMR, IWMS, L, MANNED_FORKLIFT, THIRD_PARTY_LOGISTICS, WCS } from "../products/helpers";
+import { L, THIRD_PARTY_LOGISTICS } from "../products/helpers";
 import type { MockSolution } from "./types";
 
 export const threePlMultiClient: MockSolution = {
@@ -25,7 +25,12 @@ export const threePlMultiClient: MockSolution = {
     ),
     L("New client onboarding takes weeks of re-layout", "新客户入驻需要数周的库区调整"),
   ],
-  equipment: [AMR, MANNED_FORKLIFT, IWMS, WCS],
+  productSlugs: [
+    "mbt10r-roller-top-amr",
+    "mbf35e-electric-counterbalanced-forklift",
+    "hiwhale-iwms",
+    "hiwhale-wcs-fleet-scheduling-system",
+  ],
   process: [
     {
       title: L("Client Portfolio Analysis", "客户组合分析"),

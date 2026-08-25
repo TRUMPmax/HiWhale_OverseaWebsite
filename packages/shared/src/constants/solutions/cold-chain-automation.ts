@@ -1,4 +1,4 @@
-import { AGV_FORKLIFT, FOOD_COLD_CHAIN, L, MANNED_FORKLIFT, RGV, WCS } from "../products/helpers";
+import { FOOD_COLD_CHAIN, L } from "../products/helpers";
 import type { MockSolution } from "./types";
 
 export const coldChainAutomation: MockSolution = {
@@ -25,7 +25,12 @@ export const coldChainAutomation: MockSolution = {
       "库门开启时间过长，浪费能耗且危及货品",
     ),
   ],
-  equipment: [AGV_FORKLIFT, RGV, MANNED_FORKLIFT, WCS],
+  productSlugs: [
+    "mbv20p-stacker-agv-forklift",
+    "mbr04g-rail-guided-shuttle-rgv",
+    "mbf35e-electric-counterbalanced-forklift",
+    "hiwhale-wcs-fleet-scheduling-system",
+  ],
   process: [
     {
       title: L("Thermal & Flow Assessment", "热工与物流评估"),

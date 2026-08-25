@@ -1,4 +1,4 @@
-import { AGV, GANTRY_CRANE, L, PORT, WCS } from "../products/helpers";
+import { L, PORT } from "../products/helpers";
 import type { MockSolution } from "./types";
 
 export const portContainerYard: MockSolution = {
@@ -19,7 +19,11 @@ export const portContainerYard: MockSolution = {
     L("Yard congestion delays vessel turnaround", "堆场拥堵拖长船舶在港时间"),
     L("Heavy-equipment accidents are the top safety risk", "大型设备事故是码头首要安全风险"),
   ],
-  equipment: [GANTRY_CRANE, AGV, WCS],
+  productSlugs: [
+    "mbg40t-rail-mounted-gantry-crane",
+    "mba12t-latent-jacking-agv",
+    "hiwhale-wcs-fleet-scheduling-system",
+  ],
   process: [
     {
       title: L("Yard Flow Modeling", "堆场物流建模"),

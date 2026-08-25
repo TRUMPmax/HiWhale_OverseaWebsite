@@ -1,4 +1,4 @@
-import { AGV, AGV_FORKLIFT, AUTOMOTIVE, L, WCS } from "../products/helpers";
+import { AUTOMOTIVE, L } from "../products/helpers";
 import type { MockSolution } from "./types";
 
 export const automotiveLineSide: MockSolution = {
@@ -25,7 +25,11 @@ export const automotiveLineSide: MockSolution = {
       "线边空间紧张，叉车穿梭安全隐患大",
     ),
   ],
-  equipment: [AGV, AGV_FORKLIFT, WCS],
+  productSlugs: [
+    "mba12t-latent-jacking-agv",
+    "mbv15r-counterbalanced-agv-forklift",
+    "hiwhale-wcs-fleet-scheduling-system",
+  ],
   process: [
     {
       title: L("Takt & Flow Analysis", "节拍与物流分析"),

@@ -1,4 +1,4 @@
-import { AMR, IWMS, L, PHARMACEUTICAL, RGV, WCS } from "../products/helpers";
+import { L, PHARMACEUTICAL } from "../products/helpers";
 import type { MockSolution } from "./types";
 
 export const pharmaCompliantLogistics: MockSolution = {
@@ -28,7 +28,12 @@ export const pharmaCompliantLogistics: MockSolution = {
     ),
     L("Recalls require minute-level batch traceability", "药品召回要求分钟级批次追溯能力"),
   ],
-  equipment: [AMR, RGV, IWMS, WCS],
+  productSlugs: [
+    "mbh08l-latent-lifting-amr",
+    "mbr04g-rail-guided-shuttle-rgv",
+    "hiwhale-iwms",
+    "hiwhale-wcs-fleet-scheduling-system",
+  ],
   process: [
     {
       title: L("Compliance Gap Analysis", "合规差距分析"),

@@ -24,6 +24,7 @@ export const caseHarborLink: MockCase = {
     L("Terminal-grade WCS/ECS scheduling", "码头级 WCS/ECS 调度系统"),
     L("GNSS + encoder positioning package", "GNSS + 编码器定位套件"),
   ],
+  productSlugs: ["mbg40t-rail-mounted-gantry-crane"],
   duration: L("24 weeks", "24 周"),
   results: [
     { value: "+28%", label: L("Moves per Crane Hour", "单吊小时作业量提升") },
