@@ -35,6 +35,9 @@ COPY --from=build /app/api/node_modules ./api/node_modules
 COPY --from=build /app/api/package.json ./api/package.json
 COPY --from=build /app/api/dist ./dist
 COPY --from=build /app/api/prisma ./prisma
+# 站点素材目录初始化：把 portal 已有素材烘进镜像，命名卷 portal_images 首次挂载时即含全部素材
+COPY --from=build /app/apps/portal/public/images /portal-public/images
+RUN mkdir -p /portal-public/images && chown -R api:nodejs /portal-public
 USER api
 EXPOSE 4000
 CMD ["node", "dist/main.js"]
