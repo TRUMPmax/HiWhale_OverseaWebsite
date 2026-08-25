@@ -1,7 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Copy, FileText, Images, Package, RefreshCw, Search, Trash2, Upload } from "lucide-react";
+import {
+  Copy,
+  FileText,
+  Images,
+  Package,
+  Pencil,
+  RefreshCw,
+  Search,
+  Trash2,
+  Upload,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,6 +26,8 @@ import {
 } from "@/components/ui/dialog";
 import { PageHeader } from "@/components/common/PageHeader";
 import { Pagination } from "@/components/common/Pagination";
+import { RenameDialog } from "@/components/media/RenameDialog";
+import { SiteAssetsPanel } from "@/components/media/SiteAssetsPanel";
 import { adminApi, API_BASE } from "@/lib/api";
 import { useAdminAuthStore } from "@/store/auth";
 
@@ -59,6 +71,8 @@ export default function MediaPage() {
   const [uploadKind, setUploadKind] = useState("image");
   const [uploading, setUploading] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<MediaItem | null>(null);
+  const [tab, setTab] = useState<"files" | "slots">("files");
+  const [renaming, setRenaming] = useState<string | null>(null);
 
   const fetchItems = async () => {
     const data = await adminApi<{ items: MediaItem[]; total: number }>(
@@ -123,7 +137,7 @@ export default function MediaPage() {
     <div className="space-y-6">
       <PageHeader
         title="素材管理"
-        description="全站上传素材（MinIO）的浏览、替换与删除"
+        description="通用素材库（MinIO）与站点展示位素材的统一管理"
         action={
           <div className="flex items-center gap-3">
             <select
@@ -153,123 +167,163 @@ export default function MediaPage() {
         }
       />
 
-      {/* 工具栏 */}
-      <div className="flex items-center gap-3">
-        <div className="flex gap-1 rounded-lg border border-slate-200 bg-white p-1">
-          {KIND_TABS.map((tab) => (
-            <button
-              key={tab.value}
-              type="button"
-              onClick={() => {
-                setKind(tab.value);
-                setPage(1);
-              }}
-              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                kind === tab.value ? "bg-brand-blue text-white" : "text-slate-600 hover:bg-slate-50"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-        <div className="relative ml-auto">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <Input
-            placeholder="搜索文件名…"
-            className="w-64 pl-9"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
+      <div className="flex gap-1 rounded-lg border border-slate-200 bg-white p-1">
+        {(
+          [
+            ["files", "通用文件库"],
+            ["slots", "站点素材位"],
+          ] as const
+        ).map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => setTab(value)}
+            className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+              tab === value ? "bg-brand-blue text-white" : "text-slate-600 hover:bg-slate-50"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
-      {/* 素材网格 */}
-      <div className="grid grid-cols-4 gap-4">
-        {filtered.map((item) => {
-          const itemKind = kindOf(item);
-          const isImage = itemKind === "image";
-          return (
-            <div
-              key={item.key}
-              className="overflow-hidden rounded-xl border border-slate-200 bg-white"
-            >
-              {isImage ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={item.url} alt={item.key} className="aspect-[4/3] w-full object-cover" />
-              ) : (
-                <div className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-2 bg-slate-50 p-4">
-                  {itemKind === "model" ? (
-                    <Package className="h-8 w-8 text-slate-400" />
-                  ) : (
-                    <FileText className="h-8 w-8 text-slate-400" />
-                  )}
-                  <span className="w-full truncate text-center font-mono text-xs text-slate-500">
-                    {item.key.split("/").pop()}
-                  </span>
-                </div>
-              )}
-              <div className="space-y-2 p-3">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="truncate font-mono text-xs text-slate-600" title={item.key}>
-                    {item.key.split("/").pop()}
-                  </span>
-                  <Badge variant="outline" className="shrink-0 text-xs">
-                    {item.kind}
-                  </Badge>
-                </div>
-                <div className="text-xs text-slate-400">
-                  {formatSize(item.size)} · {item.lastModified.slice(0, 10)}
-                </div>
-                <div className="flex items-center gap-2 pt-1">
-                  <label className="text-brand-blue cursor-pointer text-xs font-medium hover:underline">
-                    <input
-                      type="file"
-                      className="hidden"
-                      onChange={(e) => {
-                        if (e.target.files?.length) {
-                          void doUpload(
-                            e.target.files,
-                            itemKind === "other" ? "image" : itemKind,
-                            item.key,
-                          );
-                        }
-                        e.target.value = "";
-                      }}
-                    />
-                    <RefreshCw className="mr-0.5 inline h-3 w-3" />
-                    替换
-                  </label>
-                  <button
-                    type="button"
-                    className="hover:text-brand-blue text-xs font-medium text-slate-500"
-                    onClick={() => copyLink(item.url)}
-                  >
-                    <Copy className="mr-0.5 inline h-3 w-3" />
-                    复制链接
-                  </button>
-                  <button
-                    type="button"
-                    className="ml-auto text-xs font-medium text-red-600 hover:underline"
-                    onClick={() => setPendingDelete(item)}
-                  >
-                    <Trash2 className="mr-0.5 inline h-3 w-3" />
-                    删除
-                  </button>
-                </div>
-              </div>
+      {tab === "files" && (
+        <>
+          {/* 工具栏 */}
+          <div className="flex items-center gap-3">
+            <div className="flex gap-1 rounded-lg border border-slate-200 bg-white p-1">
+              {KIND_TABS.map((tab) => (
+                <button
+                  key={tab.value}
+                  type="button"
+                  onClick={() => {
+                    setKind(tab.value);
+                    setPage(1);
+                  }}
+                  className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                    kind === tab.value
+                      ? "bg-brand-blue text-white"
+                      : "text-slate-600 hover:bg-slate-50"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
-          );
-        })}
-        {filtered.length === 0 && (
-          <div className="col-span-full flex h-40 items-center justify-center rounded-xl border border-slate-200 bg-white text-sm text-slate-400">
-            <Images className="mr-2 h-5 w-5" /> 暂无素材
+            <div className="relative ml-auto">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <Input
+                placeholder="搜索文件名…"
+                className="w-64 pl-9"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
           </div>
-        )}
-      </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white">
-        <Pagination total={total} page={page} pageSize={PAGE_SIZE} onPageChange={setPage} />
-      </div>
+          {/* 素材网格 */}
+          <div className="grid grid-cols-4 gap-4">
+            {filtered.map((item) => {
+              const itemKind = kindOf(item);
+              const isImage = itemKind === "image";
+              return (
+                <div
+                  key={item.key}
+                  className="overflow-hidden rounded-xl border border-slate-200 bg-white"
+                >
+                  {isImage ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={item.url}
+                      alt={item.key}
+                      className="aspect-[4/3] w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex aspect-[4/3] w-full flex-col items-center justify-center gap-2 bg-slate-50 p-4">
+                      {itemKind === "model" ? (
+                        <Package className="h-8 w-8 text-slate-400" />
+                      ) : (
+                        <FileText className="h-8 w-8 text-slate-400" />
+                      )}
+                      <span className="w-full truncate text-center font-mono text-xs text-slate-500">
+                        {item.key.split("/").pop()}
+                      </span>
+                    </div>
+                  )}
+                  <div className="space-y-2 p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="truncate font-mono text-xs text-slate-600" title={item.key}>
+                        {item.key.split("/").pop()}
+                      </span>
+                      <Badge variant="outline" className="shrink-0 text-xs">
+                        {item.kind}
+                      </Badge>
+                    </div>
+                    <div className="text-xs text-slate-400">
+                      {formatSize(item.size)} · {item.lastModified.slice(0, 10)}
+                    </div>
+                    <div className="flex items-center gap-2 pt-1">
+                      <button
+                        type="button"
+                        className="hover:text-brand-blue text-xs font-medium text-slate-500"
+                        onClick={() => setRenaming(item.key)}
+                      >
+                        <Pencil className="mr-0.5 inline h-3 w-3" />
+                        重命名
+                      </button>
+                      <label className="text-brand-blue cursor-pointer text-xs font-medium hover:underline">
+                        <input
+                          type="file"
+                          className="hidden"
+                          onChange={(e) => {
+                            if (e.target.files?.length) {
+                              void doUpload(
+                                e.target.files,
+                                itemKind === "other" ? "image" : itemKind,
+                                item.key,
+                              );
+                            }
+                            e.target.value = "";
+                          }}
+                        />
+                        <RefreshCw className="mr-0.5 inline h-3 w-3" />
+                        替换
+                      </label>
+                      <button
+                        type="button"
+                        className="hover:text-brand-blue text-xs font-medium text-slate-500"
+                        onClick={() => copyLink(item.url)}
+                      >
+                        <Copy className="mr-0.5 inline h-3 w-3" />
+                        复制链接
+                      </button>
+                      <button
+                        type="button"
+                        className="ml-auto text-xs font-medium text-red-600 hover:underline"
+                        onClick={() => setPendingDelete(item)}
+                      >
+                        <Trash2 className="mr-0.5 inline h-3 w-3" />
+                        删除
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            {filtered.length === 0 && (
+              <div className="col-span-full flex h-40 items-center justify-center rounded-xl border border-slate-200 bg-white text-sm text-slate-400">
+                <Images className="mr-2 h-5 w-5" /> 暂无素材
+              </div>
+            )}
+          </div>
+
+          <div className="rounded-xl border border-slate-200 bg-white">
+            <Pagination total={total} page={page} pageSize={PAGE_SIZE} onPageChange={setPage} />
+          </div>
+        </>
+      )}
+
+      {tab === "slots" && <SiteAssetsPanel />}
 
       {/* 删除确认 */}
       <Dialog
@@ -300,6 +354,8 @@ export default function MediaPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <RenameDialog itemKey={renaming} onClose={() => setRenaming(null)} onRenamed={fetchItems} />
     </div>
   );
 }
