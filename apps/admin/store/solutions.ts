@@ -1,6 +1,4 @@
 import { create } from "zustand";
-import { MOCK_PRODUCTS } from "@hiwhale/shared/constants";
-import type { ProductCategory } from "@hiwhale/shared/constants";
 import { adminApi } from "@/lib/api";
 
 export type AdminSolution = {
@@ -10,7 +8,7 @@ export type AdminSolution = {
   industry: string;
   summary: string;
   painPoints: string[];
-  /** 关联产品 slug 列表（UI 层；API 存的是品类，边界处转换） */
+  /** 关联产品 slug 列表 */
   products: string[];
   status: "published" | "draft";
 };
@@ -21,11 +19,11 @@ type ApiSolution = {
   title: { en: string; zh: string };
   summary: { en: string; zh: string };
   painPoints: Array<{ en: string; zh: string }>;
-  equipment: string[];
+  productSlugs: string[];
   status: "published" | "draft";
 };
 
-/** API → 页面形状：品类 → 该品类第一款产品的 slug */
+/** API → 页面形状 */
 function toRow(s: ApiSolution): AdminSolution {
   return {
     id: s.id,
@@ -34,19 +32,9 @@ function toRow(s: ApiSolution): AdminSolution {
     industry: s.industry,
     summary: s.summary.zh,
     painPoints: s.painPoints.map((p) => p.zh),
-    products: s.equipment
-      .map((c) => MOCK_PRODUCTS.find((p) => p.category === c)?.slug)
-      .filter((slug): slug is string => Boolean(slug)),
+    products: s.productSlugs ?? [],
     status: s.status,
   };
-}
-
-/** 页面 → API：产品 slug → 品类（去重） */
-function toEquipment(products: string[]): string[] {
-  const categories = products
-    .map((slug) => MOCK_PRODUCTS.find((p) => p.slug === slug)?.category)
-    .filter((c): c is ProductCategory => Boolean(c));
-  return Array.from(new Set(categories));
 }
 
 type SolutionsState = {
@@ -81,7 +69,7 @@ export const useSolutionsStore = create<SolutionsState>()((set, get) => ({
       title: { zh: payload.titleZh, en: payload.titleEn },
       summary: { zh: payload.summary, en: payload.summary },
       painPoints: payload.painPoints.map((p) => ({ zh: p, en: p })),
-      equipment: toEquipment(payload.products),
+      productSlugs: payload.products,
       status: editingId ? undefined : "draft",
     };
     if (editingId) {

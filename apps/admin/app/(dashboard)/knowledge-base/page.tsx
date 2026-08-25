@@ -30,6 +30,7 @@ import { ConfirmDeleteDialog } from "@/components/common/ConfirmDeleteDialog";
 import { PageHeader } from "@/components/common/PageHeader";
 import { adminApi, API_BASE } from "@/lib/api";
 import { useAdminAuthStore } from "@/store/auth";
+import { useProductsStore } from "@/store/products";
 
 type KbDoc = {
   id: string;
@@ -90,6 +91,8 @@ export default function KnowledgeBasePage() {
   const [pendingDeleteDoc, setPendingDeleteDoc] = useState<KbDoc | null>(null);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
+  const products = useProductsStore((s) => s.products);
+  const fetchProducts = useProductsStore((s) => s.fetchProducts);
 
   const fetchDocs = async () => {
     const data = await adminApi<ApiDoc[]>("/api/knowledge/documents");
@@ -102,6 +105,10 @@ export default function KnowledgeBasePage() {
   useEffect(() => {
     void fetchDocs().catch((e) => toast.error(e instanceof Error ? e.message : "加载失败"));
     void fetchFaqs().catch((e) => toast.error(e instanceof Error ? e.message : "加载失败"));
+    if (products.length === 0) {
+      void fetchProducts().catch(() => toast.error("产品列表加载失败，已回退到内置数据"));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const retryVectorize = (doc: KbDoc) => {
@@ -356,7 +363,7 @@ export default function KnowledgeBasePage() {
                 onChange={(e) => setUploadProduct(e.target.value)}
               >
                 <option value="">通用</option>
-                {MOCK_PRODUCTS.map((p) => (
+                {(products.length > 0 ? products : MOCK_PRODUCTS).map((p) => (
                   <option key={p.slug} value={p.model}>
                     {p.name.zh}（{p.model}）
                   </option>

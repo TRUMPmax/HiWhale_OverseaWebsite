@@ -13,6 +13,8 @@ export type AdminCase = {
   /** 成果数据：值 + 标签 */
   results: Array<{ value: string; label: string }>;
   testimonial: { quote: string; author: string; role: string };
+  /** 关联产品 slug 列表 */
+  products: string[];
   status: "published" | "draft";
 };
 
@@ -30,6 +32,7 @@ type ApiCase = {
     author?: { en: string; zh: string };
     role?: { en: string; zh: string };
   };
+  productSlugs?: string[];
   status: "published" | "draft";
 };
 
@@ -48,6 +51,7 @@ function toRow(c: ApiCase): AdminCase {
       author: c.testimonial.author?.zh ?? "",
       role: c.testimonial.role?.zh ?? "",
     },
+    products: c.productSlugs ?? [],
     status: c.status,
   };
 }
@@ -92,6 +96,7 @@ export const useCasesStore = create<CasesState>()((set, get) => ({
         author: both(payload.testimonial.author),
         role: both(payload.testimonial.role),
       },
+      productSlugs: payload.products,
       status: editingId ? undefined : "draft",
     };
     if (editingId) {

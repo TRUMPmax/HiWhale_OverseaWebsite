@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Upload } from "lucide-react";
 import { toast } from "sonner";
-import { getLocalizedLabel, INDUSTRY_LABELS, Industry } from "@hiwhale/shared/constants";
+import { getLocalizedLabel, INDUSTRY_LABELS, Industry, MOCK_PRODUCTS } from "@hiwhale/shared/constants";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useCasesStore, type AdminCase } from "@/store/cases";
+import { useProductsStore } from "@/store/products";
 
 type CaseFormDialogProps = {
   open: boolean;
@@ -34,12 +35,22 @@ const EMPTY = {
   quote: "",
   author: "",
   role: "",
+  products: [] as string[],
 };
 
 /** 案例 新增/编辑 弹窗表单 */
 export function CaseFormDialog({ open, onOpenChange, initial }: CaseFormDialogProps) {
   const saveCase = useCasesStore((s) => s.saveCase);
+  const products = useProductsStore((s) => s.products);
+  const fetchProducts = useProductsStore((s) => s.fetchProducts);
   const [form, setForm] = useState(EMPTY);
+
+  useEffect(() => {
+    if (open && products.length === 0) {
+      void fetchProducts().catch(() => toast.error("产品列表加载失败，已回退到内置数据"));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   useEffect(() => {
     if (open) {
@@ -56,6 +67,7 @@ export function CaseFormDialog({ open, onOpenChange, initial }: CaseFormDialogPr
               quote: initial.testimonial.quote,
               author: initial.testimonial.author,
               role: initial.testimonial.role,
+              products: initial.products,
             }
           : EMPTY,
       );
@@ -64,6 +76,14 @@ export function CaseFormDialog({ open, onOpenChange, initial }: CaseFormDialogPr
 
   const set = <K extends keyof typeof EMPTY>(key: K, value: (typeof EMPTY)[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
+
+  const toggleProduct = (slug: string) =>
+    set(
+      "products",
+      form.products.includes(slug)
+        ? form.products.filter((s) => s !== slug)
+        : [...form.products, slug],
+    );
 
   const submit = async () => {
     if (!form.clientName.trim() || !form.industry || !form.project.trim()) {
@@ -79,6 +99,7 @@ export function CaseFormDialog({ open, onOpenChange, initial }: CaseFormDialogPr
       solution: form.solution,
       results: form.results.filter((r) => r.value.trim() || r.label.trim()),
       testimonial: { quote: form.quote, author: form.author, role: form.role },
+      products: form.products,
     };
     try {
       await saveCase(payload, initial?.id);
@@ -208,6 +229,25 @@ export function CaseFormDialog({ open, onOpenChange, initial }: CaseFormDialogPr
                 value={form.role}
                 onChange={(e) => set("role", e.target.value)}
               />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>关联产品</Label>
+            <div className="grid grid-cols-2 gap-2">
+              {(products.length > 0 ? products : MOCK_PRODUCTS).map((p) => (
+                <label
+                  key={p.slug}
+                  className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600"
+                >
+                  <input
+                    type="checkbox"
+                    className="accent-brand-blue h-4 w-4"
+                    checked={form.products.includes(p.slug)}
+                    onChange={() => toggleProduct(p.slug)}
+                  />
+                  {p.name.zh}（{p.model}）
+                </label>
+              ))}
             </div>
           </div>
           <div className="space-y-1.5">

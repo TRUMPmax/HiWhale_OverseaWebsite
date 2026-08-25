@@ -20,6 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useProductsStore } from "@/store/products";
 import { useSolutionsStore, type AdminSolution } from "@/store/solutions";
 
 type SolutionFormDialogProps = {
@@ -41,8 +42,17 @@ const EMPTY = {
 /** 方案 新增/编辑 弹窗表单 */
 export function SolutionFormDialog({ open, onOpenChange, initial }: SolutionFormDialogProps) {
   const saveSolution = useSolutionsStore((s) => s.saveSolution);
+  const products = useProductsStore((s) => s.products);
+  const fetchProducts = useProductsStore((s) => s.fetchProducts);
 
   const [form, setForm] = useState(EMPTY);
+
+  useEffect(() => {
+    if (open && products.length === 0) {
+      void fetchProducts().catch(() => toast.error("产品列表加载失败，已回退到内置数据"));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   useEffect(() => {
     if (open) {
@@ -184,7 +194,7 @@ export function SolutionFormDialog({ open, onOpenChange, initial }: SolutionForm
           <div className="space-y-2">
             <Label>关联产品</Label>
             <div className="grid grid-cols-2 gap-2">
-              {MOCK_PRODUCTS.map((p) => (
+              {(products.length > 0 ? products : MOCK_PRODUCTS).map((p) => (
                 <label
                   key={p.slug}
                   className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600"
