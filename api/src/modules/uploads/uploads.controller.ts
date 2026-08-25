@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   ForbiddenException,
+  Get,
   NotFoundException,
   Post,
   Query,
@@ -25,7 +26,24 @@ class DeleteUploadDto {
 export class UploadsController {
   constructor(private readonly uploads: UploadsService) {}
 
-  /** 员工上传素材：POST /api/uploads?kind=image|spec|model（multipart, 字段名 file） */
+  /** 素材列表：GET /api/uploads?page&pageSize&prefix（员工） */
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  list(
+    @CurrentUser() payload: JwtPayload,
+    @Query("page") page?: string,
+    @Query("pageSize") pageSize?: string,
+    @Query("prefix") prefix?: string,
+  ) {
+    if (payload.kind !== "staff") throw new ForbiddenException("仅后台员工可访问");
+    return this.uploads.listObjects(
+      Math.max(1, Number(page ?? 1)),
+      Math.min(100, Math.max(1, Number(pageSize ?? 50))),
+      prefix,
+    );
+  }
+
+  /** 员工上传素材：POST /api/uploads?kind=image|spec|model&key=<覆盖指定 key>（multipart, 字段名 file） */
   @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor("file"))
@@ -33,9 +51,10 @@ export class UploadsController {
     @CurrentUser() payload: JwtPayload,
     @UploadedFile() file: Express.Multer.File,
     @Query("kind") kind = "image",
+    @Query("key") key?: string,
   ) {
     if (payload.kind !== "staff") throw new ForbiddenException("仅后台员工可上传");
-    return this.uploads.upload(file, kind);
+    return this.uploads.upload(file, kind, key);
   }
 
   /** 删除素材：DELETE /api/uploads {key} */

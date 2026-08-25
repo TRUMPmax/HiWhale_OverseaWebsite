@@ -56,7 +56,7 @@ export class UploadsService implements OnModuleInit {
     }
   }
 
-  async upload(file: Express.Multer.File, kind: string) {
+  async upload(file: Express.Multer.File, kind: string, targetKey?: string) {
     const rule = KIND_RULES[kind];
     if (!rule) throw new BadRequestException("kind 必须为 image / spec / model / doc");
     if (!file) throw new BadRequestException("请选择文件");
@@ -75,12 +75,44 @@ export class UploadsService implements OnModuleInit {
       );
     }
 
+    // 指定 key 时覆盖原对象（替换文件，URL 引用保持不变）
     const month = new Date().toISOString().slice(0, 7);
-    const key = `${kind}/${month}/${crypto.randomUUID()}.${ext}`;
+    const key = targetKey ?? `${kind}/${month}/${crypto.randomUUID()}.${ext}`;
     await this.client.putObject(this.bucket, key, file.buffer, file.size, {
       "Content-Type": file.mimetype,
     });
     return { key, url: `${this.publicBase}/${key}` };
+  }
+
+  /** 列出 bucket 对象（分页 + 可选前缀过滤） */
+  async listObjects(page: number, pageSize: number, prefix?: string) {
+    const objects: Array<{
+      key: string;
+      url: string;
+      size: number;
+      lastModified: string;
+      kind: string;
+    }> = [];
+    const stream = this.client.listObjects(this.bucket, prefix ?? "", true);
+    for await (const obj of stream) {
+      if (!obj.name) continue;
+      objects.push({
+        key: obj.name,
+        url: `${this.publicBase}/${obj.name}`,
+        size: obj.size ?? 0,
+        lastModified: (obj.lastModified ?? new Date(0)).toISOString(),
+        kind: obj.name.split("/")[0] ?? "other",
+      });
+    }
+    // 最新在前
+    objects.sort((a, b) => b.lastModified.localeCompare(a.lastModified));
+    const start = (page - 1) * pageSize;
+    return {
+      items: objects.slice(start, start + pageSize),
+      total: objects.length,
+      page,
+      pageSize,
+    };
   }
 
   /** 删除 MinIO 对象；不存在时返回 null */

@@ -23,8 +23,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useProductsStore, type AdminProduct, type ProductPayload } from "@/store/products";
+import { LangPair } from "./LangPair";
+import { SpecGroupsEditor, type SpecGroupDraft } from "./SpecGroupsEditor";
 import { fetchAdminTaxonomy, STATIC_ADMIN_TAXONOMY, type TaxonomyGroup } from "@/lib/taxonomy";
 import { useAdminAuthStore } from "@/store/auth";
 
@@ -33,10 +34,9 @@ const schema = z.object({
   nameEn: z.string().min(1, "请输入英文名称"),
   model: z.string().min(1, "请输入型号"),
   category: z.string().min(1, "请选择品类"),
-  description: z.string(),
   status: z.boolean(),
-  quickSpecs: z.array(z.object({ label: z.string(), value: z.string() })),
-  features: z.array(z.object({ text: z.string() })),
+  quickSpecs: z.array(z.object({ labelZh: z.string(), labelEn: z.string(), value: z.string() })),
+  features: z.array(z.object({ zh: z.string(), en: z.string() })),
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -203,46 +203,84 @@ export function ProductForm({ initial }: ProductFormProps) {
           nameEn: initial.record.name.en,
           model: initial.record.model,
           category: initial.record.category,
-          description: initial.record.description.zh,
           status: initial.record.status === "on",
           quickSpecs: initial.record.quickSpecs.map((s) => ({
-            label: s.label.zh,
+            labelZh: s.label.zh,
+            labelEn: s.label.en,
             value: s.value,
           })),
-          features: initial.record.features.map((f) => ({ text: f.zh })),
+          features: initial.record.features.map((f) => ({ zh: f.zh, en: f.en })),
         }
       : {
           nameZh: "",
           nameEn: "",
           model: "",
           category: "",
-          description: "",
           status: true,
-          quickSpecs: [{ label: "", value: "" }],
-          features: [{ text: "" }],
+          quickSpecs: [{ labelZh: "", labelEn: "", value: "" }],
+          features: [{ zh: "", en: "" }],
         },
   });
 
   const specs = useFieldArray({ control, name: "quickSpecs" });
   const features = useFieldArray({ control, name: "features" });
 
+  /** 卖点/描述（受控双语字段） */
+  const [tagline, setTagline] = useState({
+    zh: initial?.record.tagline.zh ?? "",
+    en: initial?.record.tagline.en ?? "",
+  });
+  const [description, setDescription] = useState({
+    zh: initial?.record.description.zh ?? "",
+    en: initial?.record.description.en ?? "",
+  });
+  /** 详细参数表（受控编辑器） */
+  const [specGroups, setSpecGroups] = useState<SpecGroupDraft[]>(
+    initial?.record.specGroups.map((g) => ({
+      groupZh: g.group.zh,
+      groupEn: g.group.en,
+      items: g.items.map((i) => ({ labelZh: i.label.zh, labelEn: i.label.en, value: i.value })),
+    })) ?? [],
+  );
+
   const onSubmit = async (values: FormValues) => {
     const category = values.category as ProductCategory;
+
+    // 英文字段缺失统计（允许保存，缺失处以中文回退填充）
+    let missingEn = 0;
+    const enOf = (zh: string, en: string) => {
+      if (!en.trim()) missingEn++;
+      return en.trim() || zh;
+    };
+
     const payload: ProductPayload = {
       slug: initial?.record.slug ?? `custom-${Date.now()}`,
       model: values.model,
       category,
       group: getGroupOfCategory(category),
-      name: { zh: values.nameZh, en: values.nameEn },
-      tagline: initial?.record.tagline ?? { zh: "", en: "" },
-      description: { zh: values.description, en: values.description },
+      name: { zh: values.nameZh, en: enOf(values.nameZh, values.nameEn) },
+      tagline: { zh: tagline.zh, en: enOf(tagline.zh, tagline.en) },
+      description: { zh: description.zh, en: enOf(description.zh, description.en) },
       quickSpecs: values.quickSpecs
-        .filter((r) => r.label.trim() && r.value.trim())
-        .map((r) => ({ label: { zh: r.label, en: r.label }, value: r.value })),
-      specGroups: initial?.record.specGroups ?? [],
+        .filter((r) => r.labelZh.trim() && r.value.trim())
+        .map((r) => ({
+          label: { zh: r.labelZh, en: enOf(r.labelZh, r.labelEn) },
+          value: r.value,
+        })),
+      specGroups: specGroups
+        .filter((g) => g.groupZh.trim())
+        .map((g) => ({
+          group: { zh: g.groupZh, en: enOf(g.groupZh, g.groupEn) },
+          items: g.items
+            .filter((i) => i.labelZh.trim() && i.value.trim())
+            .map((i) => ({
+              label: { zh: i.labelZh, en: enOf(i.labelZh, i.labelEn) },
+              value: i.value,
+            })),
+        })),
       features: values.features
-        .filter((f) => f.text.trim())
-        .map((f) => ({ zh: f.text, en: f.text })),
+        .filter((f) => f.zh.trim())
+        .map((f) => ({ zh: f.zh, en: enOf(f.zh, f.en) })),
       scenarios: initial?.record.scenarios ?? [],
       imageName: initial?.record.imageName ?? `product-${values.model.toLowerCase()}.png`,
       imageUrl: images[0] ?? null,
@@ -256,6 +294,9 @@ export function ProductForm({ initial }: ProductFormProps) {
         await updateProduct(initial.record.id, payload);
       } else {
         await addProduct(payload);
+      }
+      if (missingEn > 0) {
+        toast.warning(`有 ${missingEn} 个英文字段为空，已按中文回退填充（建议补全翻译）`);
       }
       // 保存成功后才删除 MinIO 对象（避免未保存时数据库指向已删除文件）
       await flushPendingDeletions();
@@ -307,9 +348,26 @@ export function ProductForm({ initial }: ProductFormProps) {
             </select>
             {errors.category && <p className="text-xs text-red-600">{errors.category.message}</p>}
           </div>
-          <div className="col-span-2 space-y-1.5">
-            <Label>描述</Label>
-            <Textarea rows={3} {...register("description")} />
+          <div className="col-span-2">
+            <LangPair
+              label="一句话卖点"
+              textarea
+              zhValue={tagline.zh}
+              enValue={tagline.en}
+              onZhChange={(v) => setTagline((t) => ({ ...t, zh: v }))}
+              onEnChange={(v) => setTagline((t) => ({ ...t, en: v }))}
+            />
+          </div>
+          <div className="col-span-2">
+            <LangPair
+              label="描述"
+              textarea
+              rows={3}
+              zhValue={description.zh}
+              enValue={description.en}
+              onZhChange={(v) => setDescription((d) => ({ ...d, zh: v }))}
+              onEnChange={(v) => setDescription((d) => ({ ...d, en: v }))}
+            />
           </div>
           <label className="col-span-2 flex items-center gap-2 text-sm text-slate-700">
             <input type="checkbox" className="accent-brand-blue h-4 w-4" {...register("status")} />
@@ -325,7 +383,7 @@ export function ProductForm({ initial }: ProductFormProps) {
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => specs.append({ label: "", value: "" })}
+            onClick={() => specs.append({ labelZh: "", labelEn: "", value: "" })}
           >
             <Plus /> 添加参数
           </Button>
@@ -334,8 +392,12 @@ export function ProductForm({ initial }: ProductFormProps) {
           {specs.fields.map((field, index) => (
             <div key={field.id} className="flex items-center gap-3">
               <Input
-                placeholder="参数名，如：额定载重"
-                {...register(`quickSpecs.${index}.label`)}
+                placeholder="参数名（中文），如：额定载重"
+                {...register(`quickSpecs.${index}.labelZh`)}
+              />
+              <Input
+                placeholder="Label (EN), e.g. Load Capacity"
+                {...register(`quickSpecs.${index}.labelEn`)}
               />
               <Input
                 placeholder="参数值，如：1,500 kg"
@@ -362,7 +424,7 @@ export function ProductForm({ initial }: ProductFormProps) {
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => features.append({ text: "" })}
+            onClick={() => features.append({ zh: "", en: "" })}
           >
             <Plus /> 添加卖点
           </Button>
@@ -370,7 +432,8 @@ export function ProductForm({ initial }: ProductFormProps) {
         <CardContent className="space-y-3">
           {features.fields.map((field, index) => (
             <div key={field.id} className="flex items-center gap-3">
-              <Input placeholder="卖点描述" {...register(`features.${index}.text`)} />
+              <Input placeholder="卖点描述（中文）" {...register(`features.${index}.zh`)} />
+              <Input placeholder="Feature (EN)" {...register(`features.${index}.en`)} />
               <Button
                 type="button"
                 variant="ghost"
@@ -382,6 +445,16 @@ export function ProductForm({ initial }: ProductFormProps) {
               </Button>
             </div>
           ))}
+        </CardContent>
+      </Card>
+
+      {/* 详细参数表（中英双语） */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">详细参数表</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <SpecGroupsEditor groups={specGroups} onChange={setSpecGroups} />
         </CardContent>
       </Card>
 
