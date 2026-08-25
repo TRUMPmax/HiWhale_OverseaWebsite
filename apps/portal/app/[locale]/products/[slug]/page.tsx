@@ -177,7 +177,8 @@ export default async function ProductDetailPage({
       {isSoftware ? (
         <InterfaceShowcaseSection product={product} loc={loc} />
       ) : (
-        <Viewer3DSection slug={slug} />
+        // 仅在已上传 3D 模型时渲染 360° 查看器分区
+        product.modelUrl && <Viewer3DSection slug={slug} />
       )}
 
       {/* 技术规格表 */}

@@ -127,10 +127,19 @@ export default function ProductsPage() {
             {pageItems.map((p) => (
               <TableRow key={p.id}>
                 <TableCell>
-                  <span className="flex h-10 w-14 flex-col items-center justify-center rounded-md bg-slate-100 text-slate-400">
-                    <ImageIcon className="h-4 w-4" />
-                    <span className="mt-0.5 font-mono text-[0.625rem]">{p.model}</span>
-                  </span>
+                  {p.imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={p.imageUrl}
+                      alt={p.model}
+                      className="h-10 w-14 rounded-md border border-slate-200 object-cover"
+                    />
+                  ) : (
+                    <span className="flex h-10 w-14 flex-col items-center justify-center rounded-md bg-slate-100 text-slate-400">
+                      <ImageIcon className="h-4 w-4" />
+                      <span className="mt-0.5 font-mono text-[0.625rem]">{p.model}</span>
+                    </span>
+                  )}
                 </TableCell>
                 <TableCell className="font-medium">{p.name.zh}</TableCell>
                 <TableCell className="font-mono text-xs">{p.model}</TableCell>

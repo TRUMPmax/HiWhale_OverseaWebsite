@@ -20,6 +20,8 @@ export type AdminProduct = {
   scenarios: string[];
   imageName: string;
   imageUrl?: string | null;
+  /** 全部已上传图片 URL（主图在前，细节图随后） */
+  imageUrls?: string[];
   specUrl?: string | null;
   modelUrl?: string | null;
   status: "on" | "off";

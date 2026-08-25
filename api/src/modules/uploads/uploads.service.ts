@@ -82,4 +82,15 @@ export class UploadsService implements OnModuleInit {
     });
     return { key, url: `${this.publicBase}/${key}` };
   }
+
+  /** 删除 MinIO 对象；不存在时返回 null */
+  async deleteObject(key: string) {
+    try {
+      await this.client.statObject(this.bucket, key);
+    } catch {
+      return null;
+    }
+    await this.client.removeObject(this.bucket, key);
+    return { deleted: true, key };
+  }
 }
