@@ -2,7 +2,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Reveal } from "@/components/ui/Reveal";
 import { pickLang, type CompanyAbout } from "./types";
 
-const DEFAULT_MILESTONES = ["m2016", "m2018", "m2020", "m2022", "m2024", "m2026"] as const;
+const DEFAULT_MILESTONES = ["m2017", "m2018", "m2020", "m2022", "m2024", "m2026"] as const;
 
 /** 关于我们 3：里程碑时间线（桌面端左右交错；内容可来自公司数据中台） */
 export function Milestones({ data }: { data?: CompanyAbout | null }) {

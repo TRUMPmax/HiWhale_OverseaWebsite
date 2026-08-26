@@ -145,6 +145,9 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
       tl.to(q(".np-curtain-logo"), { opacity: 1, scale: 1, duration: 0.1 }, 0.84);
       tl.to(q(".np-curtain-text"), { opacity: 1, y: 0, duration: 0.08, stagger: 0.03 }, 0.9);
 
+      // 终幕停留段：时间轴向后延长，品牌画面保持不动，让最后一屏"多停一会"再进入过渡带
+      tl.set({}, {}, 1.3);
+
       // 鼠标视差：各层按深度 ±px 跟随
       const parallax = PARALLAX_LAYERS.map(([sel, depth]) => {
         const el = container.querySelector(sel);
@@ -187,7 +190,7 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
   }, []);
 
   return (
-    <section ref={containerRef} className="relative hidden h-[400vh] md:block">
+    <section ref={containerRef} className="relative hidden h-[460vh] md:block">
       <div
         ref={stageRef}
         className="h-screen w-full overflow-hidden text-white"
@@ -221,23 +224,37 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
             className="np-products-inner mt-10 flex max-w-5xl flex-wrap items-center justify-center gap-4"
             style={{ transformStyle: "preserve-3d" }}
           >
-            {groups.map((group, i) => (
-              <div
-                key={group.key}
-                className="np-chip w-24 lg:w-32"
-                style={{ transform: `translateZ(${CHIP_DEPTHS[i]}px)` }}
-              >
-                <div className="border-brand-blue/40 bg-brand-blue/20 flex aspect-[4/3] flex-col items-center justify-center rounded-xl border p-2">
-                  <span className="text-center text-xs font-medium">
-                    {taxonomyLabel(taxonomy, group.key, locale)}
-                  </span>
-                  <span className="mt-1 font-mono text-[0.625rem] text-white/60">
-                    {GROUP_IMAGE_NAMES[group.key as ProductGroup] ??
-                      `product-group-${group.key.toLowerCase()}.png`}
-                  </span>
+            {groups.map((group, i) => {
+              const file =
+                GROUP_IMAGE_NAMES[group.key as ProductGroup] ??
+                `product-group-${group.key.toLowerCase()}.png`;
+              const label = taxonomyLabel(taxonomy, group.key, locale) ?? group.key;
+              return (
+                <div
+                  key={group.key}
+                  className="np-chip w-24 lg:w-32"
+                  style={{ transform: `translateZ(${CHIP_DEPTHS[i]}px)` }}
+                >
+                  <div className="border-brand-blue/40 relative aspect-[4/3] overflow-hidden rounded-xl border">
+                    <SlottedImage
+                      src={`/images/products/${file}`}
+                      alt={label}
+                      className="absolute inset-0 h-full w-full object-cover"
+                      placeholder={{
+                        ratio: "aspect-[4/3]",
+                        variant: "dark",
+                        compact: true,
+                        label: "产品分组组合图",
+                        name: file,
+                      }}
+                    />
+                    <span className="absolute inset-x-0 bottom-0 bg-black/55 px-1 py-0.5 text-center text-xs font-medium">
+                      {label}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <div className="np-hint absolute bottom-8 flex flex-col items-center gap-2 text-sm text-white/60">
             <span>{t("narrative.scrollHint")}</span>

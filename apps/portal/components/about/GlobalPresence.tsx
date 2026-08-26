@@ -4,7 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { SlottedImage } from "@/components/ui/SlottedImage";
 import { pickLang, type CompanyAbout } from "./types";
 
-const DEFAULT_LOCATIONS = ["hq", "frankfurt", "singapore", "houston"] as const;
+const DEFAULT_LOCATIONS = ["shenzhen", "suzhou", "qingdao", "overseas"] as const;
 
 /** 关于我们 4：全球布局（内容可来自公司数据中台） */
 export function GlobalPresence({ data }: { data?: CompanyAbout | null }) {

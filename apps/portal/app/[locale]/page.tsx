@@ -1,5 +1,6 @@
 import { Hero } from "@/components/home/Hero";
 import { HeroNarrative } from "@/components/home/HeroNarrative";
+import { Starfield } from "@/components/ui/Starfield";
 import { ProductEcosystem } from "@/components/home/ProductEcosystem";
 import { SolutionIntegration } from "@/components/home/SolutionIntegration";
 import { IndustrySolutions } from "@/components/home/IndustrySolutions";
@@ -21,6 +22,16 @@ export default async function HomePage() {
 
   return (
     <>
+      {/* 全局页底：夜空渐变 + 星空（fixed 铺底；Hero 自带同色渐变覆盖，功能板块用半透明面板浮于其上） */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 -z-10"
+        style={{
+          background: "linear-gradient(180deg, #0A2540 0%, #061529 60%, #050D1F 100%)",
+        }}
+      >
+        <Starfield className="h-full w-full" density={0.0006} yellowRatio={0.12} />
+      </div>
       <HeroNarrative taxonomy={taxonomy} />
       <Hero />
       <ProductEcosystem taxonomy={taxonomy} />

@@ -15,7 +15,7 @@ export function SolutionIntegration() {
   const t = useTranslations("home.integration");
 
   return (
-    <section className="bg-white">
+    <section className="bg-white/75 backdrop-blur-sm">
       <div className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24 lg:px-12">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-heading text-foreground text-3xl font-bold md:text-4xl">

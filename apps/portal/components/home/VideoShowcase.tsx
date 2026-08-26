@@ -1,19 +1,12 @@
 import { useTranslations } from "next-intl";
-import { Play } from "lucide-react";
 import { Placeholder } from "@/components/ui/Placeholder";
-import { Starfield } from "@/components/ui/Starfield";
 
-/** 首页分区 6：企业宣传视频（深蓝夜幕 + 星光，16:9 播放器占位） */
+/** 首页分区 6：企业宣传视频（共享全局星空页底，16:9 播放器占位） */
 export function VideoShowcase() {
   const t = useTranslations("home.video");
 
   return (
-    <section className="bg-night-sky relative overflow-hidden text-white">
-      <Starfield
-        className="absolute inset-0 h-full w-full opacity-70"
-        density={0.0004}
-        yellowRatio={0.2}
-      />
+    <section className="relative overflow-hidden text-white">
       <div className="relative mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24 lg:px-12">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-heading text-3xl font-bold md:text-4xl">{t("title")}</h2>
@@ -28,13 +21,6 @@ export function VideoShowcase() {
             size={t("placeholder.size")}
             name="home-brand-video.mp4"
           />
-          <button
-            type="button"
-            aria-label={t("play")}
-            className="bg-brand-blue absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full p-5 shadow-lg transition-transform hover:scale-105"
-          >
-            <Play className="h-8 w-8 fill-white text-white" />
-          </button>
         </div>
       </div>
     </section>

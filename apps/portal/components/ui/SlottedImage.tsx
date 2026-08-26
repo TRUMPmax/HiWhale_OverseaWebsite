@@ -12,11 +12,12 @@ type SlottedImageProps = {
   className: string;
   placeholder: {
     label: string;
-    size: string;
+    size?: string;
     name: string;
     ratio?: string;
     className?: string;
     variant?: "light" | "dark" | "block";
+    compact?: boolean;
   };
 };
 
@@ -43,6 +44,7 @@ export function SlottedImage({ src, fallbackSrc, alt, className, placeholder }: 
         ratio={placeholder.ratio}
         className={placeholder.className}
         variant={placeholder.variant}
+        compact={placeholder.compact}
         label={placeholder.label}
         size={placeholder.size}
         name={placeholder.name}

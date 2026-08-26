@@ -15,6 +15,8 @@ type PlaceholderProps = {
   ratio?: string;
   /** 配色变体：light 虚线（白/浅灰区块）、dark 虚线（深蓝区块）、block 实色块（无素材时的色块占位） */
   variant?: "light" | "dark" | "block";
+  /** 紧凑模式：小尺寸槽位（如 Hero 产品芯片），缩小内边距/图标/文字 */
+  compact?: boolean;
   className?: string;
 };
 
@@ -27,6 +29,7 @@ export function Placeholder({
   name,
   ratio,
   variant = "light",
+  compact = false,
   className = "",
 }: PlaceholderProps) {
   const containerClass =
@@ -50,6 +53,22 @@ export function Placeholder({
       : variant === "block"
         ? "bg-brand-blue/20 text-brand-blue"
         : "border-border text-muted border bg-white";
+
+  if (compact) {
+    return (
+      <div
+        className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-2 text-center ${containerClass} ${ratio ?? ""} ${className}`}
+      >
+        <ImageIcon className={`h-4 w-4 ${iconClass}`} />
+        <span className={`mt-1 text-xs font-medium leading-tight ${labelClass}`}>{label}</span>
+        {name && (
+          <span className={`mt-1 break-all font-mono text-[0.5rem] leading-tight ${subClass}`}>
+            {name}
+          </span>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div

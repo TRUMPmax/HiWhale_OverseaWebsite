@@ -14,7 +14,7 @@ import { API_BASE, apiGet, apiPatch } from "@/lib/api";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { useAuthStore } from "@/store/auth";
 import { useChatStore } from "@/store/chat";
-import { MOCK_INQUIRIES, type MockInquiry } from "./mock-inquiries";
+import type { MockInquiry } from "./mock-inquiries";
 import { ChatHistoryViewer, type StoredChatMessage } from "./ChatHistoryViewer";
 import { InquiryDrawer } from "./InquiryDrawer";
 
@@ -62,7 +62,7 @@ export function DashboardClient() {
   >([]);
   const [chatApiFailed, setChatApiFailed] = useState(false);
   const [savedItems, setSavedItems] = useState<SavedItem[]>([]);
-  const [inquiries, setInquiries] = useState<MockInquiry[]>(MOCK_INQUIRIES);
+  const [inquiries, setInquiries] = useState<MockInquiry[]>([]);
   const [selectedInquiry, setSelectedInquiry] = useState<MockInquiry | null>(null);
   const [profileSaved, setProfileSaved] = useState(false);
   const [profile, setProfile] = useState({
@@ -92,7 +92,7 @@ export function DashboardClient() {
     if (user) setProfile((p) => ({ ...p, name: user.name, email: user.email }));
   }, [user]);
 
-  // 我的询盘：登录后从 API 拉取（失败回退 Mock）
+  // 我的询盘：登录后从 API 拉取（失败保持空态，不展示假数据）
   useEffect(() => {
     if (!token) return;
     type ApiInquiry = {
@@ -122,7 +122,7 @@ export function DashboardClient() {
         );
       })
       .catch(() => {
-        // API 不可用时保留 Mock 展示
+        // API 不可用时保持空列表（加载失败不展示假数据）
       });
   }, [token]);
 
