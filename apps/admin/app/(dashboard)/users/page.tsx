@@ -26,6 +26,7 @@ import { PageHeader } from "@/components/common/PageHeader";
 import { Pagination } from "@/components/common/Pagination";
 import { UserDrawer } from "@/components/users/UserDrawer";
 import type { MockPortalUser } from "@/lib/mock/users";
+import { useAdminAuthStore } from "@/store/auth";
 import { useUsersStore } from "@/store/users";
 
 const PAGE_SIZE = 8;
@@ -36,11 +37,14 @@ export default function UsersPage() {
   const loading = useUsersStore((s) => s.loading);
   const fetchUsers = useUsersStore((s) => s.fetchUsers);
   const toggleStatus = useUsersStore((s) => s.toggleStatus);
+  const removeUser = useUsersStore((s) => s.remove);
+  const isSuperAdmin = useAdminAuthStore((s) => s.admin?.role === "SUPER_ADMIN");
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<MockPortalUser | null>(null);
   const [pendingToggle, setPendingToggle] = useState<MockPortalUser | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<MockPortalUser | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -57,6 +61,12 @@ export default function UsersPage() {
     void toggleStatus(user.id)
       .then(() => toast.success(user.status === "active" ? "已禁用该用户" : "已启用该用户"))
       .catch((e) => toast.error(e instanceof Error ? e.message : "操作失败"));
+  };
+
+  const handleDelete = (user: MockPortalUser) => {
+    void removeUser(user.id)
+      .then(() => toast.success(`已删除用户 ${user.name}`))
+      .catch((e) => toast.error(e instanceof Error ? e.message : "删除失败"));
   };
 
   return (
@@ -129,6 +139,15 @@ export default function UsersPage() {
                   >
                     {user.status === "active" ? "禁用" : "启用"}
                   </button>
+                  {isSuperAdmin && (
+                    <button
+                      type="button"
+                      className="ml-4 text-sm font-medium text-red-600 hover:underline"
+                      onClick={() => setPendingDelete(user)}
+                    >
+                      删除
+                    </button>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
@@ -177,6 +196,35 @@ export default function UsersPage() {
               }}
             >
               {pendingToggle?.status === "active" ? "确认禁用" : "确认启用"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={pendingDelete !== null}
+        onOpenChange={(open) => !open && setPendingDelete(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>确认删除用户？</DialogTitle>
+            <DialogDescription>
+              将永久删除 {pendingDelete?.name}（{pendingDelete?.email}
+              ），其收藏与 AI 会话记录将一并清除，且不可恢复。
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPendingDelete(null)}>
+              取消
+            </Button>
+            <Button
+              className="bg-red-600 hover:bg-red-700"
+              onClick={() => {
+                if (pendingDelete) handleDelete(pendingDelete);
+                setPendingDelete(null);
+              }}
+            >
+              确认删除
             </Button>
           </DialogFooter>
         </DialogContent>

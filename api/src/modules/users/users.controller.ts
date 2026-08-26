@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   Param,
@@ -15,6 +16,11 @@ import { UsersService } from "./users.service";
 
 function requireStaff(payload: JwtPayload) {
   if (payload.kind !== "staff") throw new ForbiddenException("仅后台员工可操作");
+}
+
+function requireSuperAdmin(payload: JwtPayload) {
+  requireStaff(payload);
+  if (payload.role !== "SUPER_ADMIN") throw new ForbiddenException("仅系统管理员可删除用户");
 }
 
 @Controller("users")
@@ -67,5 +73,12 @@ export class UsersController {
   ) {
     requireStaff(payload);
     return this.users.setStatus(id, dto.status);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(":id")
+  remove(@CurrentUser() payload: JwtPayload, @Param("id") id: string) {
+    requireSuperAdmin(payload);
+    return this.users.remove(id, payload.sub);
   }
 }

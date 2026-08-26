@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../../common/prisma/prisma.service";
+import { OperationLogService } from "../logs/logs.module";
 import type { ListUsersDto, UpdateProfileDto } from "./dto/users.dto";
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly logs: OperationLogService,
+  ) {}
 
   /** 员工：门户用户列表（搜索/分页） */
   async list(query: ListUsersDto) {
@@ -82,6 +86,15 @@ export class UsersService {
       where: { id },
       data: { status: status === "active" ? "ACTIVE" : "DISABLED" },
     });
+    return { ok: true };
+  }
+
+  /** 员工（SUPER_ADMIN）：硬删除门户用户（收藏/AI 会话随 schema 级联清理） */
+  async remove(id: string, operatorId?: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) throw new NotFoundException("用户不存在");
+    await this.prisma.user.delete({ where: { id } });
+    if (operatorId) await this.logs.log(operatorId, "删除门户用户", user.email);
     return { ok: true };
   }
 

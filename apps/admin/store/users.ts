@@ -16,6 +16,7 @@ type UsersState = {
   fetchUsers: (search?: string) => Promise<void>;
   fetchDetail: (id: string) => Promise<void>;
   toggleStatus: (id: string) => Promise<void>;
+  remove: (id: string) => Promise<void>;
 };
 
 /** 用户管理 store：真实 API 数据层 */
@@ -46,6 +47,10 @@ export const useUsersStore = create<UsersState>()((set, get) => ({
       method: "PATCH",
       body: { status: user.status === "active" ? "disabled" : "active" },
     });
+    await get().fetchUsers();
+  },
+  remove: async (id) => {
+    await adminApi(`/api/users/${id}`, { method: "DELETE" });
     await get().fetchUsers();
   },
 }));
