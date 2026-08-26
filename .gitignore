@@ -57,3 +57,7 @@ worktrees/
 # Superpowers scratch
 .superpowers/
 kimi-export-session*.md
+
+# 数据库备份（deploy.sh）
+backups/
+backup-*.sql

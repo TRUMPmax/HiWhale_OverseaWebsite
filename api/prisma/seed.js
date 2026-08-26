@@ -18,15 +18,16 @@ async function main() {
     PRODUCT_GROUP_LABELS,
     PRODUCT_CATEGORY_LABELS,
   } = await import("@hiwhale/shared/constants");
-  // 后台超级管理员
-  const email = "admin@hiwhale.com";
+  // 后台超级管理员（密码从 SEED_ADMIN_PASSWORD 读取，默认 admin123 仅限本地开发，首次登录后立即改密）
+  const email = process.env.SEED_ADMIN_EMAIL ?? "admin@hiwhale.com";
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "admin123";
   const staff = await prisma.staffUser.upsert({
     where: { email },
     update: {},
     create: {
       email,
       name: "系统管理员",
-      passwordHash: await bcrypt.hash("admin123", 10),
+      passwordHash: await bcrypt.hash(adminPassword, 10),
       role: "SUPER_ADMIN",
     },
   });

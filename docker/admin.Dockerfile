@@ -17,6 +17,11 @@ RUN pnpm install --frozen-lockfile
 
 # ---- build：先构建 shared（tsup → dist），再构建 Next standalone ----
 FROM base AS build
+# NEXT_PUBLIC_* 在 next build 时内联，必须构建期传入（运行时 env 无效）
+ARG NEXT_PUBLIC_API_URL=http://localhost:4000
+ARG NEXT_PUBLIC_PORTAL_URL=http://localhost:3000
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
+    NEXT_PUBLIC_PORTAL_URL=$NEXT_PUBLIC_PORTAL_URL
 COPY --from=deps /app/ /app/
 COPY . .
 RUN pnpm --filter @hiwhale/shared build \

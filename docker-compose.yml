@@ -31,7 +31,7 @@ services:
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "hiwhale_dev", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-hiwhale_dev}", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -75,7 +75,7 @@ services:
   #   networks:
   #     - hiwhale-network
 
-  # API 占位服务（NestJS 后端就绪前）
+  # API 后端（NestJS）
   api:
     build:
       context: .
@@ -83,9 +83,20 @@ services:
     container_name: hiwhale-api
     restart: unless-stopped
     environment:
+      NODE_ENV: production
       DATABASE_URL: postgresql://${POSTGRES_USER:-hiwhale}:${POSTGRES_PASSWORD:-hiwhale_dev}@postgres:5432/${POSTGRES_DB:-hiwhale}
       REDIS_URL: redis://default:${REDIS_PASSWORD:-hiwhale_dev}@redis:6379
+      # 生产必填：JWT 签名密钥（缺失时 api 启动即报错）
+      JWT_SECRET: ${JWT_SECRET:-}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      DEEPSEEK_BASE_URL: ${DEEPSEEK_BASE_URL:-https://api.deepseek.com}
+      # 逗号分隔；本地 docker 开发默认 localhost，生产在根 .env 覆盖为正式域名
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:3001}
       MINIO_ENDPOINT: minio
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-hiwhale}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-hiwhale_dev}
+      # 上传文件的公网访问前缀（生产必须可达，否则全站图片 404）
+      MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL:-http://localhost:9000/hiwhale-uploads}
       PORTAL_PUBLIC_DIR: /portal-public
     volumes:
       - portal_images:/portal-public/images
@@ -96,6 +107,10 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      minio:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:4000/health || exit 1"]
       interval: 15s
@@ -104,29 +119,40 @@ services:
     networks:
       - hiwhale-network
 
-  # 一次性数据库迁移（手动执行）：docker compose run --rm migrate
-  # migrate:
-  #   build:
-  #     context: .
-  #     dockerfile: docker/api.Dockerfile
-  #   command: npx prisma migrate deploy --schema=prisma/schema.prisma
-  #   environment:
-  #     DATABASE_URL: postgresql://${POSTGRES_USER:-hiwhale}:${POSTGRES_PASSWORD:-hiwhale_dev}@postgres:5432/${POSTGRES_DB:-hiwhale}
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   networks:
-  #     - hiwhale-network
+  # 一次性初始化：数据库迁移 + MinIO bucket 初始化（随 up 自动执行，完成后退出）
+  migrate:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    container_name: hiwhale-migrate
+    command: >
+      sh -c "node /app/api/node_modules/prisma/build/index.js migrate deploy
+      && node scripts/init-minio.js"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-hiwhale}:${POSTGRES_PASSWORD:-hiwhale_dev}@postgres:5432/${POSTGRES_DB:-hiwhale}
+      MINIO_ENDPOINT: minio
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-hiwhale}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-hiwhale_dev}
+      MINIO_BUCKET: ${MINIO_BUCKET:-hiwhale-uploads}
+      npm_config_cache: /tmp/.npm
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - hiwhale-network
 
   # 门户（Next.js standalone）
   portal:
     build:
       context: .
       dockerfile: docker/portal.Dockerfile
+      args:
+        # 构建期内联进前端 bundle；生产在根 .env 覆盖为 https://api.<正式域名>
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
     container_name: hiwhale-portal
     restart: unless-stopped
-    environment:
-      NEXT_PUBLIC_API_URL: http://api:4000
     volumes:
       - portal_images:/app/apps/portal/public/images
     expose:
@@ -141,6 +167,9 @@ services:
     build:
       context: .
       dockerfile: docker/admin.Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+        NEXT_PUBLIC_PORTAL_URL: ${NEXT_PUBLIC_PORTAL_URL:-http://localhost:3000}
     container_name: hiwhale-admin
     restart: unless-stopped
     expose:
