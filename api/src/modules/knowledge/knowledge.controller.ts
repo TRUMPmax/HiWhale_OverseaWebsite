@@ -4,6 +4,7 @@ import {
   Delete,
   ForbiddenException,
   Get,
+  Header,
   Param,
   Post,
   Put,
@@ -15,7 +16,7 @@ import {
 import { FileInterceptor } from "@nestjs/platform-express";
 import { CurrentUser, JwtAuthGuard } from "../auth/jwt-auth.guard";
 import type { JwtPayload } from "../auth/jwt.strategy";
-import { UploadDocMetaDto, UpsertFaqDto } from "./dto/knowledge.dto";
+import { ImportFaqsDto, UploadDocMetaDto, UpsertFaqDto } from "./dto/knowledge.dto";
 import { KnowledgeService } from "./knowledge.service";
 
 @Controller("knowledge")
@@ -62,6 +63,22 @@ export class KnowledgeController {
   createFaq(@CurrentUser() payload: JwtPayload, @Body() dto: UpsertFaqDto) {
     this.requireStaff(payload);
     return this.knowledge.createFaq(dto);
+  }
+
+  /** FAQ 导出 CSV（声明在 faqs/:id 之前避免路由冲突） */
+  @Get("faqs/export")
+  @Header("Content-Type", "text/csv; charset=utf-8")
+  @Header("Content-Disposition", 'attachment; filename="faqs.csv"')
+  exportFaqs(@CurrentUser() payload: JwtPayload) {
+    this.requireStaff(payload);
+    return this.knowledge.exportFaqsCsv();
+  }
+
+  /** FAQ 批量导入（追加模式，按 question 去重跳过） */
+  @Post("faqs/import")
+  importFaqs(@CurrentUser() payload: JwtPayload, @Body() dto: ImportFaqsDto) {
+    this.requireStaff(payload);
+    return this.knowledge.importFaqsCsv(dto.csv);
   }
 
   @Put("faqs/:id")

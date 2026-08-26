@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Upload } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   getLocalizedLabel,
@@ -212,12 +212,10 @@ export function SolutionFormDialog({ open, onOpenChange, initial }: SolutionForm
           </div>
           <div className="space-y-1.5">
             <Label>场景图</Label>
-            <div className="flex h-28 flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 text-center">
-              <Upload className="h-6 w-6 text-slate-400" />
-              <span className="text-xs text-slate-500">
-                点击或拖拽上传方案场景图（占位，后端就绪后接 MinIO）
-              </span>
-            </div>
+            <p className="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">
+              方案场景图按素材位管理：保存方案后，到「素材管理 → 站点素材位 →
+              方案」上传对应文件（文件名与方案 imageName 一致）。
+            </p>
           </div>
         </div>
         <DialogFooter>

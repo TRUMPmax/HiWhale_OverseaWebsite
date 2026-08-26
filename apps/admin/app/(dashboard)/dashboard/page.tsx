@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AlertTriangle, Inbox, MessageSquareText, TrendingUp, Users } from "lucide-react";
+import { Inbox, MessageSquareText, Users } from "lucide-react";
 import {
   getLocalizedLabel,
   INQUIRY_STATUS_LABELS,
@@ -44,21 +44,6 @@ const STATUS_BADGE: Record<string, string> = {
   CLOSED: "bg-slate-100 text-slate-500 hover:bg-slate-100",
 };
 
-const TODOS = [
-  { icon: Inbox, text: "3 条新询盘待分配", tone: "text-brand-blue bg-blue-50" },
-  {
-    icon: AlertTriangle,
-    text: "2 篇文档向量化失败待重试",
-    tone: "text-amber-600 bg-amber-50",
-  },
-  {
-    icon: MessageSquareText,
-    text: "5 条 AI 对话被用户标记为无用",
-    tone: "text-amber-600 bg-amber-50",
-  },
-  { icon: Users, text: "1 个员工账号待审核开通", tone: "text-brand-blue bg-blue-50" },
-];
-
 /** 仪表盘（统计数据来自 API） */
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -67,9 +52,23 @@ export default function DashboardPage() {
     adminApi<DashboardStats>("/api/stats/dashboard")
       .then(setStats)
       .catch(() => {
-        // API 不可用时保持占位
+        // API 不可用时保持空态
       });
   }, []);
+
+  // 待办：由真实数据派生（新询盘待跟进）；无待办显示空态
+  const newInquiryCount =
+    stats?.recentInquiries.filter((i) => i.status === "NEW" && !i.assignee).length ?? 0;
+  const todos =
+    newInquiryCount > 0
+      ? [
+          {
+            icon: Inbox,
+            text: `${newInquiryCount} 条新询盘待跟进`,
+            tone: "text-brand-blue bg-blue-50",
+          },
+        ]
+      : [];
 
   const cards = [
     {
@@ -90,18 +89,12 @@ export default function DashboardPage() {
       delta: "累计会话数",
       icon: MessageSquareText,
     },
-    {
-      title: "产品浏览量",
-      value: "8,209",
-      delta: "示例数据（埋点未接入）",
-      icon: TrendingUp,
-    },
   ];
 
   return (
     <div className="space-y-6">
       {/* 统计卡片 */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         {cards.map((stat) => (
           <Card key={stat.title}>
             <CardContent className="p-5">
@@ -137,7 +130,7 @@ export default function DashboardPage() {
             <CardTitle className="text-base">待办提醒</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {TODOS.map((todo) => (
+            {todos.map((todo) => (
               <div
                 key={todo.text}
                 className="flex items-center gap-3 rounded-lg border border-slate-100 p-3"
@@ -150,6 +143,11 @@ export default function DashboardPage() {
                 <span className="text-sm text-slate-700">{todo.text}</span>
               </div>
             ))}
+            {todos.length === 0 && (
+              <p className="py-6 text-center text-sm text-slate-400">
+                {stats ? "全部处理完毕" : "加载中…"}
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>

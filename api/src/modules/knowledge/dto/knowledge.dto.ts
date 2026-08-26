@@ -1,4 +1,4 @@
-import { IsIn, IsOptional, IsString, MinLength } from "class-validator";
+import { IsIn, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
 export class UpsertFaqDto {
   @IsString()
@@ -16,6 +16,13 @@ export class UpsertFaqDto {
   @IsOptional()
   @IsString()
   answerEn?: string;
+}
+
+/** FAQ 批量导入：UTF-8 CSV 全文（列：question,answer,questionEn,answerEn；首行表头可选） */
+export class ImportFaqsDto {
+  @IsString()
+  @MaxLength(2_000_000, { message: "CSV 内容过大（上限 2MB）" })
+  csv: string;
 }
 
 export class UploadDocMetaDto {

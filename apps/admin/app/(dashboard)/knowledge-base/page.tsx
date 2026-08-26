@@ -1,7 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { FlaskConical, Pencil, Plus, RotateCcw, Send, Trash2, Upload } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  Download,
+  FlaskConical,
+  Pencil,
+  Plus,
+  RotateCcw,
+  Send,
+  Trash2,
+  Upload,
+} from "lucide-react";
 import { toast } from "sonner";
 import { MOCK_PRODUCTS } from "@hiwhale/shared/constants";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +37,7 @@ import {
 } from "@/components/ui/table";
 import { ConfirmDeleteDialog } from "@/components/common/ConfirmDeleteDialog";
 import { PageHeader } from "@/components/common/PageHeader";
-import { adminApi, API_BASE } from "@/lib/api";
+import { adminApi, adminApiText, API_BASE } from "@/lib/api";
 import { useAdminAuthStore } from "@/store/auth";
 import { useProductsStore } from "@/store/products";
 
@@ -54,6 +63,8 @@ type Faq = {
   id: string;
   question: string;
   answer: string;
+  questionEn?: string | null;
+  answerEn?: string | null;
 };
 
 const VECTOR_BADGE: Record<KbDoc["vectorStatus"], { label: string; className: string }> = {
@@ -86,8 +97,15 @@ export default function KnowledgeBasePage() {
     open: false,
     editing: null,
   });
-  const [faqDraft, setFaqDraft] = useState({ question: "", answer: "" });
+  const [faqDraft, setFaqDraft] = useState({
+    question: "",
+    answer: "",
+    questionEn: "",
+    answerEn: "",
+  });
   const [pendingDeleteFaq, setPendingDeleteFaq] = useState<Faq | null>(null);
+  const [importing, setImporting] = useState(false);
+  const importInputRef = useRef<HTMLInputElement>(null);
   const [pendingDeleteDoc, setPendingDeleteDoc] = useState<KbDoc | null>(null);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
@@ -151,20 +169,64 @@ export default function KnowledgeBasePage() {
       toast.error("请填写问题与答案");
       return;
     }
+    const body = {
+      question: faqDraft.question.trim(),
+      answer: faqDraft.answer.trim(),
+      ...(faqDraft.questionEn.trim() ? { questionEn: faqDraft.questionEn.trim() } : {}),
+      ...(faqDraft.answerEn.trim() ? { answerEn: faqDraft.answerEn.trim() } : {}),
+    };
     try {
       if (faqDialog.editing) {
         await adminApi(`/api/knowledge/faqs/${faqDialog.editing.id}`, {
           method: "PUT",
-          body: faqDraft,
+          body,
         });
       } else {
-        await adminApi("/api/knowledge/faqs", { method: "POST", body: faqDraft });
+        await adminApi("/api/knowledge/faqs", { method: "POST", body });
       }
       toast.success("保存成功");
       setFaqDialog({ open: false, editing: null });
       await fetchFaqs();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "保存失败");
+    }
+  };
+
+  /** 导出 FAQ 为 CSV（UTF-8 带 BOM，Excel 可直接编辑） */
+  const exportFaqs = async () => {
+    try {
+      const csv = await adminApiText("/api/knowledge/faqs/export");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `faqs-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "导出失败");
+    }
+  };
+
+  /** 导入 CSV（追加模式，重复问题跳过） */
+  const importFaqs = async (file: File) => {
+    setImporting(true);
+    try {
+      const csv = await file.text();
+      const result = await adminApi<{ imported: number; skipped: number; invalid: number }>(
+        "/api/knowledge/faqs/import",
+        { method: "POST", body: { csv } },
+      );
+      toast.success(
+        `导入完成：新增 ${result.imported} 条，跳过重复 ${result.skipped} 条` +
+          (result.invalid > 0 ? `，格式无效 ${result.invalid} 行` : ""),
+      );
+      await fetchFaqs();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "导入失败");
+    } finally {
+      setImporting(false);
+      if (importInputRef.current) importInputRef.current.value = "";
     }
   };
 
@@ -251,16 +313,41 @@ export default function KnowledgeBasePage() {
 
         {/* FAQ 管理 */}
         <TabsContent value="faq" className="mt-4 space-y-4">
-          <div className="flex justify-end">
-            <Button
-              className="bg-brand-blue hover:bg-brand-blue/90"
-              onClick={() => {
-                setFaqDraft({ question: "", answer: "" });
-                setFaqDialog({ open: true, editing: null });
-              }}
-            >
-              <Plus /> 新增 FAQ
-            </Button>
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-slate-500">
+              支持 CSV 批量维护：列顺序 question, answer, questionEn, answerEn（Excel 可直接编辑）
+            </p>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => void exportFaqs()}>
+                <Download /> 导出 CSV
+              </Button>
+              <Button
+                variant="outline"
+                disabled={importing}
+                onClick={() => importInputRef.current?.click()}
+              >
+                <Upload /> {importing ? "导入中…" : "导入 CSV"}
+              </Button>
+              <input
+                ref={importInputRef}
+                type="file"
+                accept=".csv,text/csv"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) void importFaqs(file);
+                }}
+              />
+              <Button
+                className="bg-brand-blue hover:bg-brand-blue/90"
+                onClick={() => {
+                  setFaqDraft({ question: "", answer: "", questionEn: "", answerEn: "" });
+                  setFaqDialog({ open: true, editing: null });
+                }}
+              >
+                <Plus /> 新增 FAQ
+              </Button>
+            </div>
           </div>
           <div className="space-y-3">
             {faqs.map((faq) => (
@@ -268,6 +355,9 @@ export default function KnowledgeBasePage() {
                 <CardContent className="flex items-start gap-4 p-4">
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-medium text-slate-900">{faq.question}</div>
+                    {faq.questionEn && (
+                      <div className="mt-0.5 text-xs text-slate-400">{faq.questionEn}</div>
+                    )}
                     <div className="mt-1 text-sm text-slate-600">{faq.answer}</div>
                   </div>
                   <Button
@@ -275,7 +365,12 @@ export default function KnowledgeBasePage() {
                     size="icon"
                     aria-label="编辑"
                     onClick={() => {
-                      setFaqDraft({ question: faq.question, answer: faq.answer });
+                      setFaqDraft({
+                        question: faq.question,
+                        answer: faq.answer,
+                        questionEn: faq.questionEn ?? "",
+                        answerEn: faq.answerEn ?? "",
+                      });
                       setFaqDialog({ open: true, editing: faq });
                     }}
                   >
@@ -393,19 +488,36 @@ export default function KnowledgeBasePage() {
             <DialogTitle>{faqDialog.editing ? "编辑 FAQ" : "新增 FAQ"}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="space-y-1.5">
-              <Label>问题</Label>
-              <Input
-                value={faqDraft.question}
-                onChange={(e) => setFaqDraft((d) => ({ ...d, question: e.target.value }))}
-              />
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label>问题（中文）</Label>
+                <Input
+                  value={faqDraft.question}
+                  onChange={(e) => setFaqDraft((d) => ({ ...d, question: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>问题（英文，可选）</Label>
+                <Input
+                  value={faqDraft.questionEn}
+                  onChange={(e) => setFaqDraft((d) => ({ ...d, questionEn: e.target.value }))}
+                />
+              </div>
             </div>
             <div className="space-y-1.5">
-              <Label>答案</Label>
+              <Label>答案（中文）</Label>
               <Textarea
                 rows={4}
                 value={faqDraft.answer}
                 onChange={(e) => setFaqDraft((d) => ({ ...d, answer: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>答案（英文，可选）</Label>
+              <Textarea
+                rows={4}
+                value={faqDraft.answerEn}
+                onChange={(e) => setFaqDraft((d) => ({ ...d, answerEn: e.target.value }))}
               />
             </div>
           </div>

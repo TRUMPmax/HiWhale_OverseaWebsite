@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Upload } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   getLocalizedLabel,
@@ -257,12 +257,10 @@ export function CaseFormDialog({ open, onOpenChange, initial }: CaseFormDialogPr
           </div>
           <div className="space-y-1.5">
             <Label>客户 Logo</Label>
-            <div className="flex h-24 flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 text-center">
-              <Upload className="h-6 w-6 text-slate-400" />
-              <span className="text-xs text-slate-500">
-                点击或拖拽上传客户 Logo（占位，后端就绪后接 MinIO）
-              </span>
-            </div>
+            <p className="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">
+              案例现场图与客户 Logo 按素材位管理：保存案例后，到「素材管理 → 站点素材位 →
+              案例」上传对应文件。
+            </p>
           </div>
         </div>
         <DialogFooter>

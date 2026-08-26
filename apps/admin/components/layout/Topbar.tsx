@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { Bell, ChevronDown, Search } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -11,11 +11,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import { NAV_ITEMS } from "./Sidebar";
 import { useAdminAuthStore } from "@/store/auth";
 
-/** 顶栏：当前页标题 + 搜索 + 通知 + 头像菜单 */
+/** 顶栏：当前页标题 + 头像菜单（通知铃铛待通知系统实装后恢复，见 docs/modules/03） */
 export function Topbar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -29,20 +28,6 @@ export function Topbar() {
       <h1 className="text-base font-semibold text-slate-900">{title}</h1>
 
       <div className="ml-auto flex items-center gap-3">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <Input placeholder="搜索…" className="w-56 pl-9" readOnly />
-        </div>
-
-        <button
-          type="button"
-          aria-label="通知"
-          className="relative rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100"
-        >
-          <Bell className="h-5 w-5" />
-          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500" />
-        </button>
-
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-slate-100">
             <Avatar className="h-8 w-8">
@@ -58,7 +43,6 @@ export function Topbar() {
               <div className="truncate text-xs text-slate-500">{admin?.email}</div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>个人信息</DropdownMenuItem>
             <DropdownMenuItem
               onSelect={() => {
                 logout();

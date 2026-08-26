@@ -31,4 +31,19 @@ export async function adminApi<T>(path: string, options: ApiOptions = {}): Promi
   return data as T;
 }
 
+/** 文本型请求（CSV 导出等）：复用鉴权与 401 处理，返回原始文本 */
+export async function adminApiText(path: string): Promise<string> {
+  const token = useAdminAuthStore.getState().token;
+  const res = await fetch(`${API_BASE}${path}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  if (res.status === 401) {
+    useAdminAuthStore.getState().logout();
+    if (typeof window !== "undefined") window.location.href = "/login";
+    throw new Error("登录已过期，请重新登录");
+  }
+  if (!res.ok) throw new Error(`请求失败（${res.status}）`);
+  return res.text();
+}
+
 export { API_BASE };

@@ -11,40 +11,19 @@ import {
   YAxis,
 } from "recharts";
 
-/** 确定性伪随机（保证每次渲染数据一致） */
-function mulberry32(seed: number) {
-  let a = seed;
-  return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/** 近 30 天 Mock 趋势数据 */
-const DATA = (() => {
-  const rand = mulberry32(20260820);
-  return Array.from({ length: 30 }, (_, i) => {
-    const date = new Date(Date.now() - (29 - i) * 86400000);
-    const label = `${date.getMonth() + 1}/${date.getDate()}`;
-    return {
-      date: label,
-      询盘数: Math.round(4 + rand() * 14 + i * 0.25),
-      AI对话量: Math.round(20 + rand() * 45 + i * 1.5),
-    };
-  });
-})();
-
 type TrendPoint = { date: string; inquiries: number; ai: number };
 
-/** 近 30 天趋势图：询盘数（品牌蓝）+ AI 对话量（琥珀）；无数据时回退 Mock 展示 */
+/** 近 30 天趋势图：询盘数（品牌蓝）+ AI 对话量（琥珀）；无数据时显示空态 */
 export function TrendChart({ data }: { data?: TrendPoint[] }) {
-  const chartData =
-    data && data.some((d) => d.inquiries > 0 || d.ai > 0)
-      ? data.map((d) => ({ date: d.date, 询盘数: d.inquiries, AI对话量: d.ai }))
-      : DATA;
+  const hasData = data && data.some((d) => d.inquiries > 0 || d.ai > 0);
+  if (!hasData) {
+    return (
+      <div className="flex h-72 w-full items-center justify-center text-sm text-slate-400">
+        暂无趋势数据
+      </div>
+    );
+  }
+  const chartData = data.map((d) => ({ date: d.date, 询盘数: d.inquiries, AI对话量: d.ai }));
   return (
     <div className="h-72 w-full">
       <ResponsiveContainer width="100%" height="100%">
