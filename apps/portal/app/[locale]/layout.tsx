@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Noto_Sans_SC, Space_Grotesk } from "next/font/google";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { Providers } from "@/components/providers";
@@ -62,6 +63,12 @@ export default async function LocaleLayout({
           <AuthModal />
           <AIChatWidget />
         </Providers>
+        {/* Cloudflare Web Analytics（免费、无 Cookie、GDPR 友好） */}
+        <Script
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          strategy="afterInteractive"
+          data-cf-beacon='{"token": "f15bf66a9a93456f983387535ab649f8"}'
+        />
       </body>
     </html>
   );

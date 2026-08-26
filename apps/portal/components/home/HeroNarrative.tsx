@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -49,6 +49,8 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
   const metricRefs = useRef<Array<HTMLSpanElement | null>>([]);
   /** 滚轮叙事进度 0..1，驱动星空"逼近"效果 */
   const scrollProgressRef = useRef(0);
+  /** GSAP 初始化完成后才显示舞台（避免水合前各层堆叠闪现） */
+  const [ready, setReady] = useState(false);
 
   const groups = taxonomy;
   const industries = Object.values(Industry);
@@ -64,7 +66,7 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
     mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
       const q = (sel: string) => container.querySelectorAll(sel);
 
-      // 初始状态
+      // 初始状态（水合完成前先隐藏舞台，见 stage 的 visibility）
       gsap.set(q(".np-title, .np-subtitle"), { opacity: 0, y: 30 });
       gsap.set(q(".np-chip"), { opacity: 0, y: 80 });
       gsap.set(q(".ns-card"), { opacity: 0, y: 60, scale: 0.7 });
@@ -186,6 +188,10 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
       };
     });
 
+    // mm.add 的回调在条件匹配时同步执行（初始隐藏状态已就位）；
+    // 不匹配（reduced-motion）时同样显示舞台（静态兜底）
+    setReady(true);
+
     return () => mm.revert();
   }, []);
 
@@ -197,6 +203,8 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
         style={{
           perspective: "1200px",
           background: "linear-gradient(180deg, #0A2540 0%, #061529 60%, #050D1F 100%)",
+          // GSAP 初始隐藏状态就位前不渲染舞台，避免各层堆叠闪现
+          visibility: ready ? "visible" : "hidden",
         }}
       >
         {/* 背景层：夜幕星空（远处星辰随滚动逐渐靠近） */}
