@@ -27,10 +27,6 @@
     "solutions": "方案",
     "contact": "联系方式",
     "privacyPolicy": "隐私政策",
-    "terms": "服务条款",
-    "sitemap": "网站地图",
-    "cookiePolicy": "Cookie 政策",
-    "icp": "沪ICP备XXXXXXXX号（备案号占位，上线前替换）",
     "copyright": "© {year} 浩鲸机器人（青岛）有限公司。保留所有权利。",
     "tagline": "为全球客户提供智能仓储与货物转运解决方案。",
     "solutionsEcommerce": "电商",
@@ -186,7 +182,6 @@
     "video": {
       "title": "见证浩鲸的实战表现",
       "subtitle": "观看我们的方案在全球真实仓库中的运行表现。",
-      "play": "播放视频",
       "placeholder": {
         "label": "企业宣传视频（客户案例实拍 + 产品混剪）",
         "size": "16:9 · 1920×1080 · MP4 + WebM 双格式"
@@ -321,11 +316,6 @@
     "submitLogin": "登录",
     "submitRegister": "创建账号",
     "submitting": "请稍候…",
-    "code": "邮箱验证码",
-    "codePlaceholder": "6 位数字验证码",
-    "sendCode": "发送验证码",
-    "resendIn": "重新发送 ({s}s)",
-    "codeSentDemo": "验证码已发送至您的邮箱（演示模式：{code}）",
     "close": "关闭",
     "errors": {
       "emailInvalid": "请输入有效的邮箱地址",
@@ -334,10 +324,7 @@
       "nameRequired": "请输入您的姓名",
       "companyRequired": "请输入您的公司",
       "termsRequired": "请先同意服务条款",
-      "codeInvalid": "请输入 6 位数字验证码",
-      "codeNotSent": "请先获取邮箱验证码",
-      "requestFailed": "请求失败，请稍后重试",
-      "codeMismatch": "验证码不正确，请重新输入"
+      "requestFailed": "请求失败，请稍后重试"
     }
   },
   "solutions": {

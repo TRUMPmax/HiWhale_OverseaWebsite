@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   createLoginSchema,
@@ -84,63 +84,25 @@ export function LoginForm({ onSuccess }: AuthFormProps) {
   );
 }
 
-/** 注册表单（真实 API：send-code 获取邮箱验证码 + register；无 SMTP 时演示模式回显验证码） */
+/** 注册表单（真实 API：POST /api/auth/register；海外站仅校验邮箱格式，无验证码环节） */
 export function RegisterForm({ onSuccess }: AuthFormProps) {
   const t = useTranslations("auth");
   const login = useAuthStore((s) => s.login);
-  const [sentCode, setSentCode] = useState<string | null>(null);
-  const [countdown, setCountdown] = useState(0);
-  const [sending, setSending] = useState(false);
   const [formError, setFormError] = useState("");
 
   const {
     register,
     handleSubmit,
-    trigger,
-    setError,
-    clearErrors,
-    getValues,
     formState: { errors, isSubmitting },
   } = useForm<RegisterValues>({ resolver: zodResolver(createRegisterSchema(t)) });
 
-  // 重发倒计时
-  useEffect(() => {
-    if (countdown <= 0) return;
-    const timer = setInterval(() => setCountdown((c) => c - 1), 1000);
-    return () => clearInterval(timer);
-  }, [countdown]);
-
-  /** 发送验证码（真实 API；演示模式返回 devCode 直接展示） */
-  const sendCode = async () => {
-    const emailValid = await trigger("email");
-    if (!emailValid) return;
-    setSending(true);
-    try {
-      const res = await apiPost<{ sent: boolean; devCode?: string }>("/api/auth/send-code", {
-        email: getValues("email"),
-      });
-      setSentCode(res.devCode ?? "sent");
-      setCountdown(60);
-      clearErrors("code");
-    } catch (e) {
-      setFormError(e instanceof Error ? e.message : t("errors.requestFailed"));
-    } finally {
-      setSending(false);
-    }
-  };
-
   const onSubmit = async (values: RegisterValues) => {
-    if (!sentCode) {
-      setError("code", { message: t("errors.codeNotSent") });
-      return;
-    }
     setFormError("");
     try {
       const res = await apiPost<AuthResponse>("/api/auth/register", {
         name: values.name,
         company: values.company,
         email: values.email,
-        code: values.code,
         password: values.password,
       });
       login(res.user, res.token);
@@ -181,31 +143,6 @@ export function RegisterForm({ onSuccess }: AuthFormProps) {
           {...register("email")}
         />
         {errors.email && <p className={errorClass}>{errors.email.message}</p>}
-      </div>
-      <div>
-        <label className="text-foreground mb-1 block text-sm font-medium">{t("code")}</label>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            inputMode="numeric"
-            maxLength={6}
-            placeholder={t("codePlaceholder")}
-            className={inputClass}
-            {...register("code")}
-          />
-          <button
-            type="button"
-            onClick={sendCode}
-            disabled={countdown > 0 || sending}
-            className="border-brand-blue text-brand-blue shrink-0 rounded-lg border px-3 text-sm font-medium transition-colors hover:bg-blue-50 disabled:opacity-50"
-          >
-            {countdown > 0 ? t("resendIn", { s: countdown }) : sending ? "…" : t("sendCode")}
-          </button>
-        </div>
-        {errors.code && <p className={errorClass}>{errors.code.message}</p>}
-        {sentCode && sentCode !== "sent" && (
-          <p className="text-muted mt-1 text-xs">{t("codeSentDemo", { code: sentCode })}</p>
-        )}
       </div>
       <div>
         <label className="text-foreground mb-1 block text-sm font-medium">{t("password")}</label>

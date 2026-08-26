@@ -16,6 +16,9 @@ export function Footer() {
 
   // 产品分类体系：优先 API（DB 实体），失败回退静态常量
   const [taxonomy, setTaxonomy] = useState<TaxonomyGroup[]>(STATIC_TAXONOMY);
+  const [footerLinks, setFooterLinks] = useState<Array<{ label: string; url: string }> | null>(
+    null,
+  );
   useEffect(() => {
     fetch(`${API_BASE}/api/taxonomy`)
       .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
@@ -28,6 +31,13 @@ export function Footer() {
       .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
       .then((data: { value?: ContactInfo }) => {
         if (data.value) setContact(data.value);
+      })
+      .catch(() => {});
+    // 底部法律链接：优先后台内容管理配置（content-footer-links）
+    fetch(`${API_BASE}/api/settings/content-footer-links`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data: { value?: Array<{ label: string; url: string }> }) => {
+        if (Array.isArray(data.value) && data.value.length > 0) setFooterLinks(data.value);
       })
       .catch(() => {});
   }, []);
@@ -112,26 +122,32 @@ export function Footer() {
         </div>
       </div>
 
-      {/* 企业信息条：近黑深色，与蓝白主体区分（版权/备案/法律链接） */}
+      {/* 企业信息条：近黑深色，与蓝白主体区分（版权/法律链接；纯海外发布，无 ICP 备案） */}
       <div className="bg-[#061529]">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 md:flex-row md:px-8 lg:px-12">
-          <div className="flex flex-col items-center gap-1 text-center md:items-start md:text-left">
-            <p className="text-sm text-white/50">{t("copyright", { year: currentYear })}</p>
-            <p className="text-xs text-white/40">{t("icp")}</p>
-          </div>
+          <p className="text-sm text-white/50">{t("copyright", { year: currentYear })}</p>
           <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-            <Link href="/privacy-policy" className="text-xs text-white/50 hover:text-white">
-              {t("privacyPolicy")}
-            </Link>
-            <Link href="/terms" className="text-xs text-white/50 hover:text-white">
-              {t("terms")}
-            </Link>
-            <Link href="/sitemap" className="text-xs text-white/50 hover:text-white">
-              {t("sitemap")}
-            </Link>
-            <Link href="/cookie-policy" className="text-xs text-white/50 hover:text-white">
-              {t("cookiePolicy")}
-            </Link>
+            {(footerLinks ?? [{ label: t("privacyPolicy"), url: "/privacy-policy" }]).map((link) =>
+              link.url.startsWith("http") ? (
+                <a
+                  key={link.url + link.label}
+                  href={link.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs text-white/50 hover:text-white"
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  key={link.url + link.label}
+                  href={link.url}
+                  className="text-xs text-white/50 hover:text-white"
+                >
+                  {link.label}
+                </Link>
+              ),
+            )}
           </nav>
         </div>
       </div>

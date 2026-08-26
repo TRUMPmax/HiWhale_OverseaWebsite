@@ -27,10 +27,6 @@
     "solutions": "Solutions",
     "contact": "Contact",
     "privacyPolicy": "Privacy Policy",
-    "terms": "Terms of Service",
-    "sitemap": "Sitemap",
-    "cookiePolicy": "Cookie Policy",
-    "icp": "ICP Filing No. XXXXXXXX (placeholder, replace before launch)",
     "copyright": "© {year} HiWhale Robotics (Qingdao) Co., Ltd. All rights reserved.",
     "tagline": "Intelligent warehousing and material handling solutions for global customers.",
     "solutionsEcommerce": "E-commerce",
@@ -198,7 +194,6 @@
     "video": {
       "title": "See HiWhale in Action",
       "subtitle": "Watch how our solutions run in real warehouses around the world.",
-      "play": "Play video",
       "placeholder": {
         "label": "Corporate video (customer case footage + product montage)",
         "size": "16:9 · 1920×1080 · MP4 + WebM dual format"
@@ -333,11 +328,6 @@
     "submitLogin": "Sign In",
     "submitRegister": "Create Account",
     "submitting": "Please wait…",
-    "code": "Email Verification Code",
-    "codePlaceholder": "6-digit code",
-    "sendCode": "Send Code",
-    "resendIn": "Resend in {s}s",
-    "codeSentDemo": "Verification code sent to your email (demo mode: {code})",
     "close": "Close",
     "errors": {
       "emailInvalid": "Please enter a valid email address",
@@ -346,10 +336,7 @@
       "nameRequired": "Please enter your name",
       "companyRequired": "Please enter your company",
       "termsRequired": "You must agree to the terms",
-      "codeInvalid": "Please enter the 6-digit verification code",
-      "codeNotSent": "Please request a verification code first",
-      "requestFailed": "Request failed, please try again",
-      "codeMismatch": "Incorrect code, please try again"
+      "requestFailed": "Request failed, please try again"
     }
   },
   "solutions": {
