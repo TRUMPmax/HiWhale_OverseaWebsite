@@ -13,7 +13,12 @@ import {
 } from "@nestjs/common";
 import { CurrentUser, JwtAuthGuard } from "../auth/jwt-auth.guard";
 import type { JwtPayload } from "../auth/jwt.strategy";
-import { ListProductsDto, UpdateStatusDto, UpsertProductDto } from "./dto/products.dto";
+import {
+  ListProductsDto,
+  ReorderProductsDto,
+  UpdateStatusDto,
+  UpsertProductDto,
+} from "./dto/products.dto";
 import { ProductsService } from "./products.service";
 
 /** 仅允许员工（staff JWT） */
@@ -49,6 +54,13 @@ export class ProductsController {
   create(@CurrentUser() payload: JwtPayload, @Body() dto: UpsertProductDto) {
     requireStaff(payload);
     return this.products.create(dto, payload.sub);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put("reorder")
+  reorder(@CurrentUser() payload: JwtPayload, @Body() dto: ReorderProductsDto) {
+    requireStaff(payload);
+    return this.products.reorder(dto.ids);
   }
 
   @UseGuards(JwtAuthGuard)

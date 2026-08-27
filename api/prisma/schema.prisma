@@ -143,6 +143,8 @@ model Product {
   // 全部已上传图片 URL（主图在前，细节图随后）
   imageUrls   Json          @default("[]") @map("image_urls")
   status      ProductStatus @default(ON)
+  // 后台拖动排序（值小在前）
+  sort        Int           @default(0)
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
 

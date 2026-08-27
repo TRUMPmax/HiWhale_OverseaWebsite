@@ -1,8 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FolderTree, Plus, Tags } from "lucide-react";
+import { FolderTree, GripVertical, Plus, Tags } from "lucide-react";
 import { toast } from "sonner";
+import {
+  closestCenter,
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -59,6 +74,121 @@ function slugify(en: string): string {
   );
 }
 
+/** 可拖动的大类项 */
+function SortableGroupItem({
+  group,
+  selected,
+  onSelect,
+  onEdit,
+  onDelete,
+}: {
+  group: TaxonomyGroup;
+  selected: boolean;
+  onSelect: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: group.id,
+  });
+  return (
+    <div
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={`group flex items-center gap-1 rounded-lg ${isDragging ? "relative z-10 bg-blue-50 shadow-lg" : ""}`}
+    >
+      <button
+        type="button"
+        aria-label="拖动排序"
+        className="cursor-grab touch-none px-1 text-slate-300 hover:text-slate-500 active:cursor-grabbing"
+        {...attributes}
+        {...listeners}
+      >
+        <GripVertical className="h-4 w-4" />
+      </button>
+      <button
+        type="button"
+        onClick={onSelect}
+        className={`flex-1 rounded-lg px-3 py-2 text-left text-sm transition-colors ${
+          selected ? "text-brand-blue bg-blue-50 font-medium" : "text-slate-600 hover:bg-slate-50"
+        }`}
+      >
+        {group.nameJson.zh}
+        <span className="ml-1 text-xs text-slate-400">({group.categories.length})</span>
+      </button>
+      <button
+        type="button"
+        aria-label="编辑大类"
+        className="text-brand-blue hidden px-1 text-xs hover:underline group-hover:block"
+        onClick={onEdit}
+      >
+        编辑
+      </button>
+      <button
+        type="button"
+        aria-label="删除大类"
+        className="hidden px-1 text-xs text-red-600 hover:underline group-hover:block"
+        onClick={onDelete}
+      >
+        删除
+      </button>
+    </div>
+  );
+}
+
+/** 可拖动的品类行 */
+function SortableCategoryRow({
+  category,
+  onEdit,
+  onDelete,
+}: {
+  category: TaxonomyGroup["categories"][number];
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: category.id,
+  });
+  return (
+    <TableRow
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={isDragging ? "relative z-10 bg-blue-50 shadow-lg" : undefined}
+    >
+      <TableCell className="w-10">
+        <button
+          type="button"
+          aria-label="拖动排序"
+          className="cursor-grab touch-none text-slate-300 hover:text-slate-500 active:cursor-grabbing"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="h-4 w-4" />
+        </button>
+      </TableCell>
+      <TableCell className="font-medium">{category.nameJson.zh}</TableCell>
+      <TableCell className="text-slate-500">{category.nameJson.en}</TableCell>
+      <TableCell className="font-mono text-xs">{category.key}</TableCell>
+      <TableCell className="text-right">
+        <button
+          type="button"
+          className="text-brand-blue text-sm font-medium hover:underline"
+          onClick={onEdit}
+        >
+          编辑
+        </button>
+        <button
+          type="button"
+          className="ml-4 text-sm font-medium text-red-600 hover:underline"
+          onClick={onDelete}
+        >
+          删除
+        </button>
+      </TableCell>
+    </TableRow>
+  );
+}
+
 /** 级联删除确认弹窗（409 时展示） */
 type CascadeState = {
   kind: EntityKind;
@@ -92,6 +222,46 @@ export default function CategoriesPage() {
   }, []);
 
   const selectedGroup = taxonomy.find((g) => g.id === selectedGroupId);
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+
+  /** 大类拖动排序（乐观更新 + 持久化） */
+  const onGroupDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const ids = taxonomy.map((g) => g.id);
+    const next = arrayMove(ids, ids.indexOf(String(active.id)), ids.indexOf(String(over.id)));
+    const rank = new Map(next.map((id, i) => [id, i]));
+    setTaxonomy((prev) =>
+      [...prev].sort((a, b) => (rank.get(a.id) ?? 9999) - (rank.get(b.id) ?? 9999)),
+    );
+    void adminApi("/api/taxonomy/groups/reorder", { method: "PUT", body: { ids: next } })
+      .then(() => toast.success("大类顺序已保存"))
+      .catch((e) => toast.error(e instanceof Error ? e.message : "排序保存失败"));
+  };
+
+  /** 品类拖动排序（当前大类内） */
+  const onCategoryDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id || !selectedGroup) return;
+    const ids = selectedGroup.categories.map((c) => c.id);
+    const next = arrayMove(ids, ids.indexOf(String(active.id)), ids.indexOf(String(over.id)));
+    const rank = new Map(next.map((id, i) => [id, i]));
+    setTaxonomy((prev) =>
+      prev.map((g) =>
+        g.id === selectedGroup.id
+          ? {
+              ...g,
+              categories: [...g.categories].sort(
+                (a, b) => (rank.get(a.id) ?? 9999) - (rank.get(b.id) ?? 9999),
+              ),
+            }
+          : g,
+      ),
+    );
+    void adminApi("/api/taxonomy/categories/reorder", { method: "PUT", body: { ids: next } })
+      .then(() => toast.success("品类顺序已保存"))
+      .catch((e) => toast.error(e instanceof Error ? e.message : "排序保存失败"));
+  };
 
   // ---------- 保存（新增/编辑） ----------
   const submitForm = async () => {
@@ -190,49 +360,38 @@ export default function CategoriesPage() {
             </Button>
           </div>
           <div className="space-y-1 p-2">
-            {taxonomy.map((group) => (
-              <div key={group.id} className="group flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => setSelectedGroupId(group.id)}
-                  className={`flex-1 rounded-lg px-3 py-2 text-left text-sm transition-colors ${
-                    selectedGroupId === group.id
-                      ? "text-brand-blue bg-blue-50 font-medium"
-                      : "text-slate-600 hover:bg-slate-50"
-                  }`}
-                >
-                  {group.nameJson.zh}
-                  <span className="ml-1 text-xs text-slate-400">({group.categories.length})</span>
-                </button>
-                <button
-                  type="button"
-                  aria-label="编辑大类"
-                  className="text-brand-blue hidden px-1 text-xs hover:underline group-hover:block"
-                  onClick={() =>
-                    setForm({
-                      kind: "group",
-                      editing: { id: group.id },
-                      key: group.key,
-                      nameZh: group.nameJson.zh,
-                      nameEn: group.nameJson.en,
-                      sort: group.sort,
-                    })
-                  }
-                >
-                  编辑
-                </button>
-                <button
-                  type="button"
-                  aria-label="删除大类"
-                  className="hidden px-1 text-xs text-red-600 hover:underline group-hover:block"
-                  onClick={() =>
-                    setPendingDelete({ kind: "group", id: group.id, name: group.nameJson.zh })
-                  }
-                >
-                  删除
-                </button>
-              </div>
-            ))}
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={onGroupDragEnd}
+            >
+              <SortableContext
+                items={taxonomy.map((g) => g.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {taxonomy.map((group) => (
+                  <SortableGroupItem
+                    key={group.id}
+                    group={group}
+                    selected={selectedGroupId === group.id}
+                    onSelect={() => setSelectedGroupId(group.id)}
+                    onEdit={() =>
+                      setForm({
+                        kind: "group",
+                        editing: { id: group.id },
+                        key: group.key,
+                        nameZh: group.nameJson.zh,
+                        nameEn: group.nameJson.en,
+                        sort: group.sort,
+                      })
+                    }
+                    onDelete={() =>
+                      setPendingDelete({ kind: "group", id: group.id, name: group.nameJson.zh })
+                    }
+                  />
+                ))}
+              </SortableContext>
+            </DndContext>
           </div>
         </div>
 
@@ -261,25 +420,28 @@ export default function CategoriesPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-10" />
                 <TableHead>名称（中文）</TableHead>
                 <TableHead>名称（英文）</TableHead>
                 <TableHead>Key</TableHead>
-                <TableHead className="w-20">排序</TableHead>
                 <TableHead className="text-right">操作</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {(selectedGroup?.categories ?? []).map((category) => (
-                <TableRow key={category.id}>
-                  <TableCell className="font-medium">{category.nameJson.zh}</TableCell>
-                  <TableCell className="text-slate-500">{category.nameJson.en}</TableCell>
-                  <TableCell className="font-mono text-xs">{category.key}</TableCell>
-                  <TableCell>{category.sort}</TableCell>
-                  <TableCell className="text-right">
-                    <button
-                      type="button"
-                      className="text-brand-blue text-sm font-medium hover:underline"
-                      onClick={() =>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={onCategoryDragEnd}
+            >
+              <SortableContext
+                items={(selectedGroup?.categories ?? []).map((c) => c.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <TableBody>
+                  {(selectedGroup?.categories ?? []).map((category) => (
+                    <SortableCategoryRow
+                      key={category.id}
+                      category={category}
+                      onEdit={() =>
                         setForm({
                           kind: "category",
                           editing: { id: category.id },
@@ -289,33 +451,25 @@ export default function CategoriesPage() {
                           sort: category.sort,
                         })
                       }
-                    >
-                      编辑
-                    </button>
-                    <button
-                      type="button"
-                      className="ml-4 text-sm font-medium text-red-600 hover:underline"
-                      onClick={() =>
+                      onDelete={() =>
                         setPendingDelete({
                           kind: "category",
                           id: category.id,
                           name: category.nameJson.zh,
                         })
                       }
-                    >
-                      删除
-                    </button>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {(selectedGroup?.categories.length ?? 0) === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} className="h-32 text-center text-sm text-slate-400">
-                    该大类下暂无品类
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
+                    />
+                  ))}
+                  {(selectedGroup?.categories.length ?? 0) === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={5} className="h-32 text-center text-sm text-slate-400">
+                        该大类下暂无品类
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </SortableContext>
+            </DndContext>
           </Table>
         </div>
       </div>

@@ -35,6 +35,8 @@ type ProductsState = {
   products: AdminProduct[];
   loading: boolean;
   fetchProducts: () => Promise<void>;
+  /** 拖动排序：按 ids 顺序持久化（门户列表按 sort 排序） */
+  reorderProducts: (ids: string[]) => Promise<void>;
   addProduct: (payload: ProductPayload) => Promise<void>;
   updateProduct: (id: string, payload: Partial<ProductPayload>) => Promise<void>;
   deleteProduct: (id: string) => Promise<void>;
@@ -53,6 +55,14 @@ export const useProductsStore = create<ProductsState>()((set, get) => ({
     } finally {
       set({ loading: false });
     }
+  },
+  reorderProducts: async (ids) => {
+    // 乐观更新本地顺序，再持久化
+    const rank = new Map(ids.map((id, i) => [id, i]));
+    set((s) => ({
+      products: [...s.products].sort((a, b) => (rank.get(a.id) ?? 9999) - (rank.get(b.id) ?? 9999)),
+    }));
+    await adminApi("/api/products/reorder", { method: "PUT", body: { ids } });
   },
   addProduct: async (payload) => {
     await adminApi("/api/products", { method: "POST", body: payload });

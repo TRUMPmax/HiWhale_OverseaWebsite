@@ -115,3 +115,10 @@ export class UpdateStatusDto {
   @IsIn(["on", "off"])
   status: "on" | "off";
 }
+
+/** 拖动排序：按数组顺序重写 sort（1..N） */
+export class ReorderProductsDto {
+  @IsArray()
+  @IsString({ each: true })
+  ids: string[];
+}

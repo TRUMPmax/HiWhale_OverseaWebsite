@@ -45,12 +45,20 @@ export class ProductsService {
       this.prisma.product.count({ where }),
       this.prisma.product.findMany({
         where,
-        orderBy: { createdAt: "asc" },
+        orderBy: [{ sort: "asc" }, { createdAt: "asc" }],
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
     ]);
     return { items: items.map(toDto), total, page, pageSize };
+  }
+
+  /** 拖动排序：按 ids 顺序重写 sort（1..N） */
+  async reorder(ids: string[]) {
+    await this.prisma.$transaction(
+      ids.map((id, i) => this.prisma.product.update({ where: { id }, data: { sort: i + 1 } })),
+    );
+    return { ok: true };
   }
 
   async bySlug(slug: string, publicOnly: boolean) {

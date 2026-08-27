@@ -12,7 +12,7 @@ import {
 } from "@nestjs/common";
 import { CurrentUser, JwtAuthGuard } from "../auth/jwt-auth.guard";
 import type { JwtPayload } from "../auth/jwt.strategy";
-import { UpsertCategoryDto, UpsertGroupDto } from "./dto/taxonomy.dto";
+import { ReorderDto, UpsertCategoryDto, UpsertGroupDto } from "./dto/taxonomy.dto";
 import { TaxonomyService } from "./taxonomy.service";
 
 @Controller("taxonomy")
@@ -27,6 +27,21 @@ export class TaxonomyController {
   @Get()
   tree() {
     return this.taxonomy.tree();
+  }
+
+  // ---------- 拖动排序（员工） ----------
+  @UseGuards(JwtAuthGuard)
+  @Put("groups/reorder")
+  reorderGroups(@CurrentUser() payload: JwtPayload, @Body() dto: ReorderDto) {
+    this.requireStaff(payload);
+    return this.taxonomy.reorderGroups(dto.ids);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put("categories/reorder")
+  reorderCategories(@CurrentUser() payload: JwtPayload, @Body() dto: ReorderDto) {
+    this.requireStaff(payload);
+    return this.taxonomy.reorderCategories(dto.ids);
   }
 
   // ---------- 大类（员工） ----------

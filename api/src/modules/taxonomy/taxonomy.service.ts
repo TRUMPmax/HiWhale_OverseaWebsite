@@ -24,6 +24,26 @@ export class TaxonomyService {
     });
   }
 
+  /** 拖动排序：大类按 ids 顺序重写 sort */
+  async reorderGroups(ids: string[]) {
+    await this.prisma.$transaction(
+      ids.map((id, i) =>
+        this.prisma.productGroupEntity.update({ where: { id }, data: { sort: i + 1 } }),
+      ),
+    );
+    return { ok: true };
+  }
+
+  /** 拖动排序：品类按 ids 顺序重写 sort（同一大类内） */
+  async reorderCategories(ids: string[]) {
+    await this.prisma.$transaction(
+      ids.map((id, i) =>
+        this.prisma.productCategoryEntity.update({ where: { id }, data: { sort: i + 1 } }),
+      ),
+    );
+    return { ok: true };
+  }
+
   // ---------- 大类 ----------
 
   async createGroup(dto: UpsertGroupDto, operatorId: string) {
