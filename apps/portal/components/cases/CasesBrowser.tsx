@@ -15,7 +15,9 @@ export function CasesBrowser({ cases }: { cases: MockCase[] }) {
   const loc = locale === "zh" ? ("zh" as const) : ("en" as const);
   const [active, setActive] = useState<Industry | "all">("all");
 
-  const industries = Object.values(Industry);
+  // 筛选 chips 只展示案例实际覆盖的行业（行业枚举已扩到 11，避免空筛选）
+  const present = new Set(cases.map((c) => c.industry));
+  const industries = Object.values(Industry).filter((i) => present.has(i));
   const filtered = active === "all" ? cases : cases.filter((c) => c.industry === active);
 
   const tabClass = (selected: boolean) =>

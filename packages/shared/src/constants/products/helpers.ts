@@ -23,6 +23,11 @@ export const THIRD_PARTY_LOGISTICS = "THIRD_PARTY_LOGISTICS" as Industry;
 export const FOOD_COLD_CHAIN = "FOOD_COLD_CHAIN" as Industry;
 export const PHARMACEUTICAL = "PHARMACEUTICAL" as Industry;
 export const PORT = "PORT" as Industry;
+export const CHEMICAL = "CHEMICAL" as Industry;
+export const TIRE = "TIRE" as Industry;
+export const LITHIUM = "LITHIUM" as Industry;
+export const HOME_FURNISHING = "HOME_FURNISHING" as Industry;
+export const WIRE_CABLE = "WIRE_CABLE" as Industry;
 
 /** 便捷构造本地化文案 */
 export function L(en: string, zh: string): LocalizedText {

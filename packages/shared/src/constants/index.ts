@@ -71,6 +71,11 @@ export enum Industry {
   FOOD_COLD_CHAIN = "FOOD_COLD_CHAIN",
   PHARMACEUTICAL = "PHARMACEUTICAL",
   PORT = "PORT",
+  CHEMICAL = "CHEMICAL",
+  TIRE = "TIRE",
+  LITHIUM = "LITHIUM",
+  HOME_FURNISHING = "HOME_FURNISHING",
+  WIRE_CABLE = "WIRE_CABLE",
 }
 
 export const INDUSTRY_LABELS: Record<Industry, { en: string; zh: string }> = {
@@ -80,6 +85,11 @@ export const INDUSTRY_LABELS: Record<Industry, { en: string; zh: string }> = {
   [Industry.FOOD_COLD_CHAIN]: { en: "Food & Cold Chain", zh: "食品冷链" },
   [Industry.PHARMACEUTICAL]: { en: "Pharmaceutical", zh: "医药" },
   [Industry.PORT]: { en: "Port", zh: "港口" },
+  [Industry.CHEMICAL]: { en: "Chemical & Fiber", zh: "化工化纤" },
+  [Industry.TIRE]: { en: "Tire & Rubber", zh: "轮胎橡胶" },
+  [Industry.LITHIUM]: { en: "Lithium Battery Materials", zh: "锂电材料" },
+  [Industry.HOME_FURNISHING]: { en: "Home Furnishing", zh: "家居制造" },
+  [Industry.WIRE_CABLE]: { en: "Wire & Cable", zh: "电线电缆" },
 };
 
 /**

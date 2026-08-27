@@ -9,6 +9,7 @@ import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 import { useAuthStore } from "@/store/auth";
 import { API_BASE } from "@/lib/api";
 import { STATIC_TAXONOMY, taxonomyLabel, type TaxonomyGroup } from "@/lib/taxonomy";
+import { MOCK_SOLUTIONS, type MockSolution } from "@hiwhale/shared/constants";
 
 /** 顶部导航栏：滚动变白 + 模糊 + 高度收缩；产品项带两级下拉（桌面端） */
 export function Navbar() {
@@ -27,11 +28,19 @@ export function Navbar() {
 
   // 产品分类体系：优先 API（DB 实体），失败回退静态常量
   const [taxonomy, setTaxonomy] = useState<TaxonomyGroup[]>(STATIC_TAXONOMY);
+  // 方案列表：优先 API，失败回退 mock 注册表
+  const [solutions, setSolutions] = useState<MockSolution[]>(MOCK_SOLUTIONS);
   useEffect(() => {
     fetch(`${API_BASE}/api/taxonomy`)
       .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
       .then((data: TaxonomyGroup[]) => {
         if (Array.isArray(data) && data.length > 0) setTaxonomy(data);
+      })
+      .catch(() => {});
+    fetch(`${API_BASE}/api/solutions`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data: { items?: MockSolution[] }) => {
+        if (Array.isArray(data.items) && data.items.length > 0) setSolutions(data.items);
       })
       .catch(() => {});
   }, []);
@@ -69,41 +78,63 @@ export function Navbar() {
 
         <nav className="hidden items-center gap-8 md:flex">
           {navItems.map((item) =>
-            item.href === "/products" ? (
+            item.href === "/products" || item.href === "/solutions" ? (
               <div key={item.href} className="group relative">
                 <Link href={item.href} className={`${navLinkClass} flex items-center gap-1`}>
                   {item.label}
                   <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:rotate-180" />
                 </Link>
-                {/* 两级产品下拉：大类 + 品类 */}
-                <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 translate-y-2 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-                  <div className="w-[30rem] rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
-                    {taxonomy.map((group) => (
-                      <div
-                        key={group.key}
-                        className="flex items-center gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-slate-50"
-                      >
-                        <Link
-                          href={`/products?group=${group.key}`}
-                          className="text-foreground hover:text-brand-blue w-32 shrink-0 text-sm font-semibold"
+                {item.href === "/products" ? (
+                  /* 两级产品下拉：大类 + 品类 */
+                  <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 translate-y-2 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                    <div className="w-[30rem] rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
+                      {taxonomy.map((group) => (
+                        <div
+                          key={group.key}
+                          className="flex items-center gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-slate-50"
                         >
-                          {taxonomyLabel(taxonomy, group.key, locale)}
-                        </Link>
-                        <div className="flex flex-wrap gap-x-3 gap-y-1">
-                          {group.categories.map((category) => (
-                            <Link
-                              key={category.key}
-                              href={`/products?category=${category.key}`}
-                              className="text-muted hover:text-brand-blue text-sm"
-                            >
-                              {taxonomyLabel(taxonomy, category.key, locale)}
-                            </Link>
-                          ))}
+                          <Link
+                            href={`/products?group=${group.key}`}
+                            className="text-foreground hover:text-brand-blue w-32 shrink-0 text-sm font-semibold"
+                          >
+                            {taxonomyLabel(taxonomy, group.key, locale)}
+                          </Link>
+                          <div className="flex flex-wrap gap-x-3 gap-y-1">
+                            {group.categories.map((category) => (
+                              <Link
+                                key={category.key}
+                                href={`/products?category=${category.key}`}
+                                className="text-muted hover:text-brand-blue text-sm"
+                              >
+                                {taxonomyLabel(taxonomy, category.key, locale)}
+                              </Link>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  /* 方案下拉：行业解决方案列表（悬停展示典型行业方案） */
+                  <div className="invisible absolute left-1/2 top-full z-50 -translate-x-1/2 translate-y-2 pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                    <div className="grid w-[34rem] grid-cols-2 gap-1 rounded-xl border border-slate-200 bg-white p-2 shadow-lg">
+                      {solutions.map((solution) => (
+                        <Link
+                          key={solution.slug}
+                          href={`/solutions/${solution.slug}`}
+                          className="rounded-lg px-3 py-2.5 transition-colors hover:bg-slate-50"
+                        >
+                          <div className="text-foreground hover:text-brand-blue text-sm font-semibold">
+                            {solution.title[locale === "zh" ? "zh" : "en"]}
+                          </div>
+                          <div className="text-subtle mt-0.5 line-clamp-1 text-xs">
+                            {solution.summary[locale === "zh" ? "zh" : "en"]}
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <Link key={item.href} href={item.href} className={navLinkClass}>
@@ -214,6 +245,21 @@ export function Navbar() {
                         onClick={() => setMobileOpen(false)}
                       >
                         {taxonomyLabel(taxonomy, group.key, locale)}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+                {/* 移动端：方案缩进列表 */}
+                {item.href === "/solutions" && (
+                  <div className="flex flex-col gap-3 border-l-2 border-slate-100 pl-4">
+                    {solutions.map((solution) => (
+                      <Link
+                        key={solution.slug}
+                        href={`/solutions/${solution.slug}`}
+                        className="text-muted text-sm"
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        {solution.title[locale === "zh" ? "zh" : "en"]}
                       </Link>
                     ))}
                   </div>
