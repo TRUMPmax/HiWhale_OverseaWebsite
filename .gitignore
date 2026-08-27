@@ -61,3 +61,7 @@ kimi-export-session*.md
 # 数据库备份（deploy.sh）
 backups/
 backup-*.sql
+
+# 大体积素材不进 git（生产由命名卷承载）
+apps/portal/public/images/**/*.glb
+apps/portal/public/images/**/*.mp4
