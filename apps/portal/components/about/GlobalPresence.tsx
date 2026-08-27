@@ -1,20 +1,12 @@
-import { useLocale, useTranslations } from "next-intl";
-import { MapPin } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Reveal } from "@/components/ui/Reveal";
 import { SlottedImage } from "@/components/ui/SlottedImage";
-import { pickLang, type CompanyAbout } from "./types";
+import type { CompanyAbout } from "./types";
 
-const DEFAULT_LOCATIONS = ["shenzhen", "suzhou", "qingdao", "overseas"] as const;
-
-/** 关于我们 4：全球布局（内容可来自公司数据中台） */
+/** 关于我们 4：全球布局（世界地图素材位；地点标签已移除） */
 export function GlobalPresence({ data }: { data?: CompanyAbout | null }) {
+  void data;
   const t = useTranslations("about.presence");
-  const locale = useLocale();
-
-  const locations: Array<{ city: string; cityEn?: string }> =
-    data?.locations && data.locations.length > 0
-      ? data.locations
-      : DEFAULT_LOCATIONS.map((key) => ({ city: t(`locations.${key}`) }));
 
   return (
     <section>
@@ -36,17 +28,6 @@ export function GlobalPresence({ data }: { data?: CompanyAbout | null }) {
               name: "about-world-map.png",
             }}
           />
-          <div className="mt-6 flex flex-wrap gap-3">
-            {locations.map((location) => (
-              <span
-                key={location.city}
-                className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700"
-              >
-                <MapPin className="h-3.5 w-3.5" />
-                {pickLang(locale, location.city, location.cityEn, location.city)}
-              </span>
-            ))}
-          </div>
         </Reveal>
       </div>
     </section>

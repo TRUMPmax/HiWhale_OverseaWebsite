@@ -1,31 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
 import { CheckCircle2 } from "lucide-react";
-import {
-  getLocalizedLabel,
-  PRODUCT_CATEGORY_GROUPS,
-  PRODUCT_GROUP_LABELS,
-  ProductCategory,
-  ProductGroup,
-} from "@hiwhale/shared/constants";
-import { apiPost } from "@/lib/api";
+import { API_BASE, apiPost } from "@/lib/api";
+import { STATIC_TAXONOMY, taxonomyLabel, type TaxonomyGroup } from "@/lib/taxonomy";
 import { Link } from "@/navigation";
 
 const inputClass =
   "border-border focus:border-brand-blue w-full rounded-lg border bg-white px-3 py-2 text-sm outline-none transition-colors";
 const errorClass = "mt-1 text-xs text-red-600";
 
-/** 询盘表单（Mock 提交，Stage 后续接入 API） */
+/** 询盘表单（真实 API：POST /api/inquiries；意向品类跟随 DB 分类体系，API 失败回退静态常量） */
 export function ContactForm() {
   const t = useTranslations("contact.form");
   const locale = useLocale();
   const [submitted, setSubmitted] = useState(false);
   const [formError, setFormError] = useState("");
+  const [taxonomy, setTaxonomy] = useState<TaxonomyGroup[]>(STATIC_TAXONOMY);
+
+  // 意向品类：优先 DB 分类体系（后台新增分组实时可见），失败回退静态常量
+  useEffect(() => {
+    fetch(`${API_BASE}/api/taxonomy`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data: TaxonomyGroup[]) => {
+        if (Array.isArray(data) && data.length > 0) setTaxonomy(data);
+      })
+      .catch(() => {});
+  }, []);
 
   const schema = z.object({
     name: z.string().min(1, t("errors.required")),
@@ -53,10 +58,10 @@ export function ContactForm() {
 
   const onSubmit = async (values: ContactValues) => {
     setFormError("");
-    // 意向产品：所选大类展开为其下全部品类
+    // 意向产品：所选大类展开为其下全部品类（按当前分类体系）
     const categories = (values.interests ?? []).flatMap(
-      (g) => PRODUCT_CATEGORY_GROUPS.find((entry) => entry.group === g)?.categories ?? [],
-    ) as ProductCategory[];
+      (g) => taxonomy.find((entry) => entry.key === g)?.categories.map((c) => c.key) ?? [],
+    );
     try {
       await apiPost("/api/inquiries", {
         fullName: values.name,
@@ -164,13 +169,13 @@ export function ContactForm() {
         <fieldset>
           <legend className="text-foreground mb-1 text-sm font-medium">{t("interest")}</legend>
           <div className="flex flex-wrap gap-3">
-            {PRODUCT_CATEGORY_GROUPS.map(({ group }) => (
+            {taxonomy.map(({ key }) => (
               <label
-                key={group}
+                key={key}
                 className="text-muted flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm"
               >
-                <input type="checkbox" value={group} {...register("interests")} />
-                {getLocalizedLabel(PRODUCT_GROUP_LABELS, group as ProductGroup, locale)}
+                <input type="checkbox" value={key} {...register("interests")} />
+                {taxonomyLabel(taxonomy, key, locale) ?? key}
               </label>
             ))}
           </div>
@@ -187,11 +192,6 @@ export function ContactForm() {
             {...register("description")}
           />
           {errors.description && <p className={errorClass}>{errors.description.message}</p>}
-        </div>
-
-        {/* Cloudflare Turnstile 人机验证组件位置（上线前接入） */}
-        <div className="border-border text-subtle rounded-lg border-2 border-dashed p-4 text-center text-xs">
-          Cloudflare Turnstile 人机验证组件位置（上线前接入）
         </div>
 
         <div>

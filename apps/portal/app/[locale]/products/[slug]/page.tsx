@@ -61,7 +61,6 @@ export default async function ProductDetailPage({
   const t = await getTranslations("products.detail");
   const tCta = await getTranslations("products.cta");
   const loc = locale === "zh" ? ("zh" as const) : ("en" as const);
-  const imageBase = product.imageName.replace(/\.[^.]+$/, "");
   // 面包屑大类：优先 DB 分类体系，未知品类回退静态映射
   const catGroup = categoryGroupMap(taxonomy);
   const groupKey = catGroup.get(product.category) ?? getGroupOfCategory(product.category);
@@ -93,42 +92,53 @@ export default async function ProductDetailPage({
 
         <div className="mt-8 grid gap-10 lg:grid-cols-2">
           <Reveal>
-            {product.imageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={product.imageUrl}
-                alt={product.name[loc]}
-                className="aspect-[4/3] w-full rounded-xl border border-slate-200 object-cover"
-              />
-            ) : (
-              <Placeholder
-                ratio="aspect-[4/3]"
-                label={`${product.name[loc]}产品主图`}
-                size="4:3 · 建议 1600×1200"
-                name={product.imageName}
-              />
-            )}
-            <div className="mt-3 grid grid-cols-3 gap-3">
-              {[1, 2, 3].map((i) =>
-                product.imageUrls?.[i] ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={i}
-                    src={product.imageUrls[i]}
-                    alt={`${product.name[loc]} ${i}`}
-                    className="aspect-square w-full rounded-lg border border-slate-200 object-cover"
-                  />
-                ) : (
-                  <Placeholder
-                    key={i}
-                    ratio="aspect-square"
-                    className="rounded-lg p-3"
-                    label={`产品细节图 ${i}`}
-                    name={`${imageBase}-thumb-${i}.png`}
-                  />
-                ),
-              )}
-            </div>
+            {(() => {
+              // 产品图：imageUrls[0] 为主图，其余为细节图；数量不限（1 张起，按实际上传数量渲染）
+              const urls =
+                product.imageUrls && product.imageUrls.length > 0
+                  ? product.imageUrls
+                  : product.imageUrl
+                    ? [product.imageUrl]
+                    : [];
+              const [main, ...details] = urls;
+              return (
+                <>
+                  {main ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={main}
+                      alt={product.name[loc]}
+                      className="aspect-[4/3] w-full rounded-xl border border-slate-200 object-cover"
+                    />
+                  ) : (
+                    <Placeholder
+                      ratio="aspect-[4/3]"
+                      label={`${product.name[loc]}产品主图`}
+                      size="4:3 · 建议 1600×1200"
+                      name={product.imageName}
+                    />
+                  )}
+                  {details.length > 0 && (
+                    <div
+                      className="mt-3 grid gap-3"
+                      style={{
+                        gridTemplateColumns: `repeat(${Math.min(details.length, 4)}, minmax(0, 1fr))`,
+                      }}
+                    >
+                      {details.map((url, i) => (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          key={url}
+                          src={url}
+                          alt={`${product.name[loc]} ${i + 2}`}
+                          className="aspect-square w-full rounded-lg border border-slate-200 object-cover"
+                        />
+                      ))}
+                    </div>
+                  )}
+                </>
+              );
+            })()}
           </Reveal>
 
           <Reveal delay={120}>

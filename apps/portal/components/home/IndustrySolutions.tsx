@@ -2,11 +2,11 @@ import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/navigation";
 import { SlottedImage } from "@/components/ui/SlottedImage";
 import { Reveal } from "@/components/ui/Reveal";
-import { INDUSTRY_IMAGE_NAMES } from "./assets";
+import { INDUSTRY_IMAGE_NAMES, CORE_INDUSTRIES } from "./assets";
 import { getLocalizedLabel, INDUSTRY_LABELS, Industry } from "@hiwhale/shared/constants";
 
-/** 行业 → 对应方案详情页 */
-const INDUSTRY_SOLUTION_SLUG: Record<Industry, string> = {
+/** 核心行业 → 对应方案详情页（仅首页展示的 6 个行业） */
+const INDUSTRY_SOLUTION_SLUG: Partial<Record<Industry, string>> = {
   [Industry.E_COMMERCE]: "e-commerce-fulfillment",
   [Industry.AUTOMOTIVE]: "automotive-line-side",
   [Industry.THIRD_PARTY_LOGISTICS]: "3pl-multi-client",
@@ -15,11 +15,11 @@ const INDUSTRY_SOLUTION_SLUG: Record<Industry, string> = {
   [Industry.PORT]: "port-container-yard",
 };
 
-/** 首页分区 4：行业解决方案（6 个大图卡片，2 列） */
+/** 首页分区 4：行业解决方案（6 个大图卡片，2 列；行业枚举已扩到 11，此处保持 6 个核心行业） */
 export function IndustrySolutions() {
   const t = useTranslations("home.industries");
   const locale = useLocale();
-  const industries = Object.values(Industry);
+  const industries = CORE_INDUSTRIES;
 
   return (
     <section className="bg-slate-50/75 backdrop-blur-sm">

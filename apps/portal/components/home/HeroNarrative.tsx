@@ -8,8 +8,8 @@ import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { Starfield } from "@/components/ui/Starfield";
 import { SlottedImage } from "@/components/ui/SlottedImage";
-import { getLocalizedLabel, INDUSTRY_LABELS, Industry } from "@hiwhale/shared/constants";
-import { groupImageName, INDUSTRY_IMAGE_NAMES } from "./assets";
+import { getLocalizedLabel, INDUSTRY_LABELS } from "@hiwhale/shared/constants";
+import { groupImageName, INDUSTRY_IMAGE_NAMES, CORE_INDUSTRIES } from "./assets";
 import { taxonomyLabel, type TaxonomyGroup } from "@/lib/taxonomy";
 
 /** 产品芯片的景深层次（translateZ） */
@@ -48,7 +48,8 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
   const [ready, setReady] = useState(false);
 
   const groups = taxonomy;
-  const industries = Object.values(Industry);
+  // 第二幕场景卡片只渲染 6 个核心行业（Industry 枚举已扩到 11，首页保持 3×2 网格）
+  const industries = CORE_INDUSTRIES;
   // 芯片矩阵列数：≤4 个单行排满；更多则按总数对半分列（8→4×2、7→4+3），保持矩阵感
   const chipCols = groups.length <= 4 ? groups.length : Math.ceil(groups.length / 2);
 
