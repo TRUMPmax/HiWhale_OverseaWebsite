@@ -1,5 +1,10 @@
 import { Industry, ProductCategory, ProductGroup } from "@hiwhale/shared/constants";
 
+/** 分类 key → slug（STACKER_CRANE → stacker-crane，与后端动态素材位文件名规则一致） */
+export function slugifyKey(key: string): string {
+  return key.toLowerCase().replaceAll("_", "-");
+}
+
 /** 各产品大类（一级）组合图素材文件名 */
 export const GROUP_IMAGE_NAMES: Record<ProductGroup, string> = {
   [ProductGroup.FORKLIFT]: "product-group-forklift.png",
@@ -10,6 +15,11 @@ export const GROUP_IMAGE_NAMES: Record<ProductGroup, string> = {
   [ProductGroup.DELIVERY_ROBOT]: "product-group-delivery-robot.png",
   [ProductGroup.SOFTWARE]: "product-group-software.png",
 };
+
+/** 分组组合图文件名：已知枚举走映射表，后台新增分组按 slug 规则派生 */
+export function groupImageName(key: string): string {
+  return GROUP_IMAGE_NAMES[key as ProductGroup] ?? `product-group-${slugifyKey(key)}.png`;
+}
 
 /** 各品类产品图素材文件名（与占位块一一对应，后期按名替换） */
 export const CATEGORY_IMAGE_NAMES: Record<ProductCategory, string> = {

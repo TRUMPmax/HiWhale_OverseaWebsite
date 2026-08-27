@@ -3,7 +3,7 @@ import { Bot, Cog, Container, Monitor, Sparkles, Truck, PackageOpen, Shapes } fr
 import { Link } from "@/navigation";
 import { SlottedImage } from "@/components/ui/SlottedImage";
 import { Reveal } from "@/components/ui/Reveal";
-import { GROUP_IMAGE_NAMES } from "./assets";
+import { groupImageName } from "./assets";
 import { ProductGroup } from "@hiwhale/shared/constants";
 import { STATIC_TAXONOMY, taxonomyLabel, type TaxonomyGroup } from "@/lib/taxonomy";
 
@@ -45,12 +45,11 @@ export function ProductEcosystem({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
             const description = known
               ? t(`items.${group.key}.description`)
               : taxonomyLabel(taxonomy, group.key, "zh");
-            const groupKey = group.key as ProductGroup;
             return (
               <Reveal key={group.key} delay={index * 80} className="h-full">
                 <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-6 transition-all hover:-translate-y-1 hover:border-blue-300 hover:shadow-lg">
                   <SlottedImage
-                    src={`/images/products/${GROUP_IMAGE_NAMES[groupKey] ?? `product-group-${group.key.toLowerCase()}.png`}`}
+                    src={`/images/products/${groupImageName(group.key)}`}
                     alt={name}
                     className="aspect-[4/3] w-full rounded-lg object-cover"
                     placeholder={{
@@ -60,9 +59,7 @@ export function ProductEcosystem({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
                         ? t(`items.${group.key}.image`)
                         : `${taxonomyLabel(taxonomy, group.key, "zh")} 组合图（占位）`,
                       size: t("imageSize"),
-                      name:
-                        GROUP_IMAGE_NAMES[groupKey] ??
-                        `product-group-${group.key.toLowerCase()}.png`,
+                      name: groupImageName(group.key),
                     }}
                   />
                   <div className="mt-5 flex items-center gap-3">

@@ -8,13 +8,8 @@ import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { Starfield } from "@/components/ui/Starfield";
 import { SlottedImage } from "@/components/ui/SlottedImage";
-import {
-  getLocalizedLabel,
-  INDUSTRY_LABELS,
-  Industry,
-  ProductGroup,
-} from "@hiwhale/shared/constants";
-import { GROUP_IMAGE_NAMES, INDUSTRY_IMAGE_NAMES } from "./assets";
+import { getLocalizedLabel, INDUSTRY_LABELS, Industry } from "@hiwhale/shared/constants";
+import { groupImageName, INDUSTRY_IMAGE_NAMES } from "./assets";
 import { taxonomyLabel, type TaxonomyGroup } from "@/lib/taxonomy";
 
 /** 产品芯片的景深层次（translateZ） */
@@ -54,6 +49,8 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
 
   const groups = taxonomy;
   const industries = Object.values(Industry);
+  // 芯片矩阵列数：≤4 个单行排满；更多则按总数对半分列（8→4×2、7→4+3），保持矩阵感
+  const chipCols = groups.length <= 4 ? groups.length : Math.ceil(groups.length / 2);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -68,6 +65,7 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
 
       // 初始状态（水合完成前先隐藏舞台，见 stage 的 visibility）
       gsap.set(q(".np-title, .np-subtitle"), { opacity: 0, y: 30 });
+      gsap.set(q(".np-family"), { opacity: 0, y: 40, scale: 0.96 });
       gsap.set(q(".np-chip"), { opacity: 0, y: 80 });
       gsap.set(q(".ns-card"), { opacity: 0, y: 60, scale: 0.7 });
       gsap.set(q(".np-data-inner"), { opacity: 0, y: 40, scale: 0.9 });
@@ -92,10 +90,11 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
         },
       });
 
-      // 第一幕 0-15%：标题 + 产品家族从底部上浮
+      // 第一幕 0-15%：标题 + 产品家族合影 + 分组芯片从底部上浮
       tl.to(q(".np-title"), { opacity: 1, y: 0, duration: 0.05 }, 0);
       tl.to(q(".np-subtitle"), { opacity: 1, y: 0, duration: 0.05 }, 0.02);
-      tl.to(q(".np-chip"), { opacity: 1, y: 0, duration: 0.08, stagger: 0.015 }, 0.03);
+      tl.to(q(".np-family"), { opacity: 1, y: 0, scale: 1, duration: 0.08 }, 0.03);
+      tl.to(q(".np-chip"), { opacity: 1, y: 0, duration: 0.08, stagger: 0.015 }, 0.05);
 
       // 第二幕 15-45%：产品家族放大飞向镜头（穿越视角），6 个行业场景由远及近上浮
       tl.to(q(".np-head"), { opacity: 0, scale: 1.1, duration: 0.06 }, 0.15);
@@ -229,40 +228,61 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
             <p className="np-subtitle mt-4 max-w-xl text-lg text-white/70">{t("hero.subtitle")}</p>
           </div>
           <div
-            className="np-products-inner mt-10 flex max-w-5xl flex-wrap items-center justify-center gap-4"
+            className="np-products-inner mt-8 flex max-w-5xl flex-col items-center justify-center gap-6"
             style={{ transformStyle: "preserve-3d" }}
           >
-            {groups.map((group, i) => {
-              const file =
-                GROUP_IMAGE_NAMES[group.key as ProductGroup] ??
-                `product-group-${group.key.toLowerCase()}.png`;
-              const label = taxonomyLabel(taxonomy, group.key, locale) ?? group.key;
-              return (
-                <div
-                  key={group.key}
-                  className="np-chip w-24 lg:w-32"
-                  style={{ transform: `translateZ(${CHIP_DEPTHS[i]}px)` }}
-                >
-                  <div className="border-brand-blue/40 relative aspect-[4/3] overflow-hidden rounded-xl border">
-                    <SlottedImage
-                      src={`/images/products/${file}`}
-                      alt={label}
-                      className="absolute inset-0 h-full w-full object-cover"
-                      placeholder={{
-                        ratio: "aspect-[4/3]",
-                        variant: "dark",
-                        compact: true,
-                        label: "产品分组组合图",
-                        name: file,
-                      }}
-                    />
-                    <span className="absolute inset-x-0 bottom-0 bg-black/55 px-1 py-0.5 text-center text-xs font-medium">
-                      {label}
-                    </span>
+            {/* 全品类产品家族合影（素材位 home-hero-product-family.png） */}
+            <div className="np-family w-full max-w-3xl">
+              <SlottedImage
+                src="/images/home/home-hero-product-family.png"
+                alt={t("hero.title")}
+                className="aspect-video w-full rounded-xl border border-white/15 object-cover shadow-2xl"
+                placeholder={{
+                  ratio: "aspect-video",
+                  variant: "dark",
+                  label: "全品类产品家族合影",
+                  size: "16:9 · 建议 1920×1080",
+                  name: "home-hero-product-family.png",
+                }}
+              />
+            </div>
+            <div
+              className="grid justify-center gap-4"
+              style={{
+                gridTemplateColumns: `repeat(${chipCols}, auto)`,
+                transformStyle: "preserve-3d",
+              }}
+            >
+              {groups.map((group, i) => {
+                const file = groupImageName(group.key);
+                const label = taxonomyLabel(taxonomy, group.key, locale) ?? group.key;
+                return (
+                  <div
+                    key={group.key}
+                    className="np-chip w-24 lg:w-32"
+                    style={{ transform: `translateZ(${CHIP_DEPTHS[i % CHIP_DEPTHS.length]}px)` }}
+                  >
+                    <div className="border-brand-blue/40 relative aspect-[4/3] overflow-hidden rounded-xl border">
+                      <SlottedImage
+                        src={`/images/products/${file}`}
+                        alt={label}
+                        className="absolute inset-0 h-full w-full object-cover"
+                        placeholder={{
+                          ratio: "aspect-[4/3]",
+                          variant: "dark",
+                          compact: true,
+                          label: "产品分组组合图",
+                          name: file,
+                        }}
+                      />
+                      <span className="absolute inset-x-0 bottom-0 bg-black/55 px-1 py-0.5 text-center text-xs font-medium">
+                        {label}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
           <div className="np-hint absolute bottom-8 flex flex-col items-center gap-2 text-sm text-white/60">
             <span>{t("narrative.scrollHint")}</span>

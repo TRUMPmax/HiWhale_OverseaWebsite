@@ -228,15 +228,16 @@ export class UploadsService implements OnModuleInit {
     return path.join(this.portalPublicDir(), "images", slot.subdir, slot.filename);
   }
 
-  /** 全量素材位 = 静态注册表 + DB 动态槽（方案/案例） */
+  /** 全量素材位 = 静态注册表 + DB 动态槽（产品分组/方案/案例） */
   private async allSlots(): Promise<AssetSlot[]> {
-    const [solutions, cases] = await Promise.all([
+    const [groups, solutions, cases] = await Promise.all([
+      this.prisma.productGroupEntity.findMany({ select: { key: true, nameJson: true } }),
       this.prisma.solution.findMany({ select: { slug: true, title: true, imageName: true } }),
       this.prisma.caseStudy.findMany({
         select: { slug: true, clientName: true, imageName: true, logoName: true },
       }),
     ]);
-    return [...ASSET_SLOTS, ...buildDynamicSlots(solutions, cases)];
+    return [...ASSET_SLOTS, ...buildDynamicSlots(groups, solutions, cases)];
   }
 
   /** 素材位列表（含存在状态与文件大小） */

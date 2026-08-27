@@ -10,8 +10,14 @@ export type AssetSlot = {
   purpose: string;
 };
 
-/** 由 DB 实体动态生成素材位：方案场景图 + 案例现场图/客户 Logo（文件名与 DB imageName/logoName 对齐） */
+/** 分类 key → slug（STACKER_CRANE → stacker-crane，与 portal groupImageName 规则一致） */
+function slugifyKey(key: string): string {
+  return key.toLowerCase().replaceAll("_", "-");
+}
+
+/** 由 DB 实体动态生成素材位：产品分组组合图 + 方案场景图 + 案例现场图/客户 Logo（文件名与 DB imageName/logoName 对齐） */
 export function buildDynamicSlots(
+  productGroups: Array<{ key: string; nameJson: unknown }>,
   solutions: Array<{ slug: string; title: unknown; imageName: string }>,
   cases: Array<{
     slug: string;
@@ -23,6 +29,13 @@ export function buildDynamicSlots(
   const zh = (v: unknown) =>
     v && typeof v === "object" ? String((v as { zh?: string }).zh ?? "") : "";
   return [
+    ...productGroups.map((g) => ({
+      id: `group-${slugifyKey(g.key)}`,
+      filename: `product-group-${slugifyKey(g.key)}.png`,
+      subdir: "products",
+      area: "产品分组",
+      purpose: `产品分组组合图：${zh(g.nameJson) || g.key}（首页生态卡片 + Hero 芯片）`,
+    })),
     ...solutions.map((s) => ({
       id: `solution-${s.slug}`,
       filename: s.imageName,
@@ -94,56 +107,7 @@ export const ASSET_SLOTS: AssetSlot[] = [
     purpose: "首页 3D 模型查看器（AGV 示例模型）",
   },
 
-  // 产品分组（首页生态卡片 + HeroNarrative 芯片）
-  {
-    id: "group-forklift",
-    filename: "product-group-forklift.png",
-    subdir: "products",
-    area: "产品分组",
-    purpose: "产品分组图：叉车产品",
-  },
-  {
-    id: "group-mobile-robot",
-    filename: "product-group-mobile-robot.png",
-    subdir: "products",
-    area: "产品分组",
-    purpose: "产品分组图：移动机器人",
-  },
-  {
-    id: "group-robotic-arm",
-    filename: "product-group-robotic-arm.png",
-    subdir: "products",
-    area: "产品分组",
-    purpose: "产品分组图：机械臂",
-  },
-  {
-    id: "group-gantry-crane",
-    filename: "product-group-gantry-crane.png",
-    subdir: "products",
-    area: "产品分组",
-    purpose: "产品分组图：龙门吊",
-  },
-  {
-    id: "group-cleaning-robot",
-    filename: "product-group-cleaning-robot.png",
-    subdir: "products",
-    area: "产品分组",
-    purpose: "产品分组图：清洁机器人",
-  },
-  {
-    id: "group-delivery-robot",
-    filename: "product-group-delivery-robot.png",
-    subdir: "products",
-    area: "产品分组",
-    purpose: "产品分组图：配送机器人",
-  },
-  {
-    id: "group-software",
-    filename: "product-group-software.png",
-    subdir: "products",
-    area: "产品分组",
-    purpose: "产品分组图：软件系统",
-  },
+  // 产品分组（首页生态卡片 + HeroNarrative 芯片）已迁移为 DB 分类体系驱动的动态槽，见 buildDynamicSlots
 
   // 行业场景
   {
