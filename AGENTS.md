@@ -40,6 +40,8 @@
 阶段 0–10 全部完成（基座/设计系统/首页滚轮叙事/产品中心/方案案例关于联系/AI客服+用户中心/后台框架/后台CRUD/后台全模块/Docker）。
 后端全部完成：NestJS+Prisma+pgvector schema / 认证（JWT+邮箱验证码）/ 产品·方案·案例·询盘·用户·员工 CRUD / MinIO 文件上传 / DeepSeek 流式对话 / 站点设置与内容持久化 / 收藏夹 / 仪表盘统计 / 操作日志。前后台全链路真实 API，mock 仅作 API 不可用时的回退。
 唯一待做：RAG 检索管线（混合检索/重排，`api/src/modules/knowledge/retrieval.service.ts` 有接口桩，指南第六部分）——业主自行接入产品手册后实施。
+方案扩充（2026-08-27）：行业方案 6→11（新增化工化纤/轮胎橡胶/锂电材料/家居/电线电缆），导航栏方案悬停下拉；产品/品类/大类支持拖动排序（reorder API + Product.sort）；产品详情图片 1~N 张灵活渲染。
 素材管理：重命名 + 站点素材位（静态注册表 + 分类体系/方案/案例动态槽，新增分组自动出现上传位）；产品删除级联清理方案/案例关联（2026-08）。
+行业方案扩展（2026-08-27）：Industry 枚举 6→11（新增化工化纤/轮胎橡胶/锂电材料/家居制造/电线电缆），方案 6→11；首页 HeroNarrative 第二幕与 IndustrySolutions 卡片区经 `CORE_INDUSTRIES`（components/home/assets.ts）固定只渲染原 6 个核心行业，方案中心/案例筛选不受影响；行业回退图 industry-*.png 已入 API 静态素材位注册表。
 上线查漏补缺（2026-08-25）：mock 假数据已清（门户假询盘/admin 假待办假浏览量/lib mock 数据/Topbar 装饰件/死链死按钮）；未实装模块已文档化到 docs/modules/（邮件/通知/RAG/Turnstile/RBAC/部署加固/内容接通），待按文档实施；业主待办见 docs/上线查漏补缺-总报告.md §6。
 上线决策执行（2026-08-25 第二轮）：纯海外发布（无 ICP）；注册仅校验邮箱格式（验证码链路已移除）；AI 客服 FAQ 驱动（RAG 暂缓，FAQ 支持 CSV 批量导入/导出：GET/POST `/api/knowledge/faqs/export|import`，追加模式按 question 去重）；AI 设置/内容管理已真实生效；部署加固核心项已落地（构建期 NEXT_PUBLIC 注入、compose env 补全、migrate 自动化、JWT_SECRET 生产强制、nginx 安全头+限频）；HTTPS 待域名购买后按 01 文档启用。
