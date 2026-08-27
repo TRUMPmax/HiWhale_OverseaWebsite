@@ -44,4 +44,22 @@ export const INDUSTRY_IMAGE_NAMES: Record<Industry, string> = {
   [Industry.FOOD_COLD_CHAIN]: "industry-cold-chain.png",
   [Industry.PHARMACEUTICAL]: "industry-pharmaceutical.png",
   [Industry.PORT]: "industry-port.png",
+  [Industry.CHEMICAL]: "industry-chemical.png",
+  [Industry.TIRE]: "industry-tire.png",
+  [Industry.LITHIUM]: "industry-lithium.png",
+  [Industry.HOME_FURNISHING]: "industry-home-furnishing.png",
+  [Industry.WIRE_CABLE]: "industry-wire-cable.png",
 };
+
+/**
+ * 首页滚轮叙事/行业卡片区只展示的 6 个核心行业。
+ * Industry 枚举已扩展到 11 个（方案中心展示全部），首页展示层保持 6 个不变。
+ */
+export const CORE_INDUSTRIES: readonly Industry[] = [
+  Industry.E_COMMERCE,
+  Industry.AUTOMOTIVE,
+  Industry.THIRD_PARTY_LOGISTICS,
+  Industry.FOOD_COLD_CHAIN,
+  Industry.PHARMACEUTICAL,
+  Industry.PORT,
+];

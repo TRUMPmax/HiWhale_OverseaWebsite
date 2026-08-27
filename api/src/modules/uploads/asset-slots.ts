@@ -145,6 +145,41 @@ export const ASSET_SLOTS: AssetSlot[] = [
     area: "行业",
     purpose: "行业场景图：港口",
   },
+  {
+    id: "industry-chemical",
+    filename: "industry-chemical.png",
+    subdir: "industries",
+    area: "行业",
+    purpose: "行业场景图：化工化纤",
+  },
+  {
+    id: "industry-tire",
+    filename: "industry-tire.png",
+    subdir: "industries",
+    area: "行业",
+    purpose: "行业场景图：轮胎橡胶",
+  },
+  {
+    id: "industry-lithium",
+    filename: "industry-lithium.png",
+    subdir: "industries",
+    area: "行业",
+    purpose: "行业场景图：锂电材料",
+  },
+  {
+    id: "industry-home-furnishing",
+    filename: "industry-home-furnishing.png",
+    subdir: "industries",
+    area: "行业",
+    purpose: "行业场景图：家居制造",
+  },
+  {
+    id: "industry-wire-cable",
+    filename: "industry-wire-cable.png",
+    subdir: "industries",
+    area: "行业",
+    purpose: "行业场景图：电线电缆",
+  },
 
   // 客户 Logo 墙（首页 8 个占位）
   ...Array.from({ length: 8 }, (_, i) => ({
@@ -214,12 +249,12 @@ export const ASSET_SLOTS: AssetSlot[] = [
     area: "关于我们",
     purpose: "关于我们：研发中心/工厂实拍图",
   },
-  ...Array.from({ length: 6 }, (_, i) => ({
+  ...Array.from({ length: 31 }, (_, i) => ({
     id: `partner-logo-${i + 1}`,
-    filename: `partner-logo-0${i + 1}.png`,
-    subdir: "about",
+    filename: `partner-logo-${String(i + 1).padStart(2, "0")}.png`,
+    subdir: "about/partners",
     area: "关于我们",
-    purpose: `关于我们：合作伙伴 Logo #${i + 1}`,
+    purpose: `关于我们：合作伙伴 Logo #${i + 1}（双排轮播）`,
   })),
 
   // 联系我们
