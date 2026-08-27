@@ -4,7 +4,6 @@ import { Starfield } from "@/components/ui/Starfield";
 import { ProductEcosystem } from "@/components/home/ProductEcosystem";
 import { SolutionIntegration } from "@/components/home/SolutionIntegration";
 import { IndustrySolutions } from "@/components/home/IndustrySolutions";
-import { ProductViewer3D } from "@/components/home/ProductViewer3D";
 import { VideoShowcase } from "@/components/home/VideoShowcase";
 import { StatsAndClients } from "@/components/home/StatsAndClients";
 import { Certifications } from "@/components/home/Certifications";
@@ -37,7 +36,6 @@ export default async function HomePage() {
       <ProductEcosystem taxonomy={taxonomy} />
       <SolutionIntegration />
       <IndustrySolutions />
-      <ProductViewer3D />
       <VideoShowcase />
       <StatsAndClients stats={companyStats} />
       <Certifications />

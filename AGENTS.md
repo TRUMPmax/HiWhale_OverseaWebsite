@@ -26,7 +26,7 @@
 - **品牌**：深蓝 #0A2540 + 品牌蓝 #1A56DB + 星辰黄 #FFD25A（仅深色背景点缀）+ 夜空 #061529/#050D1F；禁止紫色/渐变底色/emoji（图标用 lucide）
 - **品牌名**写作 `HiWhale Robotics`（W 大写），组件 `components/ui/BrandName.tsx`（Hi 黄 + Whale Robotics 蓝）
 - **双语**：portal 所有文案走 next-intl `t()`，`messages/en.json` + `zh.json` 必须同步；占位图说明文字刻意用中文（双语文件里都写中文，方便用户备料）
-- **占位素材**：`Placeholder` 组件（label=图片需求、size=比例+建议尺寸、name=素材文件名）；用户把素材放进 `assets/inbox/<类别>/`，接入时移动到 `apps/portal/public/images/<类别>/`；站点素材位已由后端注册表 + DB 动态槽统一管理（admin 素材管理 → 站点素材位；动态槽：产品分组组合图随分类体系生成、方案场景图、案例现场图/客户 Logo），portal 端用 SlottedImage onError 自动回退占位块，白名单模式（_\_WITH_IMAGE）已废弃；视频/3D 模型槽（home-brand-video / model-_.glb）暂未接 portal 渲染
+- **占位素材**：`Placeholder` 组件（label=图片需求、size=比例+建议尺寸、name=素材文件名）；用户把素材放进 `assets/inbox/<类别>/`，接入时移动到 `apps/portal/public/images/<类别>/`；站点素材位已由后端注册表 + DB 动态槽统一管理（admin 素材管理 → 站点素材位；动态槽：产品分组组合图随分类体系生成、方案场景图、案例现场图/客户 Logo），portal 端用 SlottedImage onError 自动回退占位块，白名单模式（_\_WITH_IMAGE）已废弃；视频槽（home-brand-video）已接 portal 播放（preload=none 点击加载）；3D 模型板块已整体下线（R3F 依赖已移除，model glb 素材槽已删，2026-08-27）
 - **mock 数据**：全部集中在 `packages/shared/src/constants/{products,solutions,cases}/`（每实体一个文件 + index 注册表）；后端就绪后只换数据访问层；方案/案例与产品的关联为真实 productSlugs（删除产品时 API 级联清理）
 - **公司真实信息**：浩鲸机器人（青岛）有限公司 / 广东浩鲸科技有限公司；联系 mia@gdhjtech.com / +86 176-8558-8160；深圳总部 + 苏州/青岛基地；禁止再写"上海"
 - **认证标识**：本地手绘 SVG（CE 按官方构造；UL 为示意版待官方素材；ISO 用文字徽章——ISO 禁止 logo 商用）

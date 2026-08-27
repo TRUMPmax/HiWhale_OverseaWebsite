@@ -99,13 +99,6 @@ export const ASSET_SLOTS: AssetSlot[] = [
     area: "首页",
     purpose: "首页企业宣传视频",
   },
-  {
-    id: "home-model-agv",
-    filename: "model-agv-mbv15r.glb",
-    subdir: "home",
-    area: "首页",
-    purpose: "首页 3D 模型查看器（AGV 示例模型）",
-  },
 
   // 产品分组（首页生态卡片 + HeroNarrative 芯片）已迁移为 DB 分类体系驱动的动态槽，见 buildDynamicSlots
 

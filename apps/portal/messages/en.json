@@ -160,44 +160,14 @@
         }
       }
     },
-    "viewer3d": {
-      "title": "Interactive 3D Product Preview",
-      "subtitle": "Rotate, zoom and explore our equipment from every angle.",
-      "resetView": "Reset View",
-      "productName": "Counterbalanced AGV Forklift",
-      "productDescription": "LiDAR SLAM navigation, 1.5t load capacity, designed for automated pallet transport and stacking.",
-      "viewFullSpecs": "View Full Specs",
-      "requestConsultation": "Request a Consultation",
-      "placeholder": {
-        "label": "3D model viewer (React Three Fiber): drag to rotate / scroll to zoom / auto-rotate / model switch",
-        "size": "1:1 · GLB/GLTF format, ≤10MB per model"
-      },
-      "specs": {
-        "loadCapacity": {
-          "label": "Load Capacity",
-          "value": "1,500 kg"
-        },
-        "liftHeight": {
-          "label": "Lift Height",
-          "value": "3,000 mm"
-        },
-        "navigation": {
-          "label": "Navigation",
-          "value": "LiDAR SLAM"
-        },
-        "battery": {
-          "label": "Battery",
-          "value": "Li-ion 48V / 200Ah"
-        }
-      }
-    },
     "video": {
       "title": "See HiWhale in Action",
       "subtitle": "Watch how our solutions run in real warehouses around the world.",
       "placeholder": {
         "label": "Corporate video (customer case footage + product montage)",
         "size": "16:9 · 1920×1080 · MP4 + WebM dual format"
-      }
+      },
+      "play": "Play video"
     },
     "stats": {
       "title": "Proven Results, Global Scale",

@@ -148,44 +148,14 @@
         }
       }
     },
-    "viewer3d": {
-      "title": "3D 产品交互预览",
-      "subtitle": "旋转、缩放，从每一个角度了解我们的设备。",
-      "resetView": "重置视角",
-      "productName": "平衡重式 AGV 叉车",
-      "productDescription": "激光 SLAM 导航，1.5 吨载重，为自动化托盘搬运与堆垛而设计。",
-      "viewFullSpecs": "查看完整参数",
-      "requestConsultation": "预约方案咨询",
-      "placeholder": {
-        "label": "3D 模型查看器（React Three Fiber）：拖拽旋转 / 滚轮缩放 / 自动旋转 / 型号切换",
-        "size": "1:1 · 模型格式 GLB/GLTF，单模型 ≤10MB"
-      },
-      "specs": {
-        "loadCapacity": {
-          "label": "额定载重",
-          "value": "1,500 kg"
-        },
-        "liftHeight": {
-          "label": "起升高度",
-          "value": "3,000 mm"
-        },
-        "navigation": {
-          "label": "导航方式",
-          "value": "激光 SLAM"
-        },
-        "battery": {
-          "label": "电池",
-          "value": "锂电 48V / 200Ah"
-        }
-      }
-    },
     "video": {
       "title": "见证浩鲸的实战表现",
       "subtitle": "观看我们的方案在全球真实仓库中的运行表现。",
       "placeholder": {
         "label": "企业宣传视频（客户案例实拍 + 产品混剪）",
         "size": "16:9 · 1920×1080 · MP4 + WebM 双格式"
-      }
+      },
+      "play": "播放视频"
     },
     "stats": {
       "title": "经过验证的全球交付能力",
