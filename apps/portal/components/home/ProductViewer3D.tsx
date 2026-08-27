@@ -1,14 +1,37 @@
+"use client";
+
+import { useState } from "react";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { RotateCw } from "lucide-react";
 import { Link } from "@/navigation";
 import { Placeholder } from "@/components/ui/Placeholder";
 
-const MODELS = ["MBV15R", "MBV20S", "MFV30"] as const;
 const SPEC_KEYS = ["loadCapacity", "liftHeight", "navigation", "battery"] as const;
 
-/** 首页分区 5：3D 产品预览（静态占位版，R3F 交互后续接入） */
+const MODEL_URL = "/images/home/model-agv-mbv15r.glb";
+const MODEL_NAME = "model-agv-mbv15r.glb";
+
+/** 3D 查看器体积大（three.js），仅在客户端按需加载 */
+const ModelViewer = dynamic(
+  () => import("./ModelViewer").then((m) => m.ModelViewer),
+  {
+    ssr: false,
+    loading: () => (
+      <Placeholder
+        ratio="aspect-square"
+        label="3D 模型加载中…"
+        size="首次加载需下载模型文件"
+        name={MODEL_NAME}
+      />
+    ),
+  },
+);
+
+/** 首页分区 5：3D 产品预览（GLB 实机渲染；素材位 model-agv-mbv15r.glb） */
 export function ProductViewer3D() {
   const t = useTranslations("home.viewer3d");
+  const [resetKey, setResetKey] = useState(0);
 
   return (
     <section className="bg-white/75 backdrop-blur-sm">
@@ -22,15 +45,19 @@ export function ProductViewer3D() {
 
         <div className="mt-12 grid items-start gap-12 lg:grid-cols-2">
           <div className="relative">
-            <Placeholder
-              ratio="aspect-square"
-              label={t("placeholder.label")}
-              size={t("placeholder.size")}
-              name="model-agv-mbv15r.glb"
+            <ModelViewer
+              url={MODEL_URL}
+              resetKey={resetKey}
+              placeholder={{
+                label: t("placeholder.label"),
+                size: t("placeholder.size"),
+                name: MODEL_NAME,
+              }}
             />
             <button
               type="button"
-              className="border-border text-muted absolute bottom-4 right-4 flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-sm shadow-sm"
+              onClick={() => setResetKey((k) => k + 1)}
+              className="border-border text-muted absolute bottom-4 right-4 flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-sm shadow-sm transition-colors hover:border-blue-300 hover:text-brand-blue"
             >
               <RotateCw className="h-4 w-4" />
               {t("resetView")}
@@ -39,19 +66,9 @@ export function ProductViewer3D() {
 
           <div>
             <div className="flex gap-2">
-              {MODELS.map((model, index) => (
-                <button
-                  key={model}
-                  type="button"
-                  className={`rounded-lg px-4 py-2 text-sm font-medium ${
-                    index === 0
-                      ? "bg-brand-blue text-white"
-                      : "border-border text-muted border bg-white hover:border-blue-300"
-                  }`}
-                >
-                  {model}
-                </button>
-              ))}
+              <span className="bg-brand-blue rounded-lg px-4 py-2 text-sm font-medium text-white">
+                MBV15R
+              </span>
             </div>
 
             <h3 className="font-heading text-foreground mt-6 text-2xl font-bold">
