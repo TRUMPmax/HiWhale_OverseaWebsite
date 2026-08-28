@@ -37,9 +37,12 @@ import {
 } from "@/components/ui/table";
 import { ConfirmDeleteDialog } from "@/components/common/ConfirmDeleteDialog";
 import { PageHeader } from "@/components/common/PageHeader";
+import { Pagination } from "@/components/common/Pagination";
 import { adminApi, adminApiText, API_BASE } from "@/lib/api";
 import { useAdminAuthStore } from "@/store/auth";
 import { useProductsStore } from "@/store/products";
+
+const FAQ_PAGE_SIZE = 8;
 
 type KbDoc = {
   id: string;
@@ -106,6 +109,7 @@ export default function KnowledgeBasePage() {
   const [pendingDeleteFaq, setPendingDeleteFaq] = useState<Faq | null>(null);
   const [importing, setImporting] = useState(false);
   const importInputRef = useRef<HTMLInputElement>(null);
+  const [faqPage, setFaqPage] = useState(1);
   const [pendingDeleteDoc, setPendingDeleteDoc] = useState<KbDoc | null>(null);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
@@ -118,6 +122,7 @@ export default function KnowledgeBasePage() {
   };
   const fetchFaqs = async () => {
     setFaqs(await adminApi<Faq[]>("/api/knowledge/faqs"));
+    setFaqPage(1);
   };
 
   useEffect(() => {
@@ -350,7 +355,7 @@ export default function KnowledgeBasePage() {
             </div>
           </div>
           <div className="space-y-3">
-            {faqs.map((faq) => (
+            {faqs.slice((faqPage - 1) * FAQ_PAGE_SIZE, faqPage * FAQ_PAGE_SIZE).map((faq) => (
               <Card key={faq.id}>
                 <CardContent className="flex items-start gap-4 p-4">
                   <div className="min-w-0 flex-1">
@@ -391,6 +396,12 @@ export default function KnowledgeBasePage() {
               <p className="py-10 text-center text-sm text-slate-400">暂无 FAQ</p>
             )}
           </div>
+          <Pagination
+            total={faqs.length}
+            page={faqPage}
+            pageSize={FAQ_PAGE_SIZE}
+            onPageChange={setFaqPage}
+          />
         </TabsContent>
 
         {/* 测试问答 */}

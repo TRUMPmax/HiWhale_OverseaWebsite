@@ -31,7 +31,7 @@ export default async function HomePage() {
       >
         <Starfield className="h-full w-full" density={0.0006} yellowRatio={0.12} />
       </div>
-      <HeroNarrative taxonomy={taxonomy} />
+      <HeroNarrative taxonomy={taxonomy} stats={companyStats} />
       <Hero />
       <ProductEcosystem taxonomy={taxonomy} />
       <SolutionIntegration />

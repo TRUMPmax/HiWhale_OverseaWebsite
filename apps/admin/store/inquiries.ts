@@ -56,6 +56,7 @@ type InquiriesState = {
   setStatus: (id: string, status: InquiryStatus) => Promise<void>;
   assign: (id: string, assigneeName: string) => Promise<void>;
   addFollowUp: (id: string, note: string) => Promise<void>;
+  remove: (id: string) => Promise<void>;
 };
 
 /** 询盘管理 store：真实 API 数据层 */
@@ -97,6 +98,10 @@ export const useInquiriesStore = create<InquiriesState>()((set, get) => ({
   addFollowUp: async (id, note) => {
     await adminApi(`/api/inquiries/${id}/follow-ups`, { method: "POST", body: { note } });
     await get().fetchDetail(id);
+    await get().fetchInquiries();
+  },
+  remove: async (id) => {
+    await adminApi(`/api/inquiries/${id}`, { method: "DELETE" });
     await get().fetchInquiries();
   },
 }));

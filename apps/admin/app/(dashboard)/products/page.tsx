@@ -47,6 +47,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useProductsStore, type AdminProduct } from "@/store/products";
+import { resolveAssetUrl } from "@/lib/asset-url";
 import { fetchAdminTaxonomy, STATIC_ADMIN_TAXONOMY, type TaxonomyGroup } from "@/lib/taxonomy";
 
 const PAGE_SIZE = 8;
@@ -77,7 +78,7 @@ function SortableProductRow({ product }: { product: AdminProduct }) {
         {product.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={product.imageUrl}
+            src={resolveAssetUrl(product.imageUrl)}
             alt={product.model}
             className="h-10 w-14 rounded-md border border-slate-200 object-cover"
           />
@@ -267,7 +268,7 @@ export default function ProductsPage() {
                     {p.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        src={p.imageUrl}
+                        src={resolveAssetUrl(p.imageUrl)}
                         alt={p.model}
                         className="h-10 w-14 rounded-md border border-slate-200 object-cover"
                       />

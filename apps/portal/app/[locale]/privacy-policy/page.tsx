@@ -3,8 +3,16 @@ import { Reveal } from "@/components/ui/Reveal";
 import { fetchSetting } from "@/lib/settings";
 
 type PrivacySection = { h: string; body: string };
+type PrivacySetting = string | { zh?: string; en?: string } | null;
 
-/** 隐私政策页：优先展示内容管理中的内容（非空时），否则展示内置完整政策 */
+/** 解析双语设置：兼容历史纯字符串值（视为中文） */
+function pickPrivacyContent(value: PrivacySetting, locale: string): string | null {
+  if (!value) return null;
+  if (typeof value === "string") return locale === "zh" ? value : null;
+  return (locale === "zh" ? value.zh : value.en) || null;
+}
+
+/** 隐私政策页：优先展示内容管理中的双语内容（按语言选取，缺失时回退内置完整政策） */
 export default async function PrivacyPolicyPage({
   params: { locale },
 }: {
@@ -12,7 +20,8 @@ export default async function PrivacyPolicyPage({
 }) {
   setRequestLocale(locale);
   const t = await getTranslations("privacy");
-  const apiContent = await fetchSetting<string>("content-privacy");
+  const setting = await fetchSetting<Exclude<PrivacySetting, null>>("content-privacy");
+  const apiContent = pickPrivacyContent(setting ?? null, locale);
   const sections = apiContent ? null : (t.raw("sections") as PrivacySection[]);
 
   return (

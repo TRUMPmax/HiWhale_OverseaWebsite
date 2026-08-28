@@ -8,6 +8,7 @@ import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { Starfield } from "@/components/ui/Starfield";
 import { SlottedImage } from "@/components/ui/SlottedImage";
+import { parseCountValue, pickLang, type CompanyStatItem } from "@/components/about/types";
 import { getLocalizedLabel, INDUSTRY_LABELS } from "@hiwhale/shared/constants";
 import { groupImageName, INDUSTRY_IMAGE_NAMES, CORE_INDUSTRIES } from "./assets";
 import { taxonomyLabel, type TaxonomyGroup } from "@/lib/taxonomy";
@@ -15,7 +16,7 @@ import { taxonomyLabel, type TaxonomyGroup } from "@/lib/taxonomy";
 /** 产品芯片的景深层次（translateZ） */
 const CHIP_DEPTHS = [0, 60, 20, 80, 40, 10, 70];
 
-/** 数值指标（第 4 个 24/7 为静态文本，不参与滚动计数） */
+/** 数值指标（第 4 个 24/7 为静态文本，不参与滚动计数）；后台「数据指标」配置后由 props 覆盖 */
 const METRICS = [
   { key: "projects", end: 500, suffix: "+", decimals: 0 },
   { key: "countries", end: 30, suffix: "+", decimals: 0 },
@@ -36,7 +37,13 @@ const PARALLAX_LAYERS: Array<[string, number]> = [
  * → 75-100% 数据飞出/星空持续逼近 → 地球从画面下部升起 → 丁达尔光芒中的品牌名
  * 移动端不渲染（由静态 Hero 替代）
  */
-export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
+export function HeroNarrative({
+  taxonomy,
+  stats,
+}: {
+  taxonomy: TaxonomyGroup[];
+  stats?: CompanyStatItem[] | null;
+}) {
   const t = useTranslations("home");
   const locale = useLocale();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -52,6 +59,21 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
   const industries = CORE_INDUSTRIES;
   // 芯片矩阵列数：≤4 个单行排满；更多则按总数对半分列（8→4×2、7→4+3），保持矩阵感
   const chipCols = groups.length <= 4 ? groups.length : Math.ceil(groups.length / 2);
+  // 指标：后台「数据指标」配置（前 3 项参与滚动计数，第 4 格固定 24/7）；未配置用内置默认
+  const metrics =
+    stats && stats.length > 0
+      ? stats.slice(0, 3).map((s, i) => ({
+          key: `custom-${i}`,
+          label: pickLang(locale, s.label, s.labelEn, s.label),
+          ...parseCountValue(s.value),
+        }))
+      : METRICS.map((m) => ({
+          key: m.key,
+          label: t(`stats.items.${m.key}.label`),
+          end: m.end,
+          suffix: m.suffix,
+          decimals: m.decimals,
+        }));
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -115,8 +137,8 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
       );
       tl.to(q(".np-data-inner"), { opacity: 1, y: 0, scale: 1, duration: 0.08 }, 0.5);
 
-      const counters = METRICS.map(() => ({ value: 0 }));
-      METRICS.forEach((m, i) => {
+      const counters = metrics.map(() => ({ value: 0 }));
+      metrics.forEach((m, i) => {
         tl.to(
           counters[i],
           {
@@ -333,7 +355,7 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
               <p className="mt-4 leading-relaxed text-white/70">{t("narrative.dataText")}</p>
             </div>
             <div className="grid grid-cols-2 gap-6">
-              {METRICS.map((m, i) => (
+              {metrics.map((m, i) => (
                 <div
                   key={m.key}
                   className="rounded-xl border border-white/15 bg-white/5 p-6 text-center"
@@ -346,9 +368,7 @@ export function HeroNarrative({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
                   >
                     {(0).toFixed(m.decimals) + m.suffix}
                   </span>
-                  <div className="mt-2 text-sm text-white/60">
-                    {t(`stats.items.${m.key}.label`)}
-                  </div>
+                  <div className="mt-2 text-sm text-white/60">{m.label}</div>
                 </div>
               ))}
               <div className="rounded-xl border border-white/15 bg-white/5 p-6 text-center">

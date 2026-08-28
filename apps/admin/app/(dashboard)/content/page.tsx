@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHeader } from "@/components/common/PageHeader";
@@ -22,9 +21,8 @@ const INITIAL_FOOTER_LINKS: FooterLink[] = [{ label: "隐私政策", url: "/priv
 /** 内容管理：Footer 链接 / 数据指标 / 公司介绍 / 联系方式 / 隐私政策（均对接 portal 真实消费；Banner 与多语言文案已下线——portal 文案走 next-intl 双文件体系） */
 export default function ContentPage() {
   const [links, setLinks] = useState<FooterLink[]>(INITIAL_FOOTER_LINKS);
-  const [privacy, setPrivacy] = useState(
-    "本政策说明浩鲸机器人如何收集、使用与保护您的个人信息……（占位文本）",
-  );
+  const [privacyZh, setPrivacyZh] = useState("");
+  const [privacyEn, setPrivacyEn] = useState("");
 
   // 加载已保存内容
   useEffect(() => {
@@ -33,8 +31,16 @@ export default function ContentPage() {
     load("content-footer-links")
       .then((v) => v && setLinks(v as FooterLink[]))
       .catch(() => {});
+    // 隐私政策：双语对象；兼容历史纯字符串值（视为中文）
     load("content-privacy")
-      .then((v) => typeof v === "string" && setPrivacy(v))
+      .then((v) => {
+        if (typeof v === "string") setPrivacyZh(v);
+        else if (v && typeof v === "object") {
+          const obj = v as { zh?: string; en?: string };
+          setPrivacyZh(obj.zh ?? "");
+          setPrivacyEn(obj.en ?? "");
+        }
+      })
       .catch(() => {});
   }, []);
 
@@ -42,6 +48,14 @@ export default function ContentPage() {
     adminApi(`/api/settings/${key}`, { method: "PUT", body: { value } })
       .then(() => toast.success("保存成功"))
       .catch((e) => toast.error(e instanceof Error ? e.message : "保存失败"));
+  };
+
+  const savePrivacy = () => {
+    const value = {
+      ...(privacyZh.trim() ? { zh: privacyZh } : {}),
+      ...(privacyEn.trim() ? { en: privacyEn } : {}),
+    };
+    saveKey("content-privacy", value);
   };
 
   return (
@@ -128,29 +142,38 @@ export default function ContentPage() {
           <div className="grid grid-cols-2 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">编辑</CardTitle>
+                <CardTitle className="text-base">中文内容</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Label>富文本编辑器占位（后续接入 TipTap）</Label>
-                <Textarea rows={12} value={privacy} onChange={(e) => setPrivacy(e.target.value)} />
-                <Button
-                  className="bg-brand-blue hover:bg-brand-blue/90"
-                  onClick={() => saveKey("content-privacy", privacy)}
-                >
-                  <Save /> 保存
-                </Button>
+                <Textarea
+                  rows={14}
+                  value={privacyZh}
+                  placeholder="留空则中文页展示内置政策文案"
+                  onChange={(e) => setPrivacyZh(e.target.value)}
+                />
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">预览</CardTitle>
+                <CardTitle className="text-base">English Content</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-700">
-                  {privacy}
-                </p>
+              <CardContent className="space-y-3">
+                <Textarea
+                  rows={14}
+                  value={privacyEn}
+                  placeholder="Leave empty to show the built-in English policy"
+                  onChange={(e) => setPrivacyEn(e.target.value)}
+                />
               </CardContent>
             </Card>
+          </div>
+          <div className="mt-4 flex items-center gap-4">
+            <Button className="bg-brand-blue hover:bg-brand-blue/90" onClick={savePrivacy}>
+              <Save /> 保存
+            </Button>
+            <p className="text-xs text-slate-500">
+              隐私政策按语言分别展示：中文页取中文内容，英文页取英文内容；留空的一侧展示内置双语政策。
+            </p>
           </div>
         </TabsContent>
       </Tabs>

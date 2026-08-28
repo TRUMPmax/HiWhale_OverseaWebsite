@@ -24,18 +24,24 @@ import {
 } from "@/components/ui/table";
 import { exportInquiriesCsv } from "@/lib/export-csv";
 import { STATUS_BADGE } from "@/components/inquiries/status-badge";
+import { ConfirmDeleteDialog } from "@/components/common/ConfirmDeleteDialog";
+import { useAdminAuthStore } from "@/store/auth";
 import { useInquiriesStore } from "@/store/inquiries";
+import type { MockAdminInquiry } from "@/lib/mock/inquiries";
 
 const PAGE_SIZE = 8;
 
-/** 询盘管理列表：状态页签 + 搜索 + 导出 + 分页（数据来自 API） */
+/** 询盘管理列表：状态页签 + 搜索 + 导出 + 分页（数据来自 API；删除仅系统管理员） */
 export default function InquiriesPage() {
   const inquiries = useInquiriesStore((s) => s.inquiries);
   const fetchInquiries = useInquiriesStore((s) => s.fetchInquiries);
+  const removeInquiry = useInquiriesStore((s) => s.remove);
+  const isSuperAdmin = useAdminAuthStore((s) => s.admin?.role === "SUPER_ADMIN");
 
   const [status, setStatus] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [pendingDelete, setPendingDelete] = useState<MockAdminInquiry | null>(null);
 
   useEffect(() => {
     void fetchInquiries().catch((e) => toast.error(e instanceof Error ? e.message : "加载失败"));
@@ -150,6 +156,15 @@ export default function InquiriesPage() {
                   >
                     查看
                   </Link>
+                  {isSuperAdmin && (
+                    <button
+                      type="button"
+                      className="ml-4 text-sm font-medium text-red-600 hover:underline"
+                      onClick={() => setPendingDelete(inquiry)}
+                    >
+                      删除
+                    </button>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
@@ -188,6 +203,19 @@ export default function InquiriesPage() {
           </div>
         </div>
       </div>
+
+      <ConfirmDeleteDialog
+        open={pendingDelete !== null}
+        onOpenChange={(open) => !open && setPendingDelete(null)}
+        name={pendingDelete ? `${pendingDelete.customer}（${pendingDelete.company}）` : ""}
+        onConfirm={() => {
+          if (pendingDelete) {
+            void removeInquiry(pendingDelete.id)
+              .then(() => toast.success("已删除该询盘"))
+              .catch((e) => toast.error(e instanceof Error ? e.message : "删除失败"));
+          }
+        }}
+      />
     </div>
   );
 }

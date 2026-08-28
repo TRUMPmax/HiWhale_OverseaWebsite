@@ -131,6 +131,16 @@ export class InquiriesService {
     return this.prisma.inquiry.update({ where: { id }, data: { status } });
   }
 
+  /** 硬删除询盘（跟进记录随 schema 级联清理；SUPER_ADMIN 限定） */
+  async remove(id: string, operatorId?: string) {
+    const inquiry = await this.prisma.inquiry.findUnique({ where: { id } });
+    if (!inquiry) throw new NotFoundException("询盘不存在");
+    await this.prisma.inquiry.delete({ where: { id } });
+    if (operatorId)
+      await this.logs.log(operatorId, "删除询盘", `${inquiry.fullName}（${inquiry.company}）`);
+    return { ok: true };
+  }
+
   /** 按员工姓名分配（STAFF 列表匹配） */
   async assign(id: string, assigneeName: string, operatorId?: string) {
     const inquiry = await this.prisma.inquiry.findUnique({ where: { id } });

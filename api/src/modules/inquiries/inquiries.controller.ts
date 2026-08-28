@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   Param,
@@ -24,6 +25,11 @@ import { InquiriesService } from "./inquiries.service";
 
 function requireStaff(payload: JwtPayload) {
   if (payload.kind !== "staff") throw new ForbiddenException("仅后台员工可操作");
+}
+
+function requireSuperAdmin(payload: JwtPayload) {
+  requireStaff(payload);
+  if (payload.role !== "SUPER_ADMIN") throw new ForbiddenException("仅系统管理员可删除询盘");
 }
 
 @Controller("inquiries")
@@ -80,6 +86,13 @@ export class InquiriesController {
   ) {
     requireStaff(payload);
     return this.inquiries.assign(id, dto.assigneeName, payload.sub);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(":id")
+  remove(@CurrentUser() payload: JwtPayload, @Param("id") id: string) {
+    requireSuperAdmin(payload);
+    return this.inquiries.remove(id, payload.sub);
   }
 
   @UseGuards(JwtAuthGuard)

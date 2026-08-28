@@ -68,3 +68,5 @@ apps/portal/public/images/**/*.mp4
 
 # 用户素材收件箱（临时中转，入库后即移动，不进 git）
 assets/inbox/
+
+.workbuddy/

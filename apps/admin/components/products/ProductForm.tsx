@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { resolveAssetUrl } from "@/lib/asset-url";
 import { useProductsStore, type AdminProduct, type ProductPayload } from "@/store/products";
 import { LangPair } from "./LangPair";
 import { SpecGroupsEditor, type SpecGroupDraft } from "./SpecGroupsEditor";
@@ -77,7 +78,11 @@ function SortableImageTile({
       }`}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={url} alt={`产品图 ${index + 1}`} className="h-full w-full object-cover" />
+      <img
+        src={resolveAssetUrl(url)}
+        alt={`产品图 ${index + 1}`}
+        className="h-full w-full object-cover"
+      />
       {index === 0 && (
         <span className="bg-brand-blue absolute left-1.5 top-1.5 rounded-md px-1.5 py-0.5 text-xs font-medium text-white">
           主图
