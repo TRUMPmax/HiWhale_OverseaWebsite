@@ -25,11 +25,7 @@ export const automotiveLineSide: MockSolution = {
       "线边空间紧张，叉车穿梭安全隐患大",
     ),
   ],
-  productSlugs: [
-    "mba12t-latent-jacking-agv",
-    "mbv15r-counterbalanced-agv-forklift",
-    "hiwhale-wcs-fleet-scheduling-system",
-  ],
+  productSlugs: ["mbt10r-roller-top-amr", "mba12t-latent-jacking-agv", "t300-industrial-delivery-robot", "mbv15r-counterbalanced-agv-forklift", "hiwhale-wcs-fleet-scheduling-system"],
   process: [
     {
       title: L("Takt & Flow Analysis", "节拍与物流分析"),

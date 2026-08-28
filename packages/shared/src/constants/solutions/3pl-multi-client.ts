@@ -25,12 +25,7 @@ export const threePlMultiClient: MockSolution = {
     ),
     L("New client onboarding takes weeks of re-layout", "新客户入驻需要数周的库区调整"),
   ],
-  productSlugs: [
-    "mbt10r-roller-top-amr",
-    "mbf35e-electric-counterbalanced-forklift",
-    "hiwhale-iwms",
-    "hiwhale-wcs-fleet-scheduling-system",
-  ],
+  productSlugs: ["mba12t-latent-jacking-agv", "mbt10r-roller-top-amr", "mbr160-palletizing-robotic-arm", "hiwhale-iwms", "hiwhale-wcs-fleet-scheduling-system"],
   process: [
     {
       title: L("Client Portfolio Analysis", "客户组合分析"),

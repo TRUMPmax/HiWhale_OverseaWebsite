@@ -24,7 +24,7 @@ export const caseNordAuto: MockCase = {
     L("HiWhale WCS with MES integration", "浩鲸 WCS（对接 MES）"),
     L("Sequenced kitting zone automation", "排序配料区自动化"),
   ],
-  productSlugs: ["mba12t-latent-jacking-agv", "mbv15r-counterbalanced-agv-forklift"],
+  productSlugs: ["mbt10r-roller-top-amr", "mba12t-latent-jacking-agv", "mbv15r-counterbalanced-agv-forklift"],
   duration: L("16 weeks", "16 周"),
   results: [
     { value: "99.97%", label: L("Sequencing Accuracy", "排序准确率") },

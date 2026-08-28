@@ -25,12 +25,7 @@ export const coldChainAutomation: MockSolution = {
       "库门开启时间过长，浪费能耗且危及货品",
     ),
   ],
-  productSlugs: [
-    "mbv20p-stacker-agv-forklift",
-    "mbr04g-rail-guided-shuttle-rgv",
-    "mbf35e-electric-counterbalanced-forklift",
-    "hiwhale-wcs-fleet-scheduling-system",
-  ],
+  productSlugs: ["mbv20p-stacker-agv-forklift", "mbv15r-counterbalanced-agv-forklift", "mbr04g-rail-guided-shuttle-rgv", "hiwhale-wcs-fleet-scheduling-system", "hiwhale-iwms"],
   process: [
     {
       title: L("Thermal & Flow Assessment", "热工与物流评估"),

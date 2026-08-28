@@ -24,7 +24,7 @@ export const caseSwiftServe: MockCase = {
     L("HiWhale IWMS multi-tenant platform", "浩鲸 IWMS 多租户平台"),
     L("Standard ERP/OMS API adapters ×35", "35 套标准 ERP/OMS 接口适配器"),
   ],
-  productSlugs: ["mbf35e-electric-counterbalanced-forklift", "mbt10r-roller-top-amr"],
+  productSlugs: ["mba12t-latent-jacking-agv", "mbt10r-roller-top-amr", "mbr160-palletizing-robotic-arm"],
   duration: L("12 weeks", "12 周"),
   results: [
     { value: "2.8×", label: L("Storage Density", "存储密度提升") },

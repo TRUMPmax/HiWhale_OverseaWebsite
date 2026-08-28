@@ -31,13 +31,7 @@ export const lithiumBatteryMaterials: MockSolution = {
       "作业强度大：仓库吞吐量大、石墨粉尘污染，人员健康与设备停机风险并存",
     ),
   ],
-  productSlugs: [
-    "mba12t-latent-jacking-agv",
-    "mbv20p-stacker-agv-forklift",
-    "mbr04g-rail-guided-shuttle-rgv",
-    "hiwhale-wcs-fleet-scheduling-system",
-    "hiwhale-iwms",
-  ],
+  productSlugs: ["mba12t-latent-jacking-agv", "mbh08l-latent-lifting-amr", "mbt10r-roller-top-amr", "mbv20p-stacker-agv-forklift", "hiwhale-wcs-fleet-scheduling-system", "hiwhale-iwms"],
   process: [
     {
       title: L("Clean Raw Material Intake", "原料洁净入库"),

@@ -19,11 +19,7 @@ export const portContainerYard: MockSolution = {
     L("Yard congestion delays vessel turnaround", "堆场拥堵拖长船舶在港时间"),
     L("Heavy-equipment accidents are the top safety risk", "大型设备事故是码头首要安全风险"),
   ],
-  productSlugs: [
-    "mbg40t-rail-mounted-gantry-crane",
-    "mba12t-latent-jacking-agv",
-    "hiwhale-wcs-fleet-scheduling-system",
-  ],
+  productSlugs: ["mbg40t-rail-mounted-gantry-crane", "mbv15r-counterbalanced-agv-forklift", "mba12t-latent-jacking-agv", "hiwhale-wcs-fleet-scheduling-system"],
   process: [
     {
       title: L("Yard Flow Modeling", "堆场物流建模"),

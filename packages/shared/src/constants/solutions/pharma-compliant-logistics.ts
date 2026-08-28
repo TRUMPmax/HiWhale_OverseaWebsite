@@ -28,12 +28,7 @@ export const pharmaCompliantLogistics: MockSolution = {
     ),
     L("Recalls require minute-level batch traceability", "药品召回要求分钟级批次追溯能力"),
   ],
-  productSlugs: [
-    "mbh08l-latent-lifting-amr",
-    "mbr04g-rail-guided-shuttle-rgv",
-    "hiwhale-iwms",
-    "hiwhale-wcs-fleet-scheduling-system",
-  ],
+  productSlugs: ["mbh08l-latent-lifting-amr", "mbr04g-rail-guided-shuttle-rgv", "mbr160-palletizing-robotic-arm", "hiwhale-iwms", "hiwhale-wcs-fleet-scheduling-system"],
   process: [
     {
       title: L("Compliance Gap Analysis", "合规差距分析"),
