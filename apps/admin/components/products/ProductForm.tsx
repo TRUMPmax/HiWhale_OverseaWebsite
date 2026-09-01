@@ -17,7 +17,7 @@ import {
 import { arrayMove, rectSortingStrategy, SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { toast } from "sonner";
-import { getGroupOfCategory } from "@hiwhale/shared/constants";
+import { getGroupOfCategory, INDUSTRY_LABELS } from "@hiwhale/shared/constants";
 import type { ProductCategory } from "@hiwhale/shared/constants";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -117,6 +117,8 @@ export function ProductForm({ initial }: ProductFormProps) {
   });
   const [spec, setSpec] = useState(initial?.record.specUrl ?? "");
   const [model3d, setModel3d] = useState(initial?.record.modelUrl ?? "");
+  /** 适用行业（多选） */
+  const [scenarios, setScenarios] = useState<string[]>(initial?.record.scenarios ?? []);
   const [uploading, setUploading] = useState<"image" | "spec" | "model3d" | null>(null);
   /** 分类体系：优先 API（DB 实体），失败回退静态常量 */
   const [taxonomy, setTaxonomy] = useState<TaxonomyGroup[]>(STATIC_ADMIN_TAXONOMY);
@@ -299,7 +301,7 @@ export function ProductForm({ initial }: ProductFormProps) {
       features: values.features
         .filter((f) => f.zh.trim())
         .map((f) => ({ zh: f.zh, en: enOf(f.zh, f.en) })),
-      scenarios: initial?.record.scenarios ?? [],
+      scenarios,
       imageName: initial?.record.imageName ?? `product-${values.model.toLowerCase()}.png`,
       imageUrl: images[0] ?? null,
       imageUrls: images,
@@ -365,6 +367,33 @@ export function ProductForm({ initial }: ProductFormProps) {
               ))}
             </select>
             {errors.category && <p className="text-xs text-red-600">{errors.category.message}</p>}
+          </div>
+          <div className="col-span-2 space-y-1.5">
+            <Label>适用行业（可多选）</Label>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(INDUSTRY_LABELS).map(([key, label]) => (
+                <label
+                  key={key}
+                  className={`flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm transition-colors ${
+                    scenarios.includes(key)
+                      ? "border-brand-blue text-brand-blue bg-blue-50"
+                      : "border-slate-200 text-slate-600 hover:border-slate-300"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    className="accent-brand-blue h-3.5 w-3.5"
+                    checked={scenarios.includes(key)}
+                    onChange={() =>
+                      setScenarios((prev) =>
+                        prev.includes(key) ? prev.filter((s) => s !== key) : [...prev, key],
+                      )
+                    }
+                  />
+                  {label.zh}
+                </label>
+              ))}
+            </div>
           </div>
           <div className="col-span-2">
             <LangPair

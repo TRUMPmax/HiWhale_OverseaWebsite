@@ -39,7 +39,7 @@ async function main() {
     groupOrder += 1;
     const g = await prisma.productGroupEntity.upsert({
       where: { key: group },
-      update: { nameJson: PRODUCT_GROUP_LABELS[group], sort: groupOrder },
+      update: {},
       create: { key: group, nameJson: PRODUCT_GROUP_LABELS[group], sort: groupOrder },
     });
     let catOrder = 0;
@@ -59,7 +59,7 @@ async function main() {
   }
   console.log("[seed] taxonomy upserted: " + PRODUCT_CATEGORY_GROUPS.length + " groups");
 
-  // 产品（按 slug upsert）
+  // 产品/方案/案例/分类：仅补缺（update 为空操作），不覆盖后台编辑
   let count = 0;
   for (const p of MOCK_PRODUCTS) {
     const data = {
@@ -77,7 +77,7 @@ async function main() {
       imageName: p.imageName,
       status: "ON",
     };
-    await prisma.product.upsert({ where: { slug: p.slug }, update: data, create: data });
+    await prisma.product.upsert({ where: { slug: p.slug }, update: {}, create: data });
     count++;
   }
   console.log(`[seed] products upserted: ${count}`);
