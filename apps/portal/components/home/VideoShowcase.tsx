@@ -11,15 +11,15 @@ const VIDEO_URL = "/images/home/home-brand-video.mp4";
 export function VideoShowcase() {
   const t = useTranslations("home.video");
   const videoRef = useRef<HTMLVideoElement>(null);
-  // 0 = 探测中/未播放，1 = 可播放，2 = 文件不存在回退占位
-  const [stage, setStage] = useState(0);
-  const [playing, setPlaying] = useState(false);
+  // 0 = 未开始（显示大播放按钮封面），1 = 已开始播放（控制条常驻），2 = 文件不存在回退占位
+  const [started, setStarted] = useState(false);
+  const [missing, setMissing] = useState(false);
 
   const handlePlay = () => {
     const v = videoRef.current;
     if (!v) return;
     void v.play();
-    setPlaying(true);
+    setStarted(true);
   };
 
   return (
@@ -31,7 +31,7 @@ export function VideoShowcase() {
         </div>
 
         <div className="relative mx-auto mt-12 max-w-4xl">
-          {stage === 2 ? (
+          {missing ? (
             <Placeholder
               variant="dark"
               ratio="aspect-video"
@@ -45,14 +45,13 @@ export function VideoShowcase() {
                 ref={videoRef}
                 src={VIDEO_URL}
                 preload="none"
-                controls={playing}
+                controls={started}
                 playsInline
                 className="h-full w-full object-contain"
-                onError={() => setStage(2)}
-                onPause={() => setPlaying(false)}
-                onPlay={() => setPlaying(true)}
+                onError={() => setMissing(true)}
+                onPlay={() => setStarted(true)}
               />
-              {!playing && (
+              {!started && (
                 <button
                   type="button"
                   onClick={handlePlay}

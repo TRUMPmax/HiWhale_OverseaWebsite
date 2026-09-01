@@ -21,7 +21,8 @@ type SlottedImageProps = {
   };
 };
 
-/** 素材位图片：文件存在即显示真图，加载失败（未投放）自动回退占位块 */
+/** 素材位图片：文件存在即显示真图，加载失败（未投放）自动回退占位块；
+ *  object-cover 的图默认裁切填充，悬停时切换为完整显示（object-contain） */
 export function SlottedImage({ src, fallbackSrc, alt, className, placeholder }: SlottedImageProps) {
   // 0 = 主图，1 = 回退图，2 = 占位块
   const [stage, setStage] = useState(0);
@@ -51,6 +52,10 @@ export function SlottedImage({ src, fallbackSrc, alt, className, placeholder }: 
       />
     );
   }
+  // 裁切填充的图：悬停时在原位完整显示，避免上传素材被裁掉关键内容
+  const hoverable = className.includes("object-cover")
+    ? "transition-all duration-300 hover:object-contain"
+    : "";
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
@@ -58,7 +63,9 @@ export function SlottedImage({ src, fallbackSrc, alt, className, placeholder }: 
       ref={imgRef}
       src={activeSrc}
       alt={alt}
-      className={className}
+      loading="lazy"
+      decoding="async"
+      className={`${className} ${hoverable}`}
       onError={handleError}
     />
   );

@@ -108,7 +108,9 @@ export default async function ProductDetailPage({
                     <img
                       src={main}
                       alt={product.name[loc]}
-                      className="aspect-[4/3] w-full rounded-xl border border-slate-200 object-cover"
+                      loading="lazy"
+                      decoding="async"
+                      className="aspect-[4/3] w-full rounded-xl border border-slate-200 object-cover transition-all duration-300 hover:object-contain"
                     />
                   ) : (
                     <Placeholder
@@ -131,7 +133,9 @@ export default async function ProductDetailPage({
                           key={url}
                           src={url}
                           alt={`${product.name[loc]} ${i + 2}`}
-                          className="aspect-square w-full rounded-lg border border-slate-200 object-cover"
+                          loading="lazy"
+                          decoding="async"
+                          className="aspect-square w-full rounded-lg border border-slate-200 object-cover transition-all duration-300 hover:object-contain"
                         />
                       ))}
                     </div>
