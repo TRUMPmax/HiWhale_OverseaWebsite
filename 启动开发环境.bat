@@ -1,35 +1,34 @@
-﻿@echo off
-chcp 65001 >nul
-title HiWhale 开发环境
+@echo off
+title HiWhale Dev Environment
 cd /d %~dp0
 
 echo ============================================
-echo   HiWhale 一键启动开发环境（本地模式）
+echo   HiWhale One-Click Start (Local Dev)
 echo ============================================
 echo.
 
-echo [0/3] 切换前端环境变量为本地模式...
+echo [0/3] Switching frontend env to LOCAL mode...
 "C:\Program Files\Git\bin\bash.exe" scripts/use-local-env.sh
 if errorlevel 1 (
-  echo 环境变量切换失败。
+  echo Env switch failed.
   pause
   exit /b 1
 )
 echo.
 
-echo [1/3] 基础设施 (Docker + 数据库 + 种子数据)...
+echo [1/3] Infrastructure (Docker + database + seed)...
 "C:\Program Files\Git\bin\bash.exe" scripts/dev-up.sh
 if errorlevel 1 (
   echo.
-  echo 基础设施启动失败，请检查 Docker Desktop 后重试。
+  echo Infrastructure failed. Check Docker Desktop and retry.
   pause
   exit /b 1
 )
 
 echo.
-echo [3/3] 启动开发服务器 (按 Ctrl+C 全部停止)...
-echo   门户站   http://localhost:3000/zh
-echo   管理后台 http://localhost:3001  (admin@hiwhale.com / admin123)
+echo [3/3] Starting dev servers (Ctrl+C to stop all)...
+echo   Portal   http://localhost:3000/zh
+echo   Admin    http://localhost:3001  (admin@hiwhale.com / admin123)
 echo   API      http://localhost:4000/health
 echo.
 pnpm dev:all

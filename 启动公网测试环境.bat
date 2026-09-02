@@ -1,35 +1,34 @@
-﻿@echo off
-chcp 65001 >nul
+@echo off
 setlocal enabledelayedexpansion
-title HiWhale 公网测试环境
+title HiWhale Public Test Environment
 cd /d %~dp0
 
 echo ============================================
-echo   HiWhale 一键启动（公网测试模式）
-echo   域名: https://hiwhalerob.com
+echo   HiWhale One-Click Start (Public Test)
+echo   Domain: https://hiwhalerob.com
 echo ============================================
 echo.
 
-REM 若页面报 500 或图片加载失败，先用 fix 参数清缓存：启动公网测试环境.bat fix
+REM If pages return 500 or images fail, run with fix arg first: this.bat fix
 if "%1"=="fix" (
-  echo [修复] 清理 Next.js 缓存...
+  echo [FIX] Clearing Next.js caches...
   if exist apps\portal\.next rmdir /s /q apps\portal\.next
   if exist apps\admin\.next rmdir /s /q apps\admin\.next
-  echo [修复] 完成，继续启动...
+  echo [FIX] Done, continuing...
   echo.
 )
 
-REM 端口自检：3000/3001/4000 被占用时直接启动会产生孤儿进程
+REM Port pre-check: starting with occupied ports creates orphan processes
 set "OCCUPIED="
 for %%p in (3000 3001 4000) do (
   netstat -ano | findstr "LISTENING" | findstr /C:":%%p " >nul 2>&1 && set "OCCUPIED=!OCCUPIED! %%p"
 )
 if defined OCCUPIED (
-  echo [警告] 以下端口被占用：!OCCUPIED!
-  echo 通常是上次启动残留的进程。直接继续会导致页面加载残缺。
-  set /p KILLCONFIRM="强制结束占用进程并继续？(Y/n): "
+  echo [WARN] Ports occupied: !OCCUPIED!
+  echo Usually leftover processes from a previous run.
+  set /p KILLCONFIRM="Kill them and continue? (Y/n): "
   if /i "!KILLCONFIRM!"=="n" (
-    echo 已取消。请先关闭旧的 HiWhale Dev Servers 窗口再重试。
+    echo Cancelled. Close the old "HiWhale Dev Servers" window and retry.
     pause
     exit /b 1
   )
@@ -38,41 +37,41 @@ if defined OCCUPIED (
       taskkill /F /PID %%a >nul 2>&1
     )
   )
-  echo 占用进程已清理。
+  echo Processes cleaned.
   echo.
 )
 
-echo [1/5] 切换前端环境变量为公网模式...
+echo [1/5] Switching frontend env to PUBLIC mode...
 "C:\Program Files\Git\bin\bash.exe" scripts/use-public-env.sh
 if errorlevel 1 (
-  echo 环境变量切换失败。
+  echo Env switch failed.
   pause
   exit /b 1
 )
 
 echo.
-echo [2/5] 基础设施 (Docker: PostgreSQL + Redis + MinIO)...
+echo [2/5] Infrastructure (Docker: PostgreSQL + Redis + MinIO)...
 "C:\Program Files\Git\bin\bash.exe" scripts/dev-up.sh
 if errorlevel 1 (
   echo.
-  echo 基础设施启动失败，请检查 Docker Desktop 后重试。
+  echo Infrastructure failed. Check Docker Desktop and retry.
   pause
   exit /b 1
 )
 
 echo.
-echo [3/5] 开发服务器（新窗口：portal:3000 + admin:3001 + api:4000）...
+echo [3/5] Dev servers (new window: portal:3000 + admin:3001 + api:4000)...
 start "HiWhale Dev Servers" cmd /k "cd /d %~dp0 && pnpm dev:all"
 
 echo.
-echo [4/5] 等待服务就绪（最长约 2 分钟）...
+echo [4/5] Waiting for services (up to ~2 min)...
 set /a tries=0
 :wait
 curl -fsS -m 2 http://localhost:4000/health >nul 2>&1
 if not errorlevel 1 goto ready
 set /a tries+=1
 if !tries! geq 40 (
-  echo 服务启动超时，请查看 HiWhale Dev Servers 窗口的日志。
+  echo Timed out. Check the "HiWhale Dev Servers" window logs.
   pause
   exit /b 1
 )
@@ -80,23 +79,23 @@ ping -n 4 127.0.0.1 >nul
 goto wait
 
 :ready
-echo 服务已就绪。
+echo Services ready.
 echo.
-echo [5/5] 启动公网隧道（新窗口）...
+echo [5/5] Starting public tunnel (new window)...
 start "HiWhale Tunnel" cmd /k cloudflared tunnel --config "C:\Users\Administrator\.cloudflared\config-hiwhale.yml" run hiwhale-local
 
-echo 等待隧道建连...
+echo Waiting for tunnel...
 ping -n 9 127.0.0.1 >nul
 
 echo.
 echo ============================================
-echo   启动完成，正在打开浏览器...
-echo   门户站   https://hiwhalerob.com
-echo   管理后台 https://admin.hiwhalerob.com  (admin@hiwhale.com)
-echo   本地调试 http://localhost:3000/zh
+echo   Done. Opening browser...
+echo   Portal   https://hiwhalerob.com
+echo   Admin    https://admin.hiwhalerob.com  (admin@hiwhale.com)
+echo   Local    http://localhost:3000/zh
 echo ============================================
 start https://hiwhalerob.com
 start https://admin.hiwhalerob.com
 echo.
-echo 关闭 HiWhale Dev Servers 和 HiWhale Tunnel 两个窗口即停止服务。
+echo Close the "HiWhale Dev Servers" and "HiWhale Tunnel" windows to stop.
 pause
