@@ -1,4 +1,9 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, Matches, MinLength } from "class-validator";
+
+export class SendCodeDto {
+  @IsEmail({}, { message: "邮箱格式不正确" })
+  email: string;
+}
 
 export class RegisterDto {
   @IsString()
@@ -11,6 +16,10 @@ export class RegisterDto {
 
   @IsEmail({}, { message: "邮箱格式不正确" })
   email: string;
+
+  @IsString()
+  @Matches(/^\d{6}$/, { message: "验证码为 6 位数字" })
+  code: string;
 
   @IsString()
   @MinLength(8, { message: "密码至少 8 位" })

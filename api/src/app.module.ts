@@ -3,6 +3,7 @@ import { ConfigModule } from "@nestjs/config";
 import { PrismaModule } from "./common/prisma/prisma.module";
 import { HealthModule } from "./modules/health/health.module";
 import { AuthModule } from "./modules/auth/auth.module";
+import { MailModule } from "./modules/mail/mail.module";
 import { ProductsModule } from "./modules/products/products.module";
 import { SolutionsModule } from "./modules/solutions/solutions.module";
 import { CasesModule } from "./modules/cases/cases.module";
@@ -20,6 +21,7 @@ import { TaxonomyModule } from "./modules/taxonomy/taxonomy.module";
 
 @Module({
   imports: [
+    MailModule,
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
     HealthModule,

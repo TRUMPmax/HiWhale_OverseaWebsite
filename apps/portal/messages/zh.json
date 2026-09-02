@@ -294,8 +294,16 @@
       "nameRequired": "请输入您的姓名",
       "companyRequired": "请输入您的公司",
       "termsRequired": "请先同意服务条款",
-      "requestFailed": "请求失败，请稍后重试"
-    }
+      "requestFailed": "请求失败，请稍后重试",
+      "codeInvalid": "请输入 6 位数字验证码",
+      "codeNotSent": "请先获取邮箱验证码",
+      "codeMismatch": "验证码不正确，请重新输入"
+    },
+    "code": "邮箱验证码",
+    "codePlaceholder": "6 位数字验证码",
+    "sendCode": "发送验证码",
+    "resendIn": "重新发送 ({s}s)",
+    "codeSentDemo": "验证码已发送至您的邮箱（开发模式：{code}）"
   },
   "solutions": {
     "banner": {

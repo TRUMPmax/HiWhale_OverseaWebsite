@@ -1,12 +1,17 @@
 import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { LoginDto, RegisterDto, StaffLoginDto } from "./dto/auth.dto";
+import { LoginDto, RegisterDto, SendCodeDto, StaffLoginDto } from "./dto/auth.dto";
 import { CurrentUser, JwtAuthGuard } from "./jwt-auth.guard";
 import type { JwtPayload } from "./jwt.strategy";
 
 @Controller("auth")
 export class AuthController {
   constructor(private readonly auth: AuthService) {}
+
+  @Post("send-code")
+  sendCode(@Body() dto: SendCodeDto) {
+    return this.auth.sendCode(dto.email);
+  }
 
   @Post("register")
   register(@Body() dto: RegisterDto) {

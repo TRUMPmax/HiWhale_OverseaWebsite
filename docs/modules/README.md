@@ -29,7 +29,7 @@
 | #   | 文档                                                   | 模块                                                  | 状态                                                         |
 | --- | ------------------------------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------ |
 | 01  | [01-deploy-hardening.md](01-deploy-hardening.md)       | 部署与环境加固（Dockerfile/compose/deploy.sh/env）    | ✅ 核心项已实施（HTTPS 待域名购买后启用）                    |
-| 02  | [02-mail.md](02-mail.md)                               | 邮件模块（MailModule 抽象 + 询盘通知）                | ⏸️ 暂缓（SMTP 不实装；注册仅校验邮箱格式，验证码链路已移除） |
+| 02  | [02-mail.md](02-mail.md)                               | 邮件模块（MailModule 抽象 + 询盘通知）                | ✅ 已实施（Resend 注册验证码） |
 | 03  | [03-notifications.md](03-notifications.md)             | 后台通知系统（schema + API + Topbar 铃铛）            | 待实施                                                       |
 | 04  | [04-rag-retrieval.md](04-rag-retrieval.md)             | RAG 检索管线（解析/分块/embedding/混合检索/rerank）   | ⏸️ 暂缓（成本考虑；当前 FAQ 注入 prompt 已实装）             |
 | 05  | [05-turnstile.md](05-turnstile.md)                     | Cloudflare Turnstile 防刷（询盘表单 + 验证码接口）    | 待实施（需业主申请密钥对）                                   |

@@ -90,6 +90,8 @@ services:
       JWT_SECRET: ${JWT_SECRET:-}
       DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
       DEEPSEEK_BASE_URL: ${DEEPSEEK_BASE_URL:-https://api.deepseek.com}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      MAIL_FROM: ${MAIL_FROM:-HiWhale Robotics <noreply@hiwhalerob.com>}
       # 逗号分隔；本地 docker 开发默认 localhost，生产在根 .env 覆盖为正式域名
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:3001}
       MINIO_ENDPOINT: minio

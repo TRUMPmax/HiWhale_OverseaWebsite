@@ -306,8 +306,16 @@
       "nameRequired": "Please enter your name",
       "companyRequired": "Please enter your company",
       "termsRequired": "You must agree to the terms",
-      "requestFailed": "Request failed, please try again"
-    }
+      "requestFailed": "Request failed, please try again",
+      "codeInvalid": "Please enter the 6-digit verification code",
+      "codeNotSent": "Please request a verification code first",
+      "codeMismatch": "Incorrect code, please try again"
+    },
+    "code": "Email Verification Code",
+    "codePlaceholder": "6-digit code",
+    "sendCode": "Send Code",
+    "resendIn": "Resend in {s}s",
+    "codeSentDemo": "Code sent to your email (dev mode: {code})"
   },
   "solutions": {
     "banner": {
