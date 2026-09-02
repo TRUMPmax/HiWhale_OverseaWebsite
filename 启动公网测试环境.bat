@@ -76,7 +76,7 @@ if !tries! geq 40 (
   pause
   exit /b 1
 )
-timeout /t 3 /nobreak >nul
+ping -n 4 127.0.0.1 >nul
 goto wait
 
 :ready
@@ -86,7 +86,7 @@ echo [5/5] 启动公网隧道（新窗口）...
 start "HiWhale Tunnel" cmd /k cloudflared tunnel --config "C:\Users\Administrator\.cloudflared\config-hiwhale.yml" run hiwhale-local
 
 echo 等待隧道建连...
-timeout /t 8 /nobreak >nul
+ping -n 9 127.0.0.1 >nul
 
 echo.
 echo ============================================
