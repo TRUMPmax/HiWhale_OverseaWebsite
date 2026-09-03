@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { LocalizedText, MockProductFeature } from "@hiwhale/shared/constants";
 import { adminApi } from "@/lib/api";
 
 /** 管理台产品记录（与 API 返回形状一致；Json 字段为 {en,zh} 本地化结构） */
@@ -16,7 +17,7 @@ export type AdminProduct = {
     group: { en: string; zh: string };
     items: Array<{ label: { en: string; zh: string }; value: { en: string; zh: string } }>;
   }>;
-  features: Array<{ en: string; zh: string }>;
+  features: Array<LocalizedText | MockProductFeature>;
   scenarios: string[];
   imageName: string;
   imageUrl?: string | null;

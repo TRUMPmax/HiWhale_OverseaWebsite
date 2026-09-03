@@ -25,6 +25,11 @@ export class UpsertGroupDto {
   @IsObject()
   nameJson: { en: string; zh: string };
 
+  /** 门户首页分组图标（PORTAL_ICON_OPTIONS 白名单 name；空串=清除，回退默认） */
+  @IsOptional()
+  @IsString()
+  icon?: string;
+
   @IsOptional()
   @IsInt()
   sort?: number;

@@ -331,7 +331,8 @@
       "equipmentTitle": "Equipment Combination",
       "processTitle": "Deployment Process",
       "resultsTitle": "Proven Results",
-      "relatedProductsTitle": "Related Products"
+      "relatedProductsTitle": "Related Products",
+      "durationLabel": "Delivery Timeline"
     },
     "cta": {
       "title": "Need a solution built around your operation?",

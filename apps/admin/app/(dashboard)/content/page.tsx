@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHeader } from "@/components/common/PageHeader";
 import { StatsTab } from "@/components/content/StatsTab";
+import { HomeIndustriesTab } from "@/components/content/HomeIndustriesTab";
 import { AboutTab } from "@/components/content/AboutTab";
 import { ContactInfoTab } from "@/components/content/ContactInfoTab";
 import { adminApi } from "@/lib/api";
@@ -18,7 +19,7 @@ type FooterLink = { label: string; url: string };
 
 const INITIAL_FOOTER_LINKS: FooterLink[] = [{ label: "隐私政策", url: "/privacy-policy" }];
 
-/** 内容管理：Footer 链接 / 数据指标 / 公司介绍 / 联系方式 / 隐私政策（均对接 portal 真实消费；Banner 与多语言文案已下线——portal 文案走 next-intl 双文件体系） */
+/** 内容管理：Footer 链接 / 数据指标 / 首页行业 / 公司介绍 / 联系方式 / 隐私政策（均对接 portal 真实消费；Banner 与多语言文案已下线——portal 文案走 next-intl 双文件体系） */
 export default function ContentPage() {
   const [links, setLinks] = useState<FooterLink[]>(INITIAL_FOOTER_LINKS);
   const [privacyZh, setPrivacyZh] = useState("");
@@ -66,6 +67,7 @@ export default function ContentPage() {
         <TabsList>
           <TabsTrigger value="footer">Footer 链接</TabsTrigger>
           <TabsTrigger value="stats">数据指标</TabsTrigger>
+          <TabsTrigger value="homeIndustries">首页行业</TabsTrigger>
           <TabsTrigger value="about">公司介绍</TabsTrigger>
           <TabsTrigger value="contact">联系方式</TabsTrigger>
           <TabsTrigger value="privacy">隐私政策</TabsTrigger>
@@ -128,6 +130,10 @@ export default function ContentPage() {
         {/* 数据指标 */}
         <TabsContent value="stats" className="mt-4">
           <StatsTab />
+        </TabsContent>
+
+        <TabsContent value="homeIndustries" className="mt-4">
+          <HomeIndustriesTab />
         </TabsContent>
 
         <TabsContent value="about" className="mt-4">

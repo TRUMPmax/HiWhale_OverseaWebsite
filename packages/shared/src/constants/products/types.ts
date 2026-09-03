@@ -13,6 +13,17 @@ export type MockSpecGroup = {
   items: MockSpecItem[];
 };
 
+/** 产品特性条目：新形状可带 icon；旧数据为纯 LocalizedText（兼容） */
+export type MockProductFeature = {
+  text: LocalizedText;
+  icon?: string;
+};
+
+/** 兼容旧形状（纯 LocalizedText）与新形状（{text, icon}） */
+export function normalizeFeature(f: LocalizedText | MockProductFeature): MockProductFeature {
+  return "text" in f ? f : { text: f };
+}
+
 /** Stage 4 产品详情页使用的 Mock 产品类型（后续由数据库 Product 替换） */
 export type MockProduct = {
   /** 数据库 ID（API 数据存在；内置 Mock 无） */
@@ -27,8 +38,8 @@ export type MockProduct = {
   quickSpecs: MockSpecItem[];
   /** 分组完整规格表 */
   specGroups: MockSpecGroup[];
-  /** 核心特性，3-4 条 */
-  features: LocalizedText[];
+  /** 核心特性，3-4 条（兼容旧纯文本形状） */
+  features: Array<LocalizedText | MockProductFeature>;
   /** 适用行业，2-3 个 */
   scenarios: Industry[];
   /** 产品实拍图素材文件名 */

@@ -4,6 +4,8 @@ import type { LocalizedText } from "../products/types";
 export type MockCaseResult = {
   value: string;
   label: LocalizedText;
+  /** 可选展示图标（PORTAL_ICON_OPTIONS 白名单 name；空 → 前台不渲染图标） */
+  icon?: string;
 };
 
 export type MockCaseTestimonial = {

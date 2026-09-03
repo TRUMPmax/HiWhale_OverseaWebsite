@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { CheckCircle2, RotateCcw } from "lucide-react";
-import type { Locale, MockProduct } from "@hiwhale/shared/constants";
+import { normalizeFeature, type Locale, type MockProduct } from "@hiwhale/shared/constants";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
 
@@ -70,12 +70,18 @@ export function InterfaceShowcaseSection({ product, loc }: { product: MockProduc
             ))}
           </div>
           <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-            {product.features.map((feature) => (
-              <li key={feature.en} className="text-foreground flex items-start gap-2 text-sm">
-                <CheckCircle2 className="text-brand-blue mt-0.5 h-4 w-4 shrink-0" />
-                {feature[loc]}
-              </li>
-            ))}
+            {product.features.map((raw) => {
+              const feature = normalizeFeature(raw);
+              return (
+                <li
+                  key={feature.text.en}
+                  className="text-foreground flex items-start gap-2 text-sm"
+                >
+                  <CheckCircle2 className="text-brand-blue mt-0.5 h-4 w-4 shrink-0" />
+                  {feature.text[loc]}
+                </li>
+              );
+            })}
           </ul>
         </Reveal>
       </div>

@@ -17,6 +17,7 @@ async function main() {
     PRODUCT_CATEGORY_GROUPS,
     PRODUCT_GROUP_LABELS,
     PRODUCT_CATEGORY_LABELS,
+    DEFAULT_GROUP_ICONS,
   } = await import("@hiwhale/shared/constants");
   // 后台超级管理员（密码从 SEED_ADMIN_PASSWORD 读取，默认 admin123 仅限本地开发，首次登录后立即改密）
   const email = process.env.SEED_ADMIN_EMAIL ?? "admin@hiwhale.com";
@@ -40,7 +41,12 @@ async function main() {
     const g = await prisma.productGroupEntity.upsert({
       where: { key: group },
       update: {},
-      create: { key: group, nameJson: PRODUCT_GROUP_LABELS[group], sort: groupOrder },
+      create: {
+        key: group,
+        nameJson: PRODUCT_GROUP_LABELS[group],
+        sort: groupOrder,
+        icon: DEFAULT_GROUP_ICONS[group] ?? null,
+      },
     });
     let catOrder = 0;
     for (const category of categories) {
@@ -91,6 +97,7 @@ async function main() {
       title: s.title,
       summary: s.summary,
       description: s.description,
+      duration: s.duration ?? null,
       painPoints: s.painPoints,
       productSlugs: s.productSlugs,
       process: s.process,
@@ -98,7 +105,7 @@ async function main() {
       imageName: s.imageName,
       status: "PUBLISHED",
     };
-    await prisma.solution.upsert({ where: { slug: s.slug }, update: data, create: data });
+    await prisma.solution.upsert({ where: { slug: s.slug }, update: {}, create: data });
     solutionCount++;
   }
   console.log(`[seed] solutions upserted: ${solutionCount}`);
@@ -123,7 +130,7 @@ async function main() {
       imageName: c.imageName,
       status: "PUBLISHED",
     };
-    await prisma.caseStudy.upsert({ where: { slug: c.slug }, update: data, create: data });
+    await prisma.caseStudy.upsert({ where: { slug: c.slug }, update: {}, create: data });
     caseCount++;
   }
   console.log(`[seed] cases upserted: ${caseCount}`);

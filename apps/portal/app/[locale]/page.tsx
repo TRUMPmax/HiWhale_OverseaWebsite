@@ -11,12 +11,14 @@ import { CTASection } from "@/components/home/CTASection";
 import { fetchTaxonomy } from "@/lib/taxonomy";
 import { fetchSetting } from "@/lib/settings";
 import type { CompanyStatItem } from "@/components/about/types";
+import type { HomeIndustryCard } from "@/components/home/types";
 
 /** 首页：滚轮叙事 Hero（桌面）/ 静态 Hero（移动）+ 8 个静态功能分区 */
 export default async function HomePage() {
-  const [taxonomy, companyStats] = await Promise.all([
+  const [taxonomy, companyStats, homeIndustries] = await Promise.all([
     fetchTaxonomy(),
     fetchSetting<CompanyStatItem[]>("company-stats"),
+    fetchSetting<HomeIndustryCard[]>("home-industries"),
   ]);
 
   return (
@@ -31,11 +33,11 @@ export default async function HomePage() {
       >
         <Starfield className="h-full w-full" density={0.0006} yellowRatio={0.12} />
       </div>
-      <HeroNarrative taxonomy={taxonomy} stats={companyStats} />
+      <HeroNarrative taxonomy={taxonomy} stats={companyStats} industryCards={homeIndustries} />
       <Hero />
       <ProductEcosystem taxonomy={taxonomy} />
       <SolutionIntegration />
-      <IndustrySolutions />
+      <IndustrySolutions cards={homeIndustries} />
       <VideoShowcase />
       <StatsAndClients stats={companyStats} />
       <Certifications />

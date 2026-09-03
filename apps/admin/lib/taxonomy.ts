@@ -16,6 +16,7 @@ export type TaxonomyGroup = {
   id: string;
   key: string;
   nameJson: { en: string; zh: string };
+  icon?: string | null;
   sort: number;
   categories: TaxonomyCategory[];
 };

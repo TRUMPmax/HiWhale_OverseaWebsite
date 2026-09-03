@@ -20,6 +20,11 @@ export class UpsertSolutionDto {
   @IsObject()
   description?: { en: string; zh: string };
 
+  /** 交付周期 {en, zh}（可选） */
+  @IsOptional()
+  @IsObject()
+  duration?: { en: string; zh: string };
+
   @IsOptional()
   @IsArray()
   painPoints?: unknown[];

@@ -1,18 +1,26 @@
 import { create } from "zustand";
 import type { Industry } from "@hiwhale/shared/constants";
 import { adminApi } from "@/lib/api";
+import type { Pair } from "./solutions";
 
 export type AdminCase = {
   id: string;
+  /** 列表页便捷字段（= clientName.zh / project.zh） */
   clientName: string;
-  industry: Industry;
+  clientNameEn: string;
+  industry: Industry | string;
   project: string;
-  background: string;
-  challenge: string;
-  solution: string;
+  projectEn: string;
+  background: Pair;
+  challenge: Pair;
+  solution: Pair;
+  /** 交付周期 */
+  duration: Pair;
+  /** 设备清单（文字列表） */
+  equipment: Pair[];
   /** 成果数据：值 + 标签 */
-  results: Array<{ value: string; label: string }>;
-  testimonial: { quote: string; author: string; role: string };
+  results: Array<{ value: string; label: Pair; icon?: string }>;
+  testimonial: { quote: Pair; author: Pair; role: Pair };
   /** 关联产品 slug 列表 */
   products: string[];
   status: "published" | "draft";
@@ -21,54 +29,66 @@ export type AdminCase = {
 type ApiCase = {
   id: string;
   industry: Industry;
-  clientName: { en: string; zh: string };
-  project: { en: string; zh: string };
-  background: { en: string; zh: string };
-  challenge: { en: string; zh: string };
-  solution: { en: string; zh: string };
-  results: Array<{ value: string; label: { en: string; zh: string } }>;
-  testimonial: {
-    quote?: { en: string; zh: string };
-    author?: { en: string; zh: string };
-    role?: { en: string; zh: string };
-  };
+  clientName: Pair;
+  project: Pair;
+  background: Pair;
+  challenge: Pair;
+  solution: Pair;
+  duration?: Pair;
+  equipment?: Pair[];
+  results: Array<{ value: string; label: Pair; icon?: string }>;
+  testimonial: { quote?: Pair; author?: Pair; role?: Pair };
   productSlugs?: string[];
   status: "published" | "draft";
 };
+
+const emptyPair = (): Pair => ({ zh: "", en: "" });
+const pairOf = (p?: Pair): Pair => ({ zh: p?.zh ?? "", en: p?.en ?? "" });
 
 function toRow(c: ApiCase): AdminCase {
   return {
     id: c.id,
     clientName: c.clientName.zh,
+    clientNameEn: c.clientName.en,
     industry: c.industry,
     project: c.project.zh,
-    background: c.background.zh,
-    challenge: c.challenge.zh,
-    solution: c.solution.zh,
-    results: c.results.map((r) => ({ value: r.value, label: r.label.zh })),
+    projectEn: c.project.en,
+    background: pairOf(c.background),
+    challenge: pairOf(c.challenge),
+    solution: pairOf(c.solution),
+    duration: pairOf(c.duration),
+    equipment: (c.equipment ?? []).map(pairOf),
+    results: (c.results ?? []).map((r) => ({
+      value: r.value ?? "",
+      label: pairOf(r.label),
+      icon: r.icon,
+    })),
     testimonial: {
-      quote: c.testimonial.quote?.zh ?? "",
-      author: c.testimonial.author?.zh ?? "",
-      role: c.testimonial.role?.zh ?? "",
+      quote: pairOf(c.testimonial?.quote),
+      author: pairOf(c.testimonial?.author),
+      role: pairOf(c.testimonial?.role),
     },
     products: c.productSlugs ?? [],
     status: c.status,
   };
 }
 
-/** 单语（中文）→ {en, zh} */
-const both = (v: string) => ({ zh: v, en: v });
-
 type CasesState = {
   cases: AdminCase[];
   loading: boolean;
   fetchCases: () => Promise<void>;
-  saveCase: (payload: Omit<AdminCase, "id" | "status">, editingId?: string) => Promise<void>;
+  saveCase: (
+    payload: Omit<AdminCase, "id" | "status" | "clientName" | "project"> & {
+      clientNamePair: Pair;
+      projectPair: Pair;
+    },
+    editingId?: string,
+  ) => Promise<void>;
   deleteCase: (id: string) => Promise<void>;
   toggleStatus: (id: string) => Promise<void>;
 };
 
-/** 案例管理 store：真实 API 数据层 */
+/** 案例管理 store：真实 API 数据层（全字段双语，含交付周期/设备清单） */
 export const useCasesStore = create<CasesState>()((set, get) => ({
   cases: [],
   loading: false,
@@ -85,17 +105,17 @@ export const useCasesStore = create<CasesState>()((set, get) => ({
     const body = {
       slug: editingId ? undefined : `case-${Date.now()}`,
       industry: payload.industry,
-      clientName: both(payload.clientName),
-      project: both(payload.project),
-      background: both(payload.background),
-      challenge: both(payload.challenge),
-      solution: both(payload.solution),
-      results: payload.results.map((r) => ({ value: r.value, label: both(r.label) })),
-      testimonial: {
-        quote: both(payload.testimonial.quote),
-        author: both(payload.testimonial.author),
-        role: both(payload.testimonial.role),
-      },
+      clientName: payload.clientNamePair,
+      project: payload.projectPair,
+      background: payload.background,
+      challenge: payload.challenge,
+      solution: payload.solution,
+      duration: payload.duration,
+      equipment: payload.equipment.filter((e) => e.zh.trim() || e.en.trim()),
+      results: payload.results
+        .filter((r) => r.value.trim() || r.label.zh.trim())
+        .map((r) => ({ value: r.value, label: r.label, ...(r.icon ? { icon: r.icon } : {}) })),
+      testimonial: payload.testimonial,
       productSlugs: payload.products,
       status: editingId ? undefined : "draft",
     };

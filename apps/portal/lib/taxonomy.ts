@@ -14,6 +14,8 @@ export type TaxonomyCategory = {
 export type TaxonomyGroup = {
   key: string;
   nameJson: { en: string; zh: string };
+  /** 首页产品生态分组图标（DB 可配；空 → 代码内默认） */
+  icon?: string | null;
   sort?: number;
   categories: TaxonomyCategory[];
 };

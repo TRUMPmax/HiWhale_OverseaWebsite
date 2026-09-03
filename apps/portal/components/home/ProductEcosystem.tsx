@@ -1,21 +1,11 @@
 import { useTranslations, useLocale } from "next-intl";
-import { Bot, Cog, Container, Monitor, Sparkles, Truck, PackageOpen, Shapes } from "lucide-react";
 import { Link } from "@/navigation";
 import { SlottedImage } from "@/components/ui/SlottedImage";
 import { Reveal } from "@/components/ui/Reveal";
+import { IconByName } from "@/components/ui/IconByName";
 import { groupImageName } from "./assets";
-import { ProductGroup } from "@hiwhale/shared/constants";
+import { DEFAULT_GROUP_ICONS } from "@hiwhale/shared/constants";
 import { STATIC_TAXONOMY, taxonomyLabel, type TaxonomyGroup } from "@/lib/taxonomy";
-
-const GROUP_ICONS: Record<ProductGroup, typeof Truck> = {
-  [ProductGroup.FORKLIFT]: Truck,
-  [ProductGroup.MOBILE_ROBOT]: Bot,
-  [ProductGroup.ROBOTIC_ARM]: Cog,
-  [ProductGroup.GANTRY_CRANE]: Container,
-  [ProductGroup.CLEANING_ROBOT]: Sparkles,
-  [ProductGroup.DELIVERY_ROBOT]: PackageOpen,
-  [ProductGroup.SOFTWARE]: Monitor,
-};
 
 /** 首页分区 2：产品生态（分类体系由服务端传入，API 失败时回退静态常量） */
 export function ProductEcosystem({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
@@ -35,7 +25,6 @@ export function ProductEcosystem({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {taxonomy.map((group, index) => {
-            const Icon = GROUP_ICONS[group.key as ProductGroup] ?? Shapes;
             const known = knownKeys.has(group.key);
             const name = taxonomyLabel(taxonomy, group.key, locale) ?? group.key;
             const subcategories = group.categories
@@ -63,7 +52,11 @@ export function ProductEcosystem({ taxonomy }: { taxonomy: TaxonomyGroup[] }) {
                     }}
                   />
                   <div className="mt-5 flex items-center gap-3">
-                    <Icon className="text-brand-blue h-5 w-5" />
+                    <IconByName
+                      name={group.icon}
+                      fallbackName={DEFAULT_GROUP_ICONS[group.key] ?? "shapes"}
+                      className="text-brand-blue h-5 w-5"
+                    />
                     <h3 className="font-heading text-foreground text-lg font-bold">{name}</h3>
                   </div>
                   <p className="text-brand-blue mt-1 text-xs font-medium">{subcategories}</p>

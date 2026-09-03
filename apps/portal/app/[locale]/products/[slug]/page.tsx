@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Download, Radar, ShieldCheck, Wifi, Zap } from "lucide-react";
+import { Download } from "lucide-react";
 import {
   getGroupOfCategory,
   getLocalizedLabel,
   getRelatedProducts,
   localizeModel,
+  normalizeFeature,
   INDUSTRY_LABELS,
   MOCK_PRODUCTS,
   PRODUCT_CATEGORY_LABELS,
@@ -16,6 +17,7 @@ import type { MockProduct } from "@hiwhale/shared/constants";
 import { fetchProduct, fetchProducts } from "@/lib/content";
 import { categoryGroupMap, fetchTaxonomy, taxonomyLabel } from "@/lib/taxonomy";
 import { Link } from "@/navigation";
+import { IconByName } from "@/components/ui/IconByName";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { Reveal } from "@/components/ui/Reveal";
 import { Starfield } from "@/components/ui/Starfield";
@@ -27,7 +29,7 @@ import {
   Viewer3DSection,
 } from "@/components/products/ProductMediaSections";
 
-const FEATURE_ICONS = [Zap, ShieldCheck, Radar, Wifi];
+const FEATURE_ICON_NAMES = ["zap", "shield-check", "radar", "wifi"] as const;
 
 /** 软件类产品：详情页以“界面展示”替代 360° 3D 查看器 */
 const SOFTWARE_CATEGORIES: ProductCategory[] = [ProductCategory.WCS, ProductCategory.IWMS];
@@ -243,13 +245,19 @@ export default async function ProductDetailPage({
             {t("featuresTitle")}
           </h2>
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {product.features.map((feature, index) => {
-              const Icon = FEATURE_ICONS[index % FEATURE_ICONS.length];
+            {product.features.map((raw, index) => {
+              const feature = normalizeFeature(raw);
               return (
-                <Reveal key={feature.en} delay={index * 80} className="h-full">
+                <Reveal key={feature.text.en} delay={index * 80} className="h-full">
                   <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-6">
-                    <Icon className="text-brand-blue h-6 w-6" />
-                    <p className="text-foreground mt-3 text-sm leading-relaxed">{feature[loc]}</p>
+                    <IconByName
+                      name={feature.icon}
+                      fallbackName={FEATURE_ICON_NAMES[index % 4]}
+                      className="text-brand-blue h-6 w-6"
+                    />
+                    <p className="text-foreground mt-3 text-sm leading-relaxed">
+                      {feature.text[loc]}
+                    </p>
                   </div>
                 </Reveal>
               );

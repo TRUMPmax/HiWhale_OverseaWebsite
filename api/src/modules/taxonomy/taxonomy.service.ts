@@ -49,7 +49,7 @@ export class TaxonomyService {
   async createGroup(dto: UpsertGroupDto, operatorId: string) {
     try {
       const group = await this.prisma.productGroupEntity.create({
-        data: { key: dto.key, nameJson: dto.nameJson, sort: dto.sort ?? 0 },
+        data: { key: dto.key, nameJson: dto.nameJson, sort: dto.sort ?? 0, icon: dto.icon || null },
       });
       await this.logs.log(operatorId, "新增产品大类", dto.nameJson.zh);
       return group;
@@ -70,6 +70,7 @@ export class TaxonomyService {
         ...(dto.key !== undefined ? { key: dto.key } : {}),
         ...(dto.nameJson !== undefined ? { nameJson: dto.nameJson } : {}),
         ...(dto.sort !== undefined ? { sort: dto.sort } : {}),
+        ...(dto.icon !== undefined ? { icon: dto.icon || null } : {}),
       },
     });
     await this.logs.log(operatorId, "编辑产品大类", group.key);

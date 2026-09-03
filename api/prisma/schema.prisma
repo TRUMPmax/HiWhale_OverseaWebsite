@@ -162,6 +162,7 @@ model ProductGroupEntity {
   id        String   @id @default(uuid()) @db.Uuid
   key       String   @unique
   nameJson  Json     @map("name_json")
+  icon      String?   // 门户首页分组图标（PORTAL_ICON_OPTIONS 白名单 name；空 → 代码内默认）
   sort      Int      @default(0)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -214,6 +215,8 @@ model Solution {
   industry    String
   title       Json
   summary     Json
+  // 交付周期（可选；{en, zh}，空对象/空串前台不展示）
+  duration    Json?
   description Json
   painPoints  Json          @map("pain_points")
   // 关联产品 slug 数组（真实产品引用，删除产品时级联清理） 

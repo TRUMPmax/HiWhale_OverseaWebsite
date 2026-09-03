@@ -9,9 +9,10 @@ import Image from "next/image";
 import { Starfield } from "@/components/ui/Starfield";
 import { SlottedImage } from "@/components/ui/SlottedImage";
 import { parseCountValue, pickLang, type CompanyStatItem } from "@/components/about/types";
-import { getLocalizedLabel, INDUSTRY_LABELS } from "@hiwhale/shared/constants";
+import { industryLabel, Industry } from "@hiwhale/shared/constants";
 import { groupImageName, INDUSTRY_IMAGE_NAMES, CORE_INDUSTRIES } from "./assets";
 import { taxonomyLabel, type TaxonomyGroup } from "@/lib/taxonomy";
+import type { HomeIndustryCard } from "./types";
 
 /** 产品芯片的景深层次（translateZ） */
 const CHIP_DEPTHS = [0, 60, 20, 80, 40, 10, 70];
@@ -40,9 +41,11 @@ const PARALLAX_LAYERS: Array<[string, number]> = [
 export function HeroNarrative({
   taxonomy,
   stats,
+  industryCards,
 }: {
   taxonomy: TaxonomyGroup[];
   stats?: CompanyStatItem[] | null;
+  industryCards?: HomeIndustryCard[] | null;
 }) {
   const t = useTranslations("home");
   const locale = useLocale();
@@ -55,8 +58,11 @@ export function HeroNarrative({
   const [ready, setReady] = useState(false);
 
   const groups = taxonomy;
-  // 第二幕场景卡片只渲染 6 个核心行业（Industry 枚举已扩到 11，首页保持 3×2 网格）
-  const industries = CORE_INDUSTRIES;
+  // 第二幕场景卡片：后台「内容管理 → 首页行业」配置优先；未配置回退 6 个核心行业
+  const industries: Array<{ industry: string; painPoint?: { en: string; zh: string } }> =
+    industryCards && industryCards.length > 0
+      ? industryCards.slice(0, 6)
+      : CORE_INDUSTRIES.map((i) => ({ industry: i as string }));
   // 芯片矩阵列数：≤4 个单行排满；更多则按总数对半分列（8→4×2、7→4+3），保持矩阵感
   const chipCols = groups.length <= 4 ? groups.length : Math.ceil(groups.length / 2);
   // 指标：后台「数据指标」配置（前 3 项参与滚动计数，第 4 格固定 24/7）；未配置用内置默认
@@ -313,35 +319,48 @@ export function HeroNarrative({
           </div>
         </div>
 
-        {/* 场景层：6 个行业场景卡片（3×2） */}
+        {/* 场景层：行业场景卡片（3×2，最多 6 张） */}
         <div className="np-scenes pointer-events-none absolute inset-0 flex items-center justify-center px-4">
           <div className="grid w-full max-w-5xl grid-cols-3 gap-5">
-            {industries.map((industry) => (
-              <div
-                key={industry}
-                className="ns-card text-foreground overflow-hidden rounded-xl bg-white"
-              >
-                <SlottedImage
-                  src={`/images/industries/${INDUSTRY_IMAGE_NAMES[industry]}`}
-                  alt={getLocalizedLabel(INDUSTRY_LABELS, industry, locale)}
-                  className="aspect-video w-full object-cover"
-                  placeholder={{
-                    ratio: "aspect-video",
-                    label: `行业场景图：${getLocalizedLabel(INDUSTRY_LABELS, industry, "zh")}`,
-                    size: "16:9 · 建议 1600×900",
-                    name: INDUSTRY_IMAGE_NAMES[industry],
-                  }}
-                />
-                <div className="p-4 pt-3">
-                  <h3 className="font-heading text-sm font-bold">
-                    {getLocalizedLabel(INDUSTRY_LABELS, industry, locale)}
-                  </h3>
-                  <span className="mt-1 inline-block rounded-md bg-blue-50 px-2 py-0.5 text-xs text-blue-700">
-                    {t(`industries.items.${industry}.painPoint`)}
-                  </span>
+            {industries.map((scene, index) => {
+              const imageName =
+                INDUSTRY_IMAGE_NAMES[scene.industry as Industry] ??
+                `industry-${scene.industry}.png`;
+              const name = industryLabel(scene.industry, locale);
+              return (
+                <div
+                  key={`${scene.industry}-${index}`}
+                  className="ns-card text-foreground overflow-hidden rounded-xl bg-white"
+                >
+                  <SlottedImage
+                    src={`/images/industries/${imageName}`}
+                    alt={name}
+                    className="aspect-video w-full object-cover"
+                    placeholder={{
+                      ratio: "aspect-video",
+                      label: `行业场景图：${industryLabel(scene.industry, "zh")}`,
+                      size: "16:9 · 建议 1600×900",
+                      name: imageName,
+                    }}
+                  />
+                  <div className="p-4 pt-3">
+                    <h3 className="font-heading text-sm font-bold">{name}</h3>
+                    {(() => {
+                      const loc = locale === "zh" ? ("zh" as const) : ("en" as const);
+                      const isCore = (CORE_INDUSTRIES as string[]).includes(scene.industry);
+                      const pain =
+                        scene.painPoint?.[loc]?.trim() ||
+                        (isCore ? t(`industries.items.${scene.industry}.painPoint`) : "");
+                      return pain ? (
+                        <span className="mt-1 inline-block rounded-md bg-blue-50 px-2 py-0.5 text-xs text-blue-700">
+                          {pain}
+                        </span>
+                      ) : null;
+                    })()}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 

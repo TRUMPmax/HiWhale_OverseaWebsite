@@ -319,7 +319,8 @@
       "equipmentTitle": "设备组合",
       "processTitle": "部署流程",
       "resultsTitle": "项目成效",
-      "relatedProductsTitle": "相关产品"
+      "relatedProductsTitle": "相关产品",
+      "durationLabel": "交付周期"
     },
     "cta": {
       "title": "需要为您量身定制的方案？",

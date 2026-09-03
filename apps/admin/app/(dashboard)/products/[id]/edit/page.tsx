@@ -20,7 +20,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
   if (!record) notFound();
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="mx-auto max-w-7xl space-y-6">
       <h2 className="text-xl font-bold text-slate-900">编辑产品：{record.name.zh}</h2>
       <ProductForm initial={{ record }} />
     </div>

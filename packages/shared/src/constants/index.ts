@@ -132,6 +132,7 @@ export enum InquiryStatus {
 }
 
 export * from "./product-groups";
+export * from "./icons";
 export * from "./products";
 export * from "./solutions";
 export * from "./cases";

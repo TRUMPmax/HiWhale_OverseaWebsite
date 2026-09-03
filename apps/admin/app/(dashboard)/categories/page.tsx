@@ -27,6 +27,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { IconPicker } from "@/components/ui/IconPicker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -52,6 +53,7 @@ type FormState = {
   nameZh: string;
   nameEn: string;
   sort: number;
+  icon?: string;
 };
 
 const EMPTY_FORM: FormState = {
@@ -61,6 +63,7 @@ const EMPTY_FORM: FormState = {
   nameZh: "",
   nameEn: "",
   sort: 0,
+  icon: undefined as string | undefined,
 };
 
 /** 英文名称 → key 自动 slug */
@@ -274,7 +277,7 @@ export default function CategoriesPage() {
     const nameJson = { zh: form.nameZh.trim(), en: form.nameEn.trim() };
     try {
       if (form.kind === "group") {
-        const body = { key, nameJson, sort: form.sort };
+        const body = { key, nameJson, sort: form.sort, icon: form.icon ?? "" };
         if (form.editing) {
           await adminApi(`/api/taxonomy/groups/${form.editing.id}`, { method: "PUT", body });
         } else {
@@ -383,6 +386,7 @@ export default function CategoriesPage() {
                         nameZh: group.nameJson.zh,
                         nameEn: group.nameJson.en,
                         sort: group.sort,
+                        icon: group.icon ?? undefined,
                       })
                     }
                     onDelete={() =>
@@ -519,6 +523,18 @@ export default function CategoriesPage() {
                 />
               </div>
             </div>
+            {form?.kind === "group" && (
+              <div className="space-y-1.5">
+                <Label>首页分组图标</Label>
+                <IconPicker
+                  value={form?.icon}
+                  onChange={(name) => form && setForm({ ...form, icon: name })}
+                />
+                <p className="text-xs text-slate-500">
+                  用于门户首页「产品生态」分组卡片；默认 = 内置图标。
+                </p>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setForm(null)}>

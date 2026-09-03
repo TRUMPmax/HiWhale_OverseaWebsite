@@ -4,6 +4,7 @@ import { Clock, Package, Quote } from "lucide-react";
 import { getLocalizedLabel, INDUSTRY_LABELS, MOCK_CASES } from "@hiwhale/shared/constants";
 import { fetchCase, fetchProducts } from "@/lib/content";
 import { Link } from "@/navigation";
+import { IconByName } from "@/components/ui/IconByName";
 import { SlottedImage } from "@/components/ui/SlottedImage";
 import { Reveal } from "@/components/ui/Reveal";
 import { Starfield } from "@/components/ui/Starfield";
@@ -137,6 +138,7 @@ export default async function CaseDetailPage({
                 key={result.value}
                 className="rounded-xl border border-slate-200 bg-white p-6 text-center"
               >
+                <IconByName name={result.icon} className="text-brand-blue mx-auto mb-2 h-6 w-6" />
                 <span className="font-heading text-brand-blue text-2xl font-bold md:text-3xl">
                   {result.value}
                 </span>

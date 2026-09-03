@@ -1,15 +1,17 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { AlertTriangle } from "lucide-react";
+import { Clock } from "lucide-react";
 import {
   getLocalizedLabel,
   industryLabel,
+  normalizePainPoint,
   Industry,
   MOCK_SOLUTIONS,
   PRODUCT_CATEGORY_LABELS,
 } from "@hiwhale/shared/constants";
 import { fetchProducts, fetchSolution } from "@/lib/content";
 import { Link } from "@/navigation";
+import { IconByName } from "@/components/ui/IconByName";
 import { SlottedImage } from "@/components/ui/SlottedImage";
 import { Reveal } from "@/components/ui/Reveal";
 import { Starfield } from "@/components/ui/Starfield";
@@ -52,6 +54,14 @@ export default async function SolutionDetailPage({
             {solution.title[loc]}
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-white/70">{solution.summary[loc]}</p>
+          {solution.duration?.[loc]?.trim() ? (
+            <div className="mt-6 flex items-center gap-2 text-sm text-white/80">
+              <Clock className="h-4 w-4" />
+              <span>
+                {t("durationLabel")}: {solution.duration[loc]}
+              </span>
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -88,14 +98,23 @@ export default async function SolutionDetailPage({
             {t("painPointsTitle")}
           </h2>
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {solution.painPoints.map((point, index) => (
-              <Reveal key={point.en} delay={index * 80} className="h-full">
-                <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-6">
-                  <AlertTriangle className="text-brand-blue h-6 w-6" />
-                  <p className="text-foreground mt-3 text-sm leading-relaxed">{point[loc]}</p>
-                </div>
-              </Reveal>
-            ))}
+            {solution.painPoints.map((raw, index) => {
+              const point = normalizePainPoint(raw);
+              return (
+                <Reveal key={point.text.en} delay={index * 80} className="h-full">
+                  <div className="flex h-full flex-col rounded-xl border border-slate-200 bg-white p-6">
+                    <IconByName
+                      name={point.icon}
+                      fallbackName="alert-triangle"
+                      className="text-brand-blue h-6 w-6"
+                    />
+                    <p className="text-foreground mt-3 text-sm leading-relaxed">
+                      {point.text[loc]}
+                    </p>
+                  </div>
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -158,6 +177,7 @@ export default async function SolutionDetailPage({
                 key={result.value}
                 className="rounded-xl border border-slate-200 bg-white p-6 text-center"
               >
+                <IconByName name={result.icon} className="text-brand-blue mx-auto mb-2 h-6 w-6" />
                 <span className="font-heading text-brand-blue text-3xl font-bold md:text-4xl">
                   {result.value}
                 </span>

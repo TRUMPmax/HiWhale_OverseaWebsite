@@ -21,11 +21,13 @@ import { getGroupOfCategory, INDUSTRY_LABELS } from "@hiwhale/shared/constants";
 import type { ProductCategory } from "@hiwhale/shared/constants";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { IconPicker } from "@/components/ui/IconPicker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { resolveAssetUrl } from "@/lib/asset-url";
 import { useProductsStore, type AdminProduct, type ProductPayload } from "@/store/products";
 import { LangPair } from "./LangPair";
+import { ProductPreview } from "./ProductPreview";
 import { SpecGroupsEditor, type SpecGroupDraft } from "./SpecGroupsEditor";
 import { fetchAdminTaxonomy, STATIC_ADMIN_TAXONOMY, type TaxonomyGroup } from "@/lib/taxonomy";
 import { useAdminAuthStore } from "@/store/auth";
@@ -44,7 +46,7 @@ const schema = z.object({
       valueEn: z.string(),
     }),
   ),
-  features: z.array(z.object({ zh: z.string(), en: z.string() })),
+  features: z.array(z.object({ zh: z.string(), en: z.string(), icon: z.string().optional() })),
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -208,6 +210,8 @@ export function ProductForm({ initial }: ProductFormProps) {
     register,
     control,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -224,7 +228,9 @@ export function ProductForm({ initial }: ProductFormProps) {
             valueZh: s.value.zh,
             valueEn: s.value.en,
           })),
-          features: initial.record.features.map((f) => ({ zh: f.zh, en: f.en })),
+          features: initial.record.features.map((f) =>
+            "text" in f ? { zh: f.text.zh, en: f.text.en, icon: f.icon } : { zh: f.zh, en: f.en },
+          ),
         }
       : {
           nameZh: "",
@@ -300,7 +306,10 @@ export function ProductForm({ initial }: ProductFormProps) {
         })),
       features: values.features
         .filter((f) => f.zh.trim())
-        .map((f) => ({ zh: f.zh, en: enOf(f.zh, f.en) })),
+        .map((f) => ({
+          text: { zh: f.zh, en: enOf(f.zh, f.en) },
+          ...(f.icon ? { icon: f.icon } : {}),
+        })),
       scenarios,
       imageName: initial?.record.imageName ?? `product-${values.model.toLowerCase()}.png`,
       imageUrl: images[0] ?? null,
@@ -327,318 +336,349 @@ export function ProductForm({ initial }: ProductFormProps) {
     }
   };
 
+  /** 实时预览数据：RHF 字段用 watch() 全量取值，非 RHF 字段用组件 state */
+  const watched = watch();
+  const previewData = {
+    nameZh: watched.nameZh,
+    nameEn: watched.nameEn,
+    model: watched.model,
+    category: watched.category,
+    tagline,
+    description,
+    quickSpecs: watched.quickSpecs,
+    features: watched.features,
+    images: images.map((u) => resolveAssetUrl(u) ?? u),
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">基本信息</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <Label>产品名称（中文）*</Label>
-            <Input {...register("nameZh")} />
-            {errors.nameZh && <p className="text-xs text-red-600">{errors.nameZh.message}</p>}
-          </div>
-          <div className="space-y-1.5">
-            <Label>产品名称（英文）*</Label>
-            <Input {...register("nameEn")} />
-            {errors.nameEn && <p className="text-xs text-red-600">{errors.nameEn.message}</p>}
-          </div>
-          <div className="space-y-1.5">
-            <Label>型号 *</Label>
-            <Input {...register("model")} />
-            {errors.model && <p className="text-xs text-red-600">{errors.model.message}</p>}
-          </div>
-          <div className="space-y-1.5">
-            <Label>品类 *</Label>
-            <select
-              className="border-input bg-background focus:border-brand-blue flex h-9 w-full rounded-md border px-3 text-sm outline-none"
-              {...register("category")}
+    <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-5 gap-8">
+      <div className="col-span-3 space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">基本信息</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label>产品名称（中文）*</Label>
+              <Input {...register("nameZh")} />
+              {errors.nameZh && <p className="text-xs text-red-600">{errors.nameZh.message}</p>}
+            </div>
+            <div className="space-y-1.5">
+              <Label>产品名称（英文）*</Label>
+              <Input {...register("nameEn")} />
+              {errors.nameEn && <p className="text-xs text-red-600">{errors.nameEn.message}</p>}
+            </div>
+            <div className="space-y-1.5">
+              <Label>型号 *</Label>
+              <Input {...register("model")} />
+              {errors.model && <p className="text-xs text-red-600">{errors.model.message}</p>}
+            </div>
+            <div className="space-y-1.5">
+              <Label>品类 *</Label>
+              <select
+                className="border-input bg-background focus:border-brand-blue flex h-9 w-full rounded-md border px-3 text-sm outline-none"
+                {...register("category")}
+              >
+                <option value="">请选择品类</option>
+                {taxonomy.map((group) => (
+                  <optgroup key={group.key} label={group.nameJson.zh}>
+                    {group.categories.map((category) => (
+                      <option key={category.key} value={category.key}>
+                        {category.nameJson.zh}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+              {errors.category && <p className="text-xs text-red-600">{errors.category.message}</p>}
+            </div>
+            <div className="col-span-2 space-y-1.5">
+              <Label>适用行业（可多选）</Label>
+              <div className="flex flex-wrap gap-2">
+                {Object.entries(INDUSTRY_LABELS).map(([key, label]) => (
+                  <label
+                    key={key}
+                    className={`flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm transition-colors ${
+                      scenarios.includes(key)
+                        ? "border-brand-blue text-brand-blue bg-blue-50"
+                        : "border-slate-200 text-slate-600 hover:border-slate-300"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      className="accent-brand-blue h-3.5 w-3.5"
+                      checked={scenarios.includes(key)}
+                      onChange={() =>
+                        setScenarios((prev) =>
+                          prev.includes(key) ? prev.filter((s) => s !== key) : [...prev, key],
+                        )
+                      }
+                    />
+                    {label.zh}
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div className="col-span-2">
+              <LangPair
+                label="一句话卖点"
+                textarea
+                zhValue={tagline.zh}
+                enValue={tagline.en}
+                onZhChange={(v) => setTagline((t) => ({ ...t, zh: v }))}
+                onEnChange={(v) => setTagline((t) => ({ ...t, en: v }))}
+              />
+            </div>
+            <div className="col-span-2">
+              <LangPair
+                label="描述"
+                textarea
+                rows={3}
+                zhValue={description.zh}
+                enValue={description.en}
+                onZhChange={(v) => setDescription((d) => ({ ...d, zh: v }))}
+                onEnChange={(v) => setDescription((d) => ({ ...d, en: v }))}
+              />
+            </div>
+            <label className="col-span-2 flex items-center gap-2 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                className="accent-brand-blue h-4 w-4"
+                {...register("status")}
+              />
+              上架（在门户产品列表中可见）
+            </label>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-base">核心参数</CardTitle>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => specs.append({ labelZh: "", labelEn: "", valueZh: "", valueEn: "" })}
             >
-              <option value="">请选择品类</option>
-              {taxonomy.map((group) => (
-                <optgroup key={group.key} label={group.nameJson.zh}>
-                  {group.categories.map((category) => (
-                    <option key={category.key} value={category.key}>
-                      {category.nameJson.zh}
-                    </option>
+              <Plus /> 添加参数
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {specs.fields.map((field, index) => (
+              <div key={field.id} className="flex items-start gap-3">
+                <div className="grid flex-1 grid-cols-2 gap-3">
+                  <Input
+                    placeholder="参数名（中文），如：额定载重"
+                    {...register(`quickSpecs.${index}.labelZh`)}
+                  />
+                  <Input
+                    placeholder="Label (EN), e.g. Load Capacity"
+                    {...register(`quickSpecs.${index}.labelEn`)}
+                  />
+                  <Input
+                    placeholder="参数值（中文），如：1,500 kg"
+                    {...register(`quickSpecs.${index}.valueZh`)}
+                  />
+                  <Input
+                    placeholder="Value (EN), e.g. 1,500 kg"
+                    {...register(`quickSpecs.${index}.valueEn`)}
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label="删除参数"
+                  onClick={() => specs.remove(index)}
+                >
+                  <Trash2 className="h-4 w-4 text-slate-400" />
+                </Button>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-base">产品卖点</CardTitle>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => features.append({ zh: "", en: "" })}
+            >
+              <Plus /> 添加卖点
+            </Button>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {features.fields.map((field, index) => (
+              <div key={field.id} className="flex items-center gap-3">
+                <Input placeholder="卖点描述（中文）" {...register(`features.${index}.zh`)} />
+                <Input placeholder="Feature (EN)" {...register(`features.${index}.en`)} />
+                <IconPicker
+                  value={watch(`features.${index}.icon`)}
+                  onChange={(name) => setValue(`features.${index}.icon`, name)}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label="删除卖点"
+                  onClick={() => features.remove(index)}
+                >
+                  <Trash2 className="h-4 w-4 text-slate-400" />
+                </Button>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* 详细参数表（中英双语） */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">详细参数表</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <SpecGroupsEditor groups={specGroups} onChange={setSpecGroups} />
+          </CardContent>
+        </Card>
+
+        {/* 产品图片管理（拖拽排序，第一张为主图） */}
+        <Card>
+          <CardHeader className="flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-base">产品图片</CardTitle>
+            <span className="text-xs text-slate-400">
+              拖拽调整顺序，第一张为主图（最多 4 张）· 删除图片在保存后生效
+            </span>
+          </CardHeader>
+          <CardContent>
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+              <SortableContext items={images} strategy={rectSortingStrategy}>
+                <div className="grid grid-cols-4 gap-4">
+                  {images.map((url, index) => (
+                    <SortableImageTile
+                      key={url}
+                      url={url}
+                      index={index}
+                      onDelete={() =>
+                        markForDeletion(url, () =>
+                          setImages((prev) => prev.filter((u) => u !== url)),
+                        )
+                      }
+                    />
                   ))}
-                </optgroup>
-              ))}
-            </select>
-            {errors.category && <p className="text-xs text-red-600">{errors.category.message}</p>}
-          </div>
-          <div className="col-span-2 space-y-1.5">
-            <Label>适用行业（可多选）</Label>
-            <div className="flex flex-wrap gap-2">
-              {Object.entries(INDUSTRY_LABELS).map(([key, label]) => (
+                  {images.length < 4 && (
+                    <label className="hover:border-brand-blue flex aspect-[4/3] cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 p-4 text-center transition-colors">
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                        disabled={uploading !== null}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) void uploadAsset("image", file);
+                          e.target.value = "";
+                        }}
+                      />
+                      <Plus className="h-6 w-6 text-slate-400" />
+                      <span className="text-xs text-slate-500">
+                        {uploading === "image" ? "上传中…" : "添加图片"}
+                      </span>
+                    </label>
+                  )}
+                </div>
+              </SortableContext>
+            </DndContext>
+          </CardContent>
+        </Card>
+
+        {/* 规格书 / 3D 模型 */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">规格书与 3D 模型</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-2 gap-4">
+            {(
+              [
+                {
+                  kind: "spec",
+                  icon: FileText,
+                  text: "点击上传规格书 PDF（≤100MB）",
+                  accept: "application/pdf",
+                  value: spec,
+                  clear: () => setSpec(""),
+                },
+                {
+                  kind: "model3d",
+                  icon: Package,
+                  text: "点击上传 3D 模型 .glb/.gltf（≤50MB）",
+                  accept: ".glb,.gltf",
+                  value: model3d,
+                  clear: () => setModel3d(""),
+                },
+              ] as const
+            ).map((slot) =>
+              slot.value ? (
+                <div
+                  key={slot.kind}
+                  className="flex items-center gap-3 rounded-lg border border-slate-200 p-4"
+                >
+                  <slot.icon className="text-brand-blue h-6 w-6 shrink-0" />
+                  <span className="min-w-0 flex-1 truncate text-xs text-slate-600">
+                    {fileNameOf(slot.value)}
+                  </span>
+                  <button
+                    type="button"
+                    aria-label="删除文件"
+                    onClick={() => markForDeletion(slot.value, slot.clear)}
+                    className="rounded-md p-1 text-slate-400 transition-colors hover:text-red-600"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
                 <label
-                  key={key}
-                  className={`flex cursor-pointer items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm transition-colors ${
-                    scenarios.includes(key)
-                      ? "border-brand-blue text-brand-blue bg-blue-50"
-                      : "border-slate-200 text-slate-600 hover:border-slate-300"
-                  }`}
+                  key={slot.kind}
+                  className="hover:border-brand-blue flex h-24 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 p-4 text-center transition-colors"
                 >
                   <input
-                    type="checkbox"
-                    className="accent-brand-blue h-3.5 w-3.5"
-                    checked={scenarios.includes(key)}
-                    onChange={() =>
-                      setScenarios((prev) =>
-                        prev.includes(key) ? prev.filter((s) => s !== key) : [...prev, key],
-                      )
-                    }
+                    type="file"
+                    className="hidden"
+                    accept={slot.accept}
+                    disabled={uploading !== null}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) void uploadAsset(slot.kind, file);
+                      e.target.value = "";
+                    }}
                   />
-                  {label.zh}
+                  <slot.icon className="h-6 w-6 text-slate-400" />
+                  <span className="text-xs text-slate-500">
+                    {uploading === slot.kind ? "上传中…" : slot.text}
+                  </span>
                 </label>
-              ))}
-            </div>
-          </div>
-          <div className="col-span-2">
-            <LangPair
-              label="一句话卖点"
-              textarea
-              zhValue={tagline.zh}
-              enValue={tagline.en}
-              onZhChange={(v) => setTagline((t) => ({ ...t, zh: v }))}
-              onEnChange={(v) => setTagline((t) => ({ ...t, en: v }))}
-            />
-          </div>
-          <div className="col-span-2">
-            <LangPair
-              label="描述"
-              textarea
-              rows={3}
-              zhValue={description.zh}
-              enValue={description.en}
-              onZhChange={(v) => setDescription((d) => ({ ...d, zh: v }))}
-              onEnChange={(v) => setDescription((d) => ({ ...d, en: v }))}
-            />
-          </div>
-          <label className="col-span-2 flex items-center gap-2 text-sm text-slate-700">
-            <input type="checkbox" className="accent-brand-blue h-4 w-4" {...register("status")} />
-            上架（在门户产品列表中可见）
-          </label>
-        </CardContent>
-      </Card>
+              ),
+            )}
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardHeader className="flex-row items-center justify-between space-y-0">
-          <CardTitle className="text-base">核心参数</CardTitle>
+        <div className="flex gap-3">
           <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => specs.append({ labelZh: "", labelEn: "", valueZh: "", valueEn: "" })}
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-brand-blue hover:bg-brand-blue/90"
           >
-            <Plus /> 添加参数
+            {isSubmitting ? "保存中…" : "保存"}
           </Button>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {specs.fields.map((field, index) => (
-            <div key={field.id} className="flex items-start gap-3">
-              <div className="grid flex-1 grid-cols-2 gap-3">
-                <Input
-                  placeholder="参数名（中文），如：额定载重"
-                  {...register(`quickSpecs.${index}.labelZh`)}
-                />
-                <Input
-                  placeholder="Label (EN), e.g. Load Capacity"
-                  {...register(`quickSpecs.${index}.labelEn`)}
-                />
-                <Input
-                  placeholder="参数值（中文），如：1,500 kg"
-                  {...register(`quickSpecs.${index}.valueZh`)}
-                />
-                <Input
-                  placeholder="Value (EN), e.g. 1,500 kg"
-                  {...register(`quickSpecs.${index}.valueEn`)}
-                />
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                aria-label="删除参数"
-                onClick={() => specs.remove(index)}
-              >
-                <Trash2 className="h-4 w-4 text-slate-400" />
-              </Button>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="flex-row items-center justify-between space-y-0">
-          <CardTitle className="text-base">产品卖点</CardTitle>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => features.append({ zh: "", en: "" })}
-          >
-            <Plus /> 添加卖点
+          <Button type="button" variant="outline" onClick={() => router.push("/products")}>
+            取消
           </Button>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {features.fields.map((field, index) => (
-            <div key={field.id} className="flex items-center gap-3">
-              <Input placeholder="卖点描述（中文）" {...register(`features.${index}.zh`)} />
-              <Input placeholder="Feature (EN)" {...register(`features.${index}.en`)} />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                aria-label="删除卖点"
-                onClick={() => features.remove(index)}
-              >
-                <Trash2 className="h-4 w-4 text-slate-400" />
-              </Button>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-
-      {/* 详细参数表（中英双语） */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">详细参数表</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <SpecGroupsEditor groups={specGroups} onChange={setSpecGroups} />
-        </CardContent>
-      </Card>
-
-      {/* 产品图片管理（拖拽排序，第一张为主图） */}
-      <Card>
-        <CardHeader className="flex-row items-center justify-between space-y-0">
-          <CardTitle className="text-base">产品图片</CardTitle>
-          <span className="text-xs text-slate-400">
-            拖拽调整顺序，第一张为主图（最多 4 张）· 删除图片在保存后生效
-          </span>
-        </CardHeader>
-        <CardContent>
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-            <SortableContext items={images} strategy={rectSortingStrategy}>
-              <div className="grid grid-cols-4 gap-4">
-                {images.map((url, index) => (
-                  <SortableImageTile
-                    key={url}
-                    url={url}
-                    index={index}
-                    onDelete={() =>
-                      markForDeletion(url, () => setImages((prev) => prev.filter((u) => u !== url)))
-                    }
-                  />
-                ))}
-                {images.length < 4 && (
-                  <label className="hover:border-brand-blue flex aspect-[4/3] cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 p-4 text-center transition-colors">
-                    <input
-                      type="file"
-                      className="hidden"
-                      accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                      disabled={uploading !== null}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) void uploadAsset("image", file);
-                        e.target.value = "";
-                      }}
-                    />
-                    <Plus className="h-6 w-6 text-slate-400" />
-                    <span className="text-xs text-slate-500">
-                      {uploading === "image" ? "上传中…" : "添加图片"}
-                    </span>
-                  </label>
-                )}
-              </div>
-            </SortableContext>
-          </DndContext>
-        </CardContent>
-      </Card>
-
-      {/* 规格书 / 3D 模型 */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">规格书与 3D 模型</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-4">
-          {(
-            [
-              {
-                kind: "spec",
-                icon: FileText,
-                text: "点击上传规格书 PDF（≤100MB）",
-                accept: "application/pdf",
-                value: spec,
-                clear: () => setSpec(""),
-              },
-              {
-                kind: "model3d",
-                icon: Package,
-                text: "点击上传 3D 模型 .glb/.gltf（≤50MB）",
-                accept: ".glb,.gltf",
-                value: model3d,
-                clear: () => setModel3d(""),
-              },
-            ] as const
-          ).map((slot) =>
-            slot.value ? (
-              <div
-                key={slot.kind}
-                className="flex items-center gap-3 rounded-lg border border-slate-200 p-4"
-              >
-                <slot.icon className="text-brand-blue h-6 w-6 shrink-0" />
-                <span className="min-w-0 flex-1 truncate text-xs text-slate-600">
-                  {fileNameOf(slot.value)}
-                </span>
-                <button
-                  type="button"
-                  aria-label="删除文件"
-                  onClick={() => markForDeletion(slot.value, slot.clear)}
-                  className="rounded-md p-1 text-slate-400 transition-colors hover:text-red-600"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-            ) : (
-              <label
-                key={slot.kind}
-                className="hover:border-brand-blue flex h-24 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-200 p-4 text-center transition-colors"
-              >
-                <input
-                  type="file"
-                  className="hidden"
-                  accept={slot.accept}
-                  disabled={uploading !== null}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) void uploadAsset(slot.kind, file);
-                    e.target.value = "";
-                  }}
-                />
-                <slot.icon className="h-6 w-6 text-slate-400" />
-                <span className="text-xs text-slate-500">
-                  {uploading === slot.kind ? "上传中…" : slot.text}
-                </span>
-              </label>
-            ),
-          )}
-        </CardContent>
-      </Card>
-
-      <div className="flex gap-3">
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          className="bg-brand-blue hover:bg-brand-blue/90"
-        >
-          {isSubmitting ? "保存中…" : "保存"}
-        </Button>
-        <Button type="button" variant="outline" onClick={() => router.push("/products")}>
-          取消
-        </Button>
+        </div>
+      </div>
+      <div className="col-span-2">
+        <div className="sticky top-6 rounded-lg bg-slate-50 p-4">
+          <ProductPreview data={previewData} />
+        </div>
       </div>
     </form>
   );
